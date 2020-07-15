@@ -15,7 +15,7 @@ body {
   margin-top: 10px;
 }
 
-#wrapper {
+.container {
   margin-top: 10px;
 }
 
@@ -52,7 +52,7 @@ body {
 }
 
 .navbar .solid.auth {
-  border: 3px solid #FFE615;
+  border: 0px !important;
 }
 
 @media only screen and (max-width: 992px) {
@@ -63,6 +63,11 @@ body {
   .navbar #navbar-right-side {
       padding-left: 5px;
       padding-right: 0;
+  }
+
+  .navbar .solid.auth {
+    text-align: left;
+    padding-left: 0px;
   }
 }
 
@@ -84,4 +89,21 @@ body {
   line-height: 1.5;
   border-radius: .25rem;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+/* Form */
+#formSelection {
+  margin-bottom: 10px;
+}
+
+#formSelection .nav-item {
+  background-color: #fff;
+}
+
+#formSelection .nav-item .active {
+  background-color: #FFE615;
+}
+
+#formSelection a.nav-link {
+  color: black;
 }
