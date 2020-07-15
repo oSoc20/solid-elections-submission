@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import {fetchDocument, TripleDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
-import {createAppDocument} from '../../utils/SolidWrapper';
+import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
+import { issuedThrough } from "rdf-namespaces/dist/schema";
 
 class CandidateDataForm extends React.Component {
+    FILE_NAME = "me.ttl";
+
     constructor(props) {
         super(props);
         this.getUserData();
@@ -11,8 +14,44 @@ class CandidateDataForm extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    getUserData() {
+    componentDidUpdate(prevProps) {
+        if (this.props.appContainer !== undefined) {
+            this.fetchUserData();
+        }
+    }
+
+    async getUserData() {
         this.state = {firstname: '', lastname: '', street: '', streetNumber: '', locality: '', postalCode: ''};
+    }
+
+    async fetchUserData() {
+        let documents = listDocuments(this.props.appContainer);
+        let userDataLink = documents.find(link => {
+            let indexFile = link.lastIndexOf('/');
+            let file = link.substr(indexFile + 1);
+
+            return file == this.FILE_NAME;
+        });
+        let userDataDoc = await fetchDocument(userDataLink);
+        if (userDataDoc != null) {
+            let userData = userDataDoc.getSubject("#me");
+            if (userData != null) {
+                this.setState({
+                    firstname: userData.getString(schema.givenName),
+                    lastname: userData.getString(schema.familyName),
+                    locality: userData.getString(schema.addressLocality),
+                    postalCode: userData.getInteger(schema.postalCode)
+                });
+
+                let streetNumber = userData.getString(schema.streetAddress).split(', ');
+                if (streetNumber.length == 2) {
+                    this.setState({
+                        street: streetNumber[0],
+                        streetNumber: streetNumber[1]
+                    });
+                }
+            }
+        }
     }
   
     handleChange(event) {    
@@ -21,8 +60,7 @@ class CandidateDataForm extends React.Component {
     }
 
     handleSubmit(event) {
-        console.log(this.state);
-        let doc = createAppDocument(this.props.appContainer, 'me.ttl');
+        let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
         const formData = doc.addSubject({"identifier": "me"});
         formData.addString(schema.givenName, this.state.firstname);
         formData.addString(schema.familyName, this.state.lastname);

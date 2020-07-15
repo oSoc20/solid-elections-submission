@@ -58,7 +58,7 @@ const Index: React.FC = () => {
                                     </li>
                                 </ul>
 
-                                <CandidateDataForm appContainer={appContainer} />
+                                <CandidateDataForm appContainer={appContainer} webId={webId} />
 
                                 <div className="tab-content" id="tabContent">
                                     <div className="tab-pane fade show active" id="g103-form" role="tabpanel" aria-labelledby="g103-form">

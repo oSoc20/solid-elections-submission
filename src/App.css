@@ -96,14 +96,11 @@ body {
   margin-bottom: 10px;
 }
 
-#formSelection .nav-item {
-  background-color: #fff;
-}
-
 #formSelection .nav-item .active {
   background-color: #FFE615;
 }
 
 #formSelection a.nav-link {
   color: black;
+  background-color: #fff;
 }
