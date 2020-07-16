@@ -9,6 +9,7 @@
     "@govflanders/vl-ui-content-header": "^3.11.4",
     "@govflanders/vl-ui-core": "^4.0.4",
     "@govflanders/vl-ui-double-input": "^3.11.4",
+    "@govflanders/vl-ui-form-validation": "^4.0.5",
     "@govflanders/vl-ui-icon": "^3.11.4",
     "@govflanders/vl-ui-input-field": "^3.11.4",
     "@govflanders/vl-ui-input-group": "^3.11.4",
