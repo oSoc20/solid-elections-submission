@@ -1,8 +1,7 @@
-import React, { Component } from "react";
-import {fetchDocument, TripleDocument} from 'tripledoc';
+import React from "react";
+import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
-import { issuedThrough } from "rdf-namespaces/dist/schema";
 
 class CandidateDataForm extends React.Component {
     FILE_NAME = "me.ttl";
@@ -12,11 +11,20 @@ class CandidateDataForm extends React.Component {
         this.getUserData();
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.state.loaded = false;
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidMount() { //Trigger when component is created or using route
         if (this.props.appContainer !== undefined) {
             this.fetchUserData();
+            this.setState({"loaded": true});
+        }
+    }
+
+    componentDidUpdate(prevProps) { //Trigger when state or props change but not with route
+        if (this.props.appContainer !== undefined && this.props.appContainer != prevProps.appContainer) {
+            this.fetchUserData();
+            this.setState({"loaded": true});
         }
     }
 
@@ -32,29 +40,31 @@ class CandidateDataForm extends React.Component {
 
             return file == this.FILE_NAME;
         });
-        let userDataDoc = await fetchDocument(userDataLink);
-        if (userDataDoc != null) {
-            let userData = userDataDoc.getSubject("#me");
-            if (userData != null) {
-                this.setState({
-                    firstname: userData.getString(schema.givenName),
-                    lastname: userData.getString(schema.familyName),
-                    locality: userData.getString(schema.addressLocality),
-                    postalCode: userData.getInteger(schema.postalCode)
-                });
-
-                let streetNumber = userData.getString(schema.streetAddress).split(', ');
-                if (streetNumber.length == 2) {
+        if (userDataLink != null) {
+            let userDataDoc = await fetchDocument(userDataLink);
+            if (userDataDoc != null) {
+                let userData = userDataDoc.getSubject("#me");
+                if (userData != null) {
                     this.setState({
-                        street: streetNumber[0],
-                        streetNumber: streetNumber[1]
+                        firstname: userData.getString(schema.givenName),
+                        lastname: userData.getString(schema.familyName),
+                        locality: userData.getString(schema.addressLocality),
+                        postalCode: userData.getInteger(schema.postalCode)
                     });
+
+                    let streetNumber = userData.getString(schema.streetAddress).split(', ');
+                    if (streetNumber.length === 2) {
+                        this.setState({
+                            street: streetNumber[0],
+                            streetNumber: streetNumber[1]
+                        });
+                    }
                 }
             }
         }
     }
   
-    handleChange(event) {    
+    handleChange(event) {   
         //if (id === 'firstname') this.setState({firstname: event.target.value});  
         this.setState({[event.target.id]: event.target.value});
     }
@@ -75,47 +85,60 @@ class CandidateDataForm extends React.Component {
     }
   
     render() {
-        return (
-            <div id="userForm">
-                <h1>Your information :</h1>
-                <form onSubmit={this.handleSubmit}>
-                    <div class="row">
-                        <div className="form-group col-md-6">
-                            <label htmlFor="firstname">First name :</label>
-                            <input type="text" id="firstname" className="form-control" name="firstname" value={this.state.firstname} onChange={this.handleChange}></input>
+        if (this.state.loaded) {
+            return (
+                <div id="userForm">
+                    <h1 class="vl-title vl-title--h1 vl-title--has-border">Your information:</h1>
+                    <form onSubmit={this.handleSubmit}>
+                        <div class="vl-form-grid vl-form-grid--is-stacked">
+                            <div className="form-group vl-form-col--6-12">
+                                <label className="vl-form__label" htmlFor="firstname">First name :</label>
+                                <input type="text" id="firstname" className="vl-input-field vl-input-field--block" name="firstname" value={this.state.firstname} onChange={this.handleChange}></input>
+                            </div>
+    
+                            <div className="form-group vl-form-col--6-12">
+                                <label className="vl-form__label" htmlFor="lastname">Last name :</label>
+                                <input type="text" id="lastname" className="vl-input-field vl-input-field--block" name="lastname" value={this.state.lastname} onChange={this.handleChange}></input>
+                            </div>
+    
+                            <div className="form-group vl-form-col--10-12">
+                                <label className="vl-form__label" htmlFor="street">Street :</label>
+                                <input type="text" id="street" className="vl-input-field vl-input-field--block" name="street" value={this.state.street} onChange={this.handleChange}></input>
+                            </div>
+    
+                            <div className="form-group vl-form-col--2-12">
+                                <label className="vl-form__label" htmlFor="streetNumber">Number :</label>
+                                <input type="number" min="1" id="streetNumber" className="vl-input-field vl-input-field--block" name="streetNumber" value={this.state.streetNumber} onChange={this.handleChange}></input>
+                            </div>
+    
+                            <div className="form-group vl-form-col--10-12">
+                                <label className="vl-form__label" htmlFor="locality">Locality :</label>
+                                <input type="text" id="locality" className="vl-input-field vl-input-field--block" name="locality" value={this.state.locality} onChange={this.handleChange}></input>
+                            </div>
+    
+                            <div className="form-group vl-form-col--2-12">
+                                <label className="vl-form__label" htmlFor="postalCode">Postal Code :</label>
+                                <input type="number" min="0" id="postalCode" className="vl-input-field vl-input-field--block" name="postalCode" value={this.state.postalCode} onChange={this.handleChange}></input>
+                            </div>
                         </div>
-
-                        <div className="form-group col-md-6">
-                            <label htmlFor="lastname">Last name :</label>
-                            <input type="text" id="lastname" className="form-control" name="lastname" value={this.state.lastname} onChange={this.handleChange}></input>
-                        </div>
-
-                        <div className="form-group col-md-10">
-                            <label htmlFor="street">Street :</label>
-                            <input type="text" id="street" className="form-control" name="street" value={this.state.street} onChange={this.handleChange}></input>
-                        </div>
-
-                        <div className="form-group col-md-2">
-                            <label htmlFor="streetNumber">Number :</label>
-                            <input type="number" min="1" id="streetNumber" className="form-control" name="streetNumber" value={this.state.streetNumber} onChange={this.handleChange}></input>
-                        </div>
-
-                        <div className="form-group col-md-6">
-                            <label htmlFor="postalCode">Postal Code :</label>
-                            <input type="number" min="0" id="postalCode" className="form-control" name="postalCode" value={this.state.postalCode} onChange={this.handleChange}></input>
-                        </div>
-
-                        <div className="form-group col-md-6">
-                            <label htmlFor="locality">Locality :</label>
-                            <input type="text" id="locality" className="form-control" name="locality" value={this.state.locality} onChange={this.handleChange}></input>
+    
+                        <input type="submit" className="btn btn-success" value="Save my information"/>
+                    </form>
+                </div>
+            );
+        } else {
+            return (
+                <div class="vl-col--1-1">
+                    <div class="vl-region">
+                        <div class="vl-u-align-center">
+                            <div class="vl-loader" role="alert" aria-busy="true"></div>
+                            <p>Page is loading, please wait</p>
                         </div>
                     </div>
-
-                    <input type="submit" className="btn btn-success" value="Save my information"></input>
-                </form>
-            </div>
-        );
+                </div>
+            );
+        }
     }
 }
 
-  export default CandidateDataForm;
+export default CandidateDataForm;
