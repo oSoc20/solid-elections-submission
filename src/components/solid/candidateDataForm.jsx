@@ -154,7 +154,7 @@ class CandidateDataForm extends React.Component {
                             </div>
                         </div>
     
-                        <input type="submit" className="btn btn-success" value="Save my information"/>
+                        <input type="submit" className="btn btn-success vl-col--2-12 mt-5 vl-push--10-12" value="Save my information"/>
                     </form>
                 </div>
             );

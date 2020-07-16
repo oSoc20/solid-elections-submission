@@ -113,7 +113,7 @@ const Index: React.FC = () => {
                     </div>
                 </section>
             </LoggedOut>
-            
+            <Footer />
         </Router>
     );
 };
