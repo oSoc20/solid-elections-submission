@@ -6,9 +6,8 @@ import {initAppStorage, createAppDocument} from './utils/SolidWrapper';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { LoggedIn, LoggedOut, LoginButton } from '@solid/react';
-import SolidUserData from "./components/solid/user";
 import CandidateDataForm from "./components/solid/candidateDataForm";
-import Header from "./components/header";
+import G103 from "./components/form/G103";
 import Footer from "./components/footer";
 import App from './App';
 
@@ -34,17 +33,9 @@ const Index: React.FC = () => {
 
     return (
         <Router>
-            <Header />
             <App />
             <LoggedIn>
                 <Switch>
-                    <Route path="/solidpod">
-                        <section className="vl-region">
-                            <div className="vl-layout">
-                                <SolidUserData />
-                            </div>
-                        </section>
-                    </Route>
                     <Route path="/profile">
                         <section className="vl-region">
                             <div className="vl-layout">
@@ -73,7 +64,7 @@ const Index: React.FC = () => {
 
                                     <div className="tab-content" id="tabContent">
                                         <div className="tab-pane fade show active" id="g103-form" role="tabpanel" aria-labelledby="g103-form">
-                                            <h1>Form G103</h1>
+                                            <G103 appContainer={appContainer} webId={webId} />
                                         </div>
                                         <div className="tab-pane fade" id="g104-form" role="tabpanel" aria-labelledby="g104-form">
                                             <h1>Form G104</h1>

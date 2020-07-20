@@ -1,10 +1,10 @@
 import React from 'react';
-import NavBar from "./components/navbar";
+import Header from "./components/header";
 import './App.sass';
 
 function App() {
     return (
-        <NavBar />
+        <Header />
     );
 }
 

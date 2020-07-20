@@ -3,13 +3,14 @@ import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
 import {isEmpty, isNumber} from '../../utils/DataValidator';
+import Loading from '../loading';
 
 class CandidateDataForm extends React.Component {
     FILE_NAME = "me.ttl";
 
     constructor(props) {
         super(props);
-        this.getUserData();
+        this.setDefaultValue();
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state.loaded = false;
@@ -29,7 +30,7 @@ class CandidateDataForm extends React.Component {
         }
     }
 
-    async getUserData() {
+    async setDefaultValue() {
         this.state = {firstname: '', lastname: '', street: '', streetNumber: '', locality: '', postalCode: ''};
     }
 
@@ -155,24 +156,19 @@ class CandidateDataForm extends React.Component {
                             <div className="form-group vl-col--12-12--m vl-col--2-12">
                                 <label className="vl-form__label" htmlFor="postalCode">Postal Code :</label>
                                 <input type="number" min="0" id="postalCode" className="vl-input-field vl-input-field--block" name="postalCode" value={this.state.postalCode} onChange={this.handleChange}></input>
-                                <p class="vl-form__error" id="input-field-postalCode-error"></p>
+                                <p className="vl-form__error" id="input-field-postalCode-error"></p>
                             </div>
                         </div>
     
-                        <input type="submit" className="btn btn-success vl-col--2-12 mt-5 vl-push--10-12" value="Save my information"/>
+                        <button className="vl-button mt-3">
+                            <span className="vl-button__label">Save</span>
+                        </button>
                     </form>
                 </div>
             );
         } else {
             return (
-                <div class="vl-col--1-1">
-                    <div class="vl-region">
-                        <div class="vl-u-align-center">
-                            <div class="vl-loader" role="alert" aria-busy="true"></div>
-                            <p>Page is loading, please wait</p>
-                        </div>
-                    </div>
-                </div>
+                <Loading />
             );
         }
     }

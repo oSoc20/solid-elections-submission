@@ -14,6 +14,7 @@
     "@govflanders/vl-ui-input-field": "^3.11.4",
     "@govflanders/vl-ui-input-group": "^3.11.4",
     "@govflanders/vl-ui-link-list": "^3.11.4",
+    "@govflanders/vl-ui-radio": "^3.11.4",
     "@govflanders/vl-ui-tabs": "^3.11.4",
     "@govflanders/vl-ui-titles": "^3.11.4",
     "@govflanders/vl-ui-util": "^3.11.4",
@@ -53,5 +54,17 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-react-app": "^5.2.1",
+    "eslint-plugin-flowtype": "^4.7.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.3",
+    "eslint-plugin-react-hooks": "^2.5.1"
   }
 }
