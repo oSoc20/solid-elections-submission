@@ -1,15 +1,16 @@
 import React from "react";
 import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
-import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
-import {isEmpty, isNumber} from '../../utils/DataValidator';
+import {createAppDocument, listDocuments, createExpense} from '../../utils/SolidWrapper';
+import {isEmpty, isNumber, areEmpty} from '../../utils/DataValidator';
 import Loading from '../loading';
 import ProfileDoesntExist from '../error/profileDoesntExist';
 import PersonInput from '../user';
 import InputAmount from '../form/inputAmount';
 
 class G103 extends React.Component {
-    FILE_NAME = "me.ttl";
+    FILE_NAME_PROFILE = "me.ttl";
+    FILE_NAME = "g103.ttl";
 
     constructor(props) {
         super(props);
@@ -17,7 +18,9 @@ class G103 extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRadioShowOnYes = this.handleRadioShowOnYes.bind(this);
-        this.handleChangeFund = this.handleChangeFund.bind(this);
+        this.handleExpenses = this.handleExpenses.bind(this);
+        this.handleFunds = this.handleFunds.bind(this);
+        this.handleAuthorizedPerson = this.handleAuthorizedPerson.bind(this);
         this.state.loaded = false;
         this.state.error = true;
     }
@@ -47,9 +50,10 @@ class G103 extends React.Component {
             let indexFile = link.lastIndexOf('/');
             let file = link.substr(indexFile + 1);
 
-            return file == this.FILE_NAME;
+            return file == this.FILE_NAME_PROFILE;
         });
 
+        this.state.profile = userDataLink;
         return userDataLink != null;
     }
 
@@ -57,73 +61,65 @@ class G103 extends React.Component {
         this.state = {
             GAuthPerson: 'no', 
             GElectionExpense: 'no', 
+            //AuthorizedPerson
+            authorizedPerson: {
+                Gfirstname: '', 
+                Glastname: '', 
+                Gstreet: '', 
+                GstreetNumber: '', 
+                GpostalCode: '', 
+                Glocality: ''
+            },
             //For expense
-            EAuditoryAndOral1: 0,
-            EWrittenMessage1_1: 0, 
-            EWrittenMessage1_2: 0, 
-            EWrittenMessage2: 0,
-            EWrittenMessage3: 0, 
-            EWrittenMessage4: 0, 
-            EWrittenMessage5: 0,
-            EShippingAndDistribution1_1: 0,
-            EShippingAndDistribution1_2: 0,
-            EShippingAndDistribution2: 0,
-            EShippingAndDistribution3: 0,
-            EVisualMessage1: 0,
-            EVisualMessage2: 0,
-            EVisualMessage3: 0,
-            EVisualMessage4: 0,
-            EOtherCost1: 0,
-            EOtherCost2: 0,
-            EOtherCost3: 0,
+            expenses: {
+                EAuditoryAndOral1: { key: '1.1', description: 'Auditory and oral messages', amount: 0 },
+                EWrittenMessage1_1: { key: '2.1.1', description: 'Written messages - Design and production costs in the press', amount: 0 },
+                EWrittenMessage1_2: { key: '2.1.2', description: 'Written messages - Price for the advertising space in the press', amount: 0 },
+                EWrittenMessage2: { key: '2.2', description: 'Written messages - Design and production costs of election brochures', amount: 0 },
+                EWrittenMessage3: { key: '2.3', description: 'Written messages - Cost of letters and envelopes', amount: 0 },
+                EWrittenMessage4: { key: '2.4', description: 'Written messages - Cost of other printed matter', amount: 0 },
+                EWrittenMessage5: { key: '2.5', description: 'Written messages - Costs for e-mails and non-commercial SMS campaigns', amount: 0 },
+                EShippingAndDistribution1_1: { key: '3.1.1', description: 'Shipping and distribution - Addressed shipments in election printing', amount: 0 },
+                EShippingAndDistribution1_2: { key: '3.1.2', description: 'Shipping and distribution - Non-addressed shipments in election printing', amount: 0 },
+                EShippingAndDistribution2: { key: '3.2', description: 'Shipping and distribution - Other costs of distribution', amount: 0 },
+                EShippingAndDistribution3: { key: '3.3', description: 'Shipping and distribution - Costs for e-mails and non-commercial SMS campaigns', amount: 0 },
+                EVisualMessage1: { key: '4.1', description: 'Visual messages - A production and rental costs for non-commercial signs of 4 m² or less', amount: 0 },
+                EVisualMessage2: { key: '4.2', description: 'Visual messages - Printing and production costs for posters of 4 m² or less', amount: 0 },
+                EVisualMessage3: { key: '4.3', description: 'Visual messages - Internet commercials or internet campaigns', amount: 0 },
+                EVisualMessage4: { key: '4.4', description: 'Visual messages - Other costs for visual messages', amount: 0 },
+                EOtherCost1: { key: '5.1', description: 'Other costs - Election manifestations', amount: 0 },
+                EOtherCost2: { key: '5.2', description: 'Other costs - Production costs for website or webpage designed for election purposes', amount: 0 },
+                EOtherCost3: { key: '5.3', description: 'Other costs - Varia', amount: 0 }
+            },
             //For fund
-            FSection1: 0,
-            FSection2_1: 0,
-            FSection2_2: 0,
-            FSection3_1: 0,
-            FSection3_2: 0,
-            FSection4: 0,
-            FSection5: 0
+            funds: {
+                FSection1: 0,
+                FSection2_1: 0,
+                FSection2_2: 0,
+                FSection3_1: 0,
+                FSection3_2: 0,
+                FSection4: 0,
+                FSection5: 0
+            }
         };
-
-        this.state.test = {
-            next: 0
-        }
     }
 
     getTotalExpense() {
-        return (
-            this.state.EAuditoryAndOral1 +
-            this.state.EWrittenMessage1_1 +
-            this.state.EWrittenMessage1_2 +
-            this.state.EWrittenMessage2 +
-            this.state.EWrittenMessage3 +
-            this.state.EWrittenMessage4 +
-            this.state.EWrittenMessage5 +
-            this.state.EShippingAndDistribution1_1 +
-            this.state.EShippingAndDistribution1_2 +
-            this.state.EShippingAndDistribution2 +
-            this.state.EShippingAndDistribution3 +
-            this.state.EVisualMessage1 +
-            this.state.EVisualMessage2 +
-            this.state.EVisualMessage3 +
-            this.state.EVisualMessage4 +
-            this.state.EOtherCost1 +
-            this.state.EOtherCost2 +
-            this.state.EOtherCost3
-        );
+        let total = 0;
+        for (const [key, value] of Object.entries(this.state.expenses)) {
+            total += value.amount;
+        }
+
+        return total;
     }
 
     getTotalFunds() {
-        return (
-            this.state.FSection1 +
-            this.state.FSection2_1 +
-            this.state.FSection2_2 +
-            this.state.FSection3_1 +
-            this.state.FSection3_2 +
-            this.state.FSection4 +
-            this.state.FSection5
-        );
+        let total = 0;
+        for (const [key, value] of Object.entries(this.state.funds)) {
+            total += value;
+        }
+
+        return total;
     }
 
     setFieldValidation(id, value) {
@@ -145,7 +141,7 @@ class G103 extends React.Component {
             }
         }
     }
-  
+
     handleChange(event) {
         this.setFieldValidation(event.target.id, event.target.value);
         let value = event.target.value;
@@ -156,12 +152,63 @@ class G103 extends React.Component {
         this.setState({[event.target.name]: value});
     }
 
-    handleChangeFund(event) {
-        this.handleChange(event);
-        if (event.target.value >= 125) {
+    handleAuthorizedPerson(event) {
+        event.persist();
+        this.setFieldValidation(event.target.id, event.target.value);
+        let value = event.target.value;
+        if (isNumber(value)) {
+            value = parseInt(value);
+        }
+
+        this.setState(state => {
+            let authorizedPersonData = state.authorizedPerson;
+            authorizedPersonData[event.target.name] = value;
+
+            return {
+                authorizedPerson: authorizedPersonData
+            };
+        });
+    }
+
+    handleExpenses(event) {
+        event.persist();
+        this.setFieldValidation(event.target.id, event.target.value);
+        let value = event.target.value;
+        if (isNumber(value)) {
+            value = parseInt(value);
+        }
+
+        this.setState(state => {
+            let expensesData = state.expenses;
+            expensesData[event.target.name].amount = value;
+
+            return {
+                expenses: expensesData
+            };
+        });
+    }
+
+    handleFunds(event) {
+        event.persist();
+        this.setFieldValidation(event.target.id, event.target.value);
+        let value = event.target.value;
+        if (isNumber(value)) {
+            value = parseInt(value);
+        }
+
+        if (value >= 125) {
             let section = document.getElementById("input-field-" + event.target.id + "-error");
             section.innerHTML = "Please, don't forget to complete the form A106 because this amount exceeds 125€";
         }
+
+        this.setState(state => {
+            let fundsData = state.funds;
+            fundsData[event.target.name] = value;
+
+            return {
+                funds: fundsData
+            };
+        });
     }
  
     handleRadioShowOnYes(event, ...ids) {
@@ -181,8 +228,81 @@ class G103 extends React.Component {
     }
 
     handleSubmit(event) {
-        console.log(this.state);
         event.preventDefault();
+        //console.log(this.state);
+
+        if (this.props.appContainer != undefined) {
+            let dataToSave = [];
+            let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
+            let meData = doc.addSubject({"identifier": "me"});
+            //Todo about number list and tracking number
+            //dataToSave.push(meData);
+
+            if (this.state.GAuthPerson === 'yes') { //Authorized person so we check his data
+                if (areEmpty(Object.values(this.state.authorizedPerson))) {
+                    for (const [key, value] of Object.entries(this.state.authorizedPerson)) {
+                        this.setFieldValidation(key, value);
+                    }
+                    alert("Authorized person are empty");
+                    return false;
+                }
+
+                let authorizedPersonData = doc.addSubject({"identifier": "authorizedPerson"});
+                authorizedPersonData.addString(schema.givenName, this.state.authorizedPerson.Gfirstname);
+                authorizedPersonData.addString(schema.familyName, this.state.authorizedPerson.Glastname);
+                authorizedPersonData.addString(schema.streetAddress, this.state.authorizedPerson.Gstreet + ", " + this.state.authorizedPerson.GstreetNumber);
+                authorizedPersonData.addInteger(schema.postalCode, parseInt(this.state.authorizedPerson.GpostalCode));
+                authorizedPersonData.addString(schema.addressLocality, this.state.authorizedPerson.Glocality);
+
+                dataToSave.push(authorizedPersonData);
+            }
+
+            if (this.state.GElectionExpense === 'yes') { //Incur election expenses
+                let error = false;
+                for (const [key, value] of Object.entries(this.state.expenses)) {
+                    if (error) {
+                        alert("Expenses are empty");
+                        return false;
+                    }
+                    error = isEmpty(value.amount);
+                }
+                
+                let buyActionData;
+                for (const [key, value] of Object.entries(this.state.expenses)) {
+                    buyActionData = {
+                        identifier: value.key,
+                        description: value.description,
+                        price: parseInt(value.amount),
+                        priceCurrency: 'EUR'
+                    }
+
+                    dataToSave.push(createExpense(doc, this.state.profile, buyActionData));
+                }
+            }
+
+            doc.save(dataToSave).then(function(e) {
+                alert("Your data have been saved!");
+            });
+
+            /*
+            fetch('http://api.sep.osoc.be/store', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                mode: 'cors',
+                cache: 'default',
+                body: {
+                    "uri": this.props.webId
+                }
+            })
+            .then(response => response.json())
+            .then(json => console.log(json));
+            */
+        } else {
+            alert("Unable to access to your Solid Pod, server down?");
+        }
     }
   
     render() {
@@ -224,7 +344,7 @@ class G103 extends React.Component {
                                 </div>
 
                                 <div id="sectionAuthorized" class="form-group vl-form-col--12-12 vl-u-hidden">
-                                    <PersonInput prefix="G" handleChange={this.handleChange} />
+                                    <PersonInput prefix="G" handleChange={this.handleAuthorizedPerson} />
                                 </div>
 
                                 <p>Before the elections on 14 October 2018, did the list of which you are the head of incur election expenses?</p>
@@ -249,8 +369,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EAuditoryAndOral1"
                                             label="For example: non-commercial telephone campaigns or an indelible political message on an information carrier. Attach a list of all messages and their respective cost price to your declaration (attach files):"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EAuditoryAndOral1}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EAuditoryAndOral1.amount}
                                         />
                                     </div>
                                 </div>
@@ -261,8 +381,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EWrittenMessage1_1"
                                             label="Design and production costs in the press:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EWrittenMessage1_1}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EWrittenMessage1_1.amount}
                                         />
                                     </div>
 
@@ -270,8 +390,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EWrittenMessage1_2"
                                             label="Price for the advertising space in the press:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EWrittenMessage1_2}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EWrittenMessage1_2.amount}
                                         />
                                     </div>
 
@@ -279,8 +399,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EWrittenMessage2"
                                             label="Design and production costs of election brochures:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EWrittenMessage2}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EWrittenMessage2.amount}
                                         />
                                     </div>
 
@@ -288,8 +408,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EWrittenMessage3"
                                             label="Cost of letters and envelopes:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EWrittenMessage3}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EWrittenMessage3.amount}
                                         />
                                     </div>
 
@@ -297,8 +417,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EWrittenMessage4"
                                             label="Cost of other printed matter (attach files):"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EWrittenMessage4}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EWrittenMessage4.amount}
                                         />
                                     </div>
 
@@ -306,8 +426,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EWrittenMessage5"
                                             label="Costs for e-mails and non-commercial SMS campaigns:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EWrittenMessage5}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EWrittenMessage5.amount}
                                         />
                                     </div>
                                 </div>
@@ -318,8 +438,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EShippingAndDistribution1_1"
                                             label="Addressed shipments in election printing:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EShippingAndDistribution1_1}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EShippingAndDistribution1_1.amount}
                                         />
                                     </div>
 
@@ -327,8 +447,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EShippingAndDistribution1_2"
                                             label="Non-addressed shipments in election printing:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EShippingAndDistribution1_2}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EShippingAndDistribution1_2.amount}
                                         />
                                     </div>
 
@@ -336,8 +456,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EShippingAndDistribution2"
                                             label="Other costs of distribution (attach files):"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EShippingAndDistribution2}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EShippingAndDistribution2.amount}
                                         />
                                     </div>
 
@@ -345,8 +465,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EShippingAndDistribution3"
                                             label="Costs for e-mails and non-commercial SMS campaigns:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EShippingAndDistribution3}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EShippingAndDistribution3.amount}
                                         />
                                     </div>
                                 </div>
@@ -357,8 +477,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EVisualMessage1"
                                             label="A production and rental costs for non-commercial signs of 4 m² or less:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EVisualMessage1}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EVisualMessage1.amount}
                                         />
                                     </div>
 
@@ -366,8 +486,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EVisualMessage2"
                                             label="Printing and production costs for posters of 4 m² or less:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EVisualMessage2}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EVisualMessage2.amount}
                                         />
                                     </div>
                                     
@@ -375,8 +495,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EVisualMessage3"
                                             label="Internet commercials or internet campaigns:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EVisualMessage3}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EVisualMessage3.amount}
                                         />
                                     </div>
                                     
@@ -384,8 +504,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EVisualMessage4"
                                             label="Other costs for visual messages (attach files):"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EVisualMessage4}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EVisualMessage4.amount}
                                         />
                                     </div>
                                 </div>
@@ -396,8 +516,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EOtherCost1"
                                             label="Election manifestations:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EOtherCost1}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EOtherCost1.amount}
                                         />
                                     </div>
                                     
@@ -405,8 +525,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EOtherCost2"
                                             label="Production costs for website or webpage designed for election purposes:"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EOtherCost2}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EOtherCost2.amount}
                                         />
                                     </div>
                                     
@@ -414,8 +534,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="EOtherCost3"
                                             label="Varia (attach files):"
-                                            handleChange={this.handleChange}
-                                            val={this.state.EOtherCost3}
+                                            handleChange={this.handleExpenses}
+                                            val={this.state.expenses.EOtherCost3.amount}
                                         />
                                     </div>
                                 </div>
@@ -432,8 +552,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="FSection1"
                                             label="Funds deriving from the list's own patrimony:"
-                                            handleChange={this.handleChangeFund}
-                                            val={this.state.FSection1}
+                                            handleChange={this.handleFunds}
+                                            val={this.state.funds.FSection1}
                                         />
                                     </div>
                                 </div>
@@ -444,8 +564,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="FSection2_1"
                                             label="Donations of EUR 125 or more per donor:"
-                                            handleChange={this.handleChangeFund}
-                                            val={this.state.FSection2_1}
+                                            handleChange={this.handleFunds}
+                                            val={this.state.funds.FSection2_1}
                                         />
                                     </div>
 
@@ -453,8 +573,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="FSection2_2"
                                             label="Donations of less than €125 per donor:"
-                                            handleChange={this.handleChangeFund}
-                                            val={this.state.FSection2_2}
+                                            handleChange={this.handleFunds}
+                                            val={this.state.funds.FSection2_2}
                                         />
                                     </div>
                                 </div>
@@ -465,8 +585,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="FSection3_1"
                                             label="Sponsorship of EUR 125 or more per sponsor:"
-                                            handleChange={this.handleChangeFund}
-                                            val={this.state.FSection3_1}
+                                            handleChange={this.handleFunds}
+                                            val={this.state.funds.FSection3_1}
                                         />
                                     </div>
 
@@ -474,8 +594,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="FSection3_2"
                                             label="Sponsorship of less than EUR 125 per sponsor:"
-                                            handleChange={this.handleChangeFund}
-                                            val={this.state.FSection3_2}
+                                            handleChange={this.handleFunds}
+                                            val={this.state.funds.FSection3_2}
                                         />
                                     </div>
                                 </div>
@@ -486,8 +606,8 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="FSection4"
                                             label="Financing by (a component of) the political party:"
-                                            handleChange={this.handleChangeFund}
-                                            val={this.state.FSection4}
+                                            handleChange={this.handleFunds}
+                                            val={this.state.funds.FSection4}
                                         />
                                     </div>
                                 </div>
@@ -498,13 +618,13 @@ class G103 extends React.Component {
                                         <InputAmount
                                             var="FSection5"
                                             label="Other source:"
-                                            handleChange={this.handleChangeFund}
-                                            val={this.state.FSection5}
+                                            handleChange={this.handleFunds}
+                                            val={this.state.funds.FSection5}
                                         />
                                     </div>
                                 </div>
 
-                                <p>Total expenses: {this.getTotalFunds()}</p>
+                                <p>Total funds: {this.getTotalFunds()}</p>
                             </div>
         
                             <button className="vl-button mt-3">

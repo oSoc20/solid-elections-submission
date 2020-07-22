@@ -1,5 +1,5 @@
 import {fetchDocument, createDocument, TripleDocument, TripleSubject, LocalTripleDocumentForContainer} from 'tripledoc';
-import {solid, space, rdf, ldp} from 'rdf-namespaces';
+import {solid, space, rdf, ldp, schema} from 'rdf-namespaces';
 import auth from 'solid-auth-client';
 
 /**
@@ -148,4 +148,25 @@ async function registerAppStorage(publicTypeIndex: TripleDocument, appName: stri
     appRegistration.addRef(solid.forClass, solid.instance);
     appRegistration.addRef(solid.instance, path);
     await publicTypeIndex.save([appRegistration]);
+}
+
+interface BuyActionData {
+    identifier: string;
+    description: string;
+    price: number;
+    priceCurrency: string;
+}
+
+export function createExpense(doc: TripleDocument, person: string, buyActionData: BuyActionData) {//person: TripleSubject
+    const buyAction = doc.addSubject();
+    // Set the type to BuyAction
+    buyAction.addRef(rdf.type, schema.BuyAction);
+    // Add all the triples needed to define the BuyAction
+    buyAction.addRef(schema.agent, person); //person.asRef()
+    buyAction.addString(schema.identifier, buyActionData.identifier);
+    buyAction.addString(schema.description, buyActionData.description);
+    buyAction.addInteger(schema.price, buyActionData.price);
+    buyAction.addString(schema.priceCurrency, buyActionData.priceCurrency);
+    // Don't forget that it is not save yet, doc.save([buyAction]) must be called for that
+    return buyAction; 
 }
