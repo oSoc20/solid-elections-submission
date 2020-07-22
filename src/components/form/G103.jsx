@@ -1,12 +1,13 @@
 import React from "react";
 import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
-import {createAppDocument, listDocuments, createExpense} from '../../utils/SolidWrapper';
+import {createAppDocument, listDocuments, createExpense, createDonation} from '../../utils/SolidWrapper';
 import {isEmpty, isNumber, areEmpty} from '../../utils/DataValidator';
-import Loading from '../loading';
-import ProfileDoesntExist from '../error/profileDoesntExist';
+import Loading from '../alert/loading';
+import ProfileDoesntExist from '../alert/profileDoesntExist';
 import PersonInput from '../user';
 import InputAmount from '../form/inputAmount';
+import { Redirect } from 'react-router-dom'
 
 class G103 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
@@ -23,6 +24,7 @@ class G103 extends React.Component {
         this.handleAuthorizedPerson = this.handleAuthorizedPerson.bind(this);
         this.state.loaded = false;
         this.state.error = true;
+        this.state.redirect = false;
     }
 
     componentDidMount() { //Trigger when component is created or using route
@@ -31,7 +33,7 @@ class G103 extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps) { //Trigger when state or props change but not with route
+    componentDidUpdate(prevProps) { //Trigger when state or props change but not with route, we use it because appContainer is async
         if (this.props.appContainer !== undefined && this.props.appContainer != prevProps.appContainer) {
             this.init();
         }
@@ -53,6 +55,7 @@ class G103 extends React.Component {
             return file == this.FILE_NAME_PROFILE;
         });
 
+        //We store profile (webId) because we have to send it to the API (stored if the user doesn't exist before)
         this.state.profile = userDataLink;
         return userDataLink != null;
     }
@@ -62,7 +65,7 @@ class G103 extends React.Component {
             GAuthPerson: 'no', 
             GElectionExpense: 'no', 
             //AuthorizedPerson
-            authorizedPerson: {
+            authorizedPerson: { //Empty because we need to check if any is empty when submitting
                 Gfirstname: '', 
                 Glastname: '', 
                 Gstreet: '', 
@@ -93,13 +96,13 @@ class G103 extends React.Component {
             },
             //For fund
             funds: {
-                FSection1: 0,
-                FSection2_1: 0,
-                FSection2_2: 0,
-                FSection3_1: 0,
-                FSection3_2: 0,
-                FSection4: 0,
-                FSection5: 0
+                FSection1: { key: '1.1', description: 'Funds deriving from the list\'s own patrimony', amount: 0 },
+                FSection2_1: { key: '2.1.1', description: 'Donations of EUR 125 or more per donor', amount: 0 },
+                FSection2_2: { key: '2.1.2', description: 'Donations of less than €125 per donor', amount: 0 },
+                FSection3_1: { key: '3.1.1', description: 'Sponsorship of EUR 125 or more per sponsor', amount: 0 },
+                FSection3_2: { key: '3.1.2', description: 'Sponsorship of less than EUR 125 per sponsor', amount: 0 },
+                FSection4: { key: '4.1', description: 'Financing by (a component of) the political party', amount: 0 },
+                FSection5: { key: '5.1', description: 'Other source', amount: 0 },
             }
         };
     }
@@ -116,13 +119,13 @@ class G103 extends React.Component {
     getTotalFunds() {
         let total = 0;
         for (const [key, value] of Object.entries(this.state.funds)) {
-            total += value;
+            total += value.amount;
         }
 
         return total;
     }
 
-    setFieldValidation(id, value) {
+    setFieldValidation(id, value) { //Use to update field if he is empty
         let errorField = document.getElementById("input-field-" + id + "-error");
         let input = document.getElementById(id);
 
@@ -142,7 +145,7 @@ class G103 extends React.Component {
         }
     }
 
-    handleChange(event) {
+    handleChange(event) { //Use for data
         this.setFieldValidation(event.target.id, event.target.value);
         let value = event.target.value;
         if (isNumber(value)) {
@@ -152,7 +155,7 @@ class G103 extends React.Component {
         this.setState({[event.target.name]: value});
     }
 
-    handleAuthorizedPerson(event) {
+    handleAuthorizedPerson(event) { //Use for authorized person section, because this is a custom state object
         event.persist();
         this.setFieldValidation(event.target.id, event.target.value);
         let value = event.target.value;
@@ -170,7 +173,7 @@ class G103 extends React.Component {
         });
     }
 
-    handleExpenses(event) {
+    handleExpenses(event) { //Use for expenses section, because this is a custom state object
         event.persist();
         this.setFieldValidation(event.target.id, event.target.value);
         let value = event.target.value;
@@ -188,7 +191,7 @@ class G103 extends React.Component {
         });
     }
 
-    handleFunds(event) {
+    handleFunds(event) { //Use for funds section, because this is a custom state object with particullar "if" statement
         event.persist();
         this.setFieldValidation(event.target.id, event.target.value);
         let value = event.target.value;
@@ -203,7 +206,7 @@ class G103 extends React.Component {
 
         this.setState(state => {
             let fundsData = state.funds;
-            fundsData[event.target.name] = value;
+            fundsData[event.target.name].amount = value;
 
             return {
                 funds: fundsData
@@ -211,7 +214,7 @@ class G103 extends React.Component {
         });
     }
  
-    handleRadioShowOnYes(event, ...ids) {
+    handleRadioShowOnYes(event, ...ids) { //Use for radio button to hide and show custom part depending on the choice
         this.handleChange(event);
         let section;
         if (event.target.value === 'yes') {
@@ -278,30 +281,66 @@ class G103 extends React.Component {
 
                     dataToSave.push(createExpense(doc, this.state.profile, buyActionData));
                 }
+
+                for (const [key, value] of Object.entries(this.state.funds)) {
+                    if (error) {
+                        alert("Funds are empty");
+                        return false;
+                    }
+                    error = isEmpty(value.amount);
+                }
+                
+                let donateActionData;
+                for (const [key, value] of Object.entries(this.state.funds)) {
+                    donateActionData = {
+                        identifier: value.key,
+                        description: value.description,
+                        price: parseInt(value.amount),
+                        priceCurrency: 'EUR'
+                    }
+
+                    dataToSave.push(createDonation(doc, this.state.profile, donateActionData));
+                }
             }
 
+            let thisObject = this;
             doc.save(dataToSave).then(function(e) {
                 alert("Your data have been saved!");
+                //Redirect to the home page
+                thisObject.setState({redirect: true});
             });
 
-            /*
+            //We send WebID to the API
             fetch('http://api.sep.osoc.be/store', {
                 method: 'POST',
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
                 },
                 mode: 'cors',
                 cache: 'default',
-                body: {
+                body: JSON.stringify({
                     "uri": this.props.webId
-                }
+                })
             })
-            .then(response => response.json())
-            .then(json => console.log(json));
-            */
+            .then(response => {
+                if (response.status != 200 && response.status != 201) {
+                    console.log("Error: " + response.statusText);
+                }
+
+                return response.json();
+            })
+            .then(json => {
+                console.log(json.message);
+            });
         } else {
             alert("Unable to access to your Solid Pod, server down?");
+        }
+    }
+
+    renderRedirect = () => {
+        if (this.state.redirect) {
+            return <Redirect to='/formSent' />
         }
     }
   
@@ -314,6 +353,7 @@ class G103 extends React.Component {
             } else {
                 return (
                     <div id="userForm">
+                        {this.renderRedirect()}
                         <h1 class="vl-title vl-title--h1 vl-title--has-border">Declaration of election expenditure and of the origin of funds by lists:</h1>
                         <form onSubmit={this.handleSubmit}>
                             <h2 class="vl-title vl-title--h2 vl-title--has-border">General:</h2>
@@ -553,7 +593,7 @@ class G103 extends React.Component {
                                             var="FSection1"
                                             label="Funds deriving from the list's own patrimony:"
                                             handleChange={this.handleFunds}
-                                            val={this.state.funds.FSection1}
+                                            val={this.state.funds.FSection1.amount}
                                         />
                                     </div>
                                 </div>
@@ -565,7 +605,7 @@ class G103 extends React.Component {
                                             var="FSection2_1"
                                             label="Donations of EUR 125 or more per donor:"
                                             handleChange={this.handleFunds}
-                                            val={this.state.funds.FSection2_1}
+                                            val={this.state.funds.FSection2_1.amount}
                                         />
                                     </div>
 
@@ -574,7 +614,7 @@ class G103 extends React.Component {
                                             var="FSection2_2"
                                             label="Donations of less than €125 per donor:"
                                             handleChange={this.handleFunds}
-                                            val={this.state.funds.FSection2_2}
+                                            val={this.state.funds.FSection2_2.amount}
                                         />
                                     </div>
                                 </div>
@@ -586,7 +626,7 @@ class G103 extends React.Component {
                                             var="FSection3_1"
                                             label="Sponsorship of EUR 125 or more per sponsor:"
                                             handleChange={this.handleFunds}
-                                            val={this.state.funds.FSection3_1}
+                                            val={this.state.funds.FSection3_1.amount}
                                         />
                                     </div>
 
@@ -595,7 +635,7 @@ class G103 extends React.Component {
                                             var="FSection3_2"
                                             label="Sponsorship of less than EUR 125 per sponsor:"
                                             handleChange={this.handleFunds}
-                                            val={this.state.funds.FSection3_2}
+                                            val={this.state.funds.FSection3_2.amount}
                                         />
                                     </div>
                                 </div>
@@ -607,7 +647,7 @@ class G103 extends React.Component {
                                             var="FSection4"
                                             label="Financing by (a component of) the political party:"
                                             handleChange={this.handleFunds}
-                                            val={this.state.funds.FSection4}
+                                            val={this.state.funds.FSection4.amount}
                                         />
                                     </div>
                                 </div>
@@ -619,7 +659,7 @@ class G103 extends React.Component {
                                             var="FSection5"
                                             label="Other source:"
                                             handleChange={this.handleFunds}
-                                            val={this.state.funds.FSection5}
+                                            val={this.state.funds.FSection5.amount}
                                         />
                                     </div>
                                 </div>

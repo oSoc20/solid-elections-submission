@@ -3,7 +3,7 @@ import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
 import {isEmpty, isNumber} from '../../utils/DataValidator';
-import Loading from '../loading';
+import Loading from '../alert/loading';
 
 class CandidateDataForm extends React.Component {
     FILE_NAME = "me.ttl";

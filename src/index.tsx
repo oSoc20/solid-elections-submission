@@ -5,8 +5,10 @@ import {foaf} from 'rdf-namespaces';
 import {initAppStorage, createAppDocument} from './utils/SolidWrapper';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { LoggedIn, LoggedOut, LoginButton } from '@solid/react';
+import { LoggedIn, LoggedOut } from '@solid/react';
 import CandidateDataForm from "./components/solid/candidateDataForm";
+import FormSent from "./components/alert/formSent";
+import NotConnected from "./components/alert/notConnected";
 import G103 from "./components/form/G103";
 import Footer from "./components/footer";
 import App from './App';
@@ -40,6 +42,13 @@ const Index: React.FC = () => {
                         <section className="vl-region">
                             <div className="vl-layout">
                                 <CandidateDataForm appContainer={appContainer} webId={webId} />
+                            </div>
+                        </section>
+                    </Route>
+                    <Route path="/formSent">
+                        <section className="vl-region">
+                            <div className="vl-layout">
+                                <FormSent />
                             </div>
                         </section>
                     </Route>
@@ -90,17 +99,7 @@ const Index: React.FC = () => {
             <LoggedOut>
                 <section className="vl-region">
                     <div className="vl-layout">
-                        <div className="vl-alert vl-alert--error" role="alert">
-                            <div className="vl-alert__icon">
-                                <i className="vl-icon vl-vi vl-vi-alert-triangle-filled" aria-hidden="true"></i>
-                            </div>
-                            <div className="vl-alert__content">
-                                <p className="vl-alert__title">Opgelet!</p>
-                                <div className="vl-alert__message">
-                                    <p>You are not connected! Please <LoginButton popup="/popup.html">login</LoginButton> !</p>
-                                </div>
-                            </div>
-                        </div>
+                        <NotConnected />
                     </div>
                 </section>
             </LoggedOut>
