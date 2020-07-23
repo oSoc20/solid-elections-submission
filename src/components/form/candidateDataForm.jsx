@@ -2,8 +2,8 @@ import React from "react";
 import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
-import {isEmpty, isNumber} from '../../utils/DataValidator';
-import Loading from '../loading';
+import {isEmpty, isNumber, isOnlyText} from '../../utils/DataValidator';
+import Loading from '../alert/loading';
 
 class CandidateDataForm extends React.Component {
     FILE_NAME = "me.ttl";
@@ -66,7 +66,7 @@ class CandidateDataForm extends React.Component {
         }
     }
 
-    setFieldValidation(id, value) {
+    setFieldValidation(id, value) { //Return true if there is no error
         let errorField = document.getElementById("input-field-" + id + "-error");
         let input = document.getElementById(id);
 
@@ -75,15 +75,28 @@ class CandidateDataForm extends React.Component {
                 input.classList.add("vl-input-field--error");
 
                 if (input.type === 'number') {
-                    errorField.innerHTML = "Dit veld moet met een nummer gevult worden!";
+                    errorField.innerHTML = "Dit veld mag alleen nummers bevatten!";
                 } else {
                     errorField.innerHTML = "Dit veld moet gevult worden!";
                 }
-            } else {
-                errorField.innerHTML = "";
-                input.classList.remove("vl-input-field--error");
+
+                return true;
             }
+
+            if (input.type !== 'number') {
+                if (!isOnlyText(value)) {
+                    errorField.innerHTML = "Dit veld mag alleen tekst bevatten!";
+                    input.classList.add("vl-input-field--error");
+
+                    return true;
+                }
+            }
+
+            errorField.innerHTML = "";
+            input.classList.remove("vl-input-field--error");
         }
+
+        return false;
     }
   
     handleChange(event) {   
@@ -93,9 +106,10 @@ class CandidateDataForm extends React.Component {
 
     handleSubmit(event) {
         let errorData = !isNumber(this.state.streetNumber) || !isNumber(this.state.streetNumber);
+        let fieldValidError;
         for (const [key, value] of Object.entries(this.state)) {
-            if (!errorData) errorData = isEmpty(value); //At the first empty, it will be true whatever 
-            this.setFieldValidation(key, value);
+            fieldValidError = this.setFieldValidation(key, value);
+            if (!errorData) errorData = fieldValidError; //At the first empty, it will be true whatever 
         }
         
         if (!errorData) {

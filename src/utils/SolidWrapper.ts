@@ -170,3 +170,21 @@ export function createExpense(doc: TripleDocument, person: string, buyActionData
     // Don't forget that it is not save yet, doc.save([buyAction]) must be called for that
     return buyAction; 
 }
+
+interface DonateActionData {
+    identifier: string;
+    description: string;
+    price: number;
+    priceCurrency: string;
+}
+
+export function createDonation(doc: TripleDocument, person: string, donateActionData: DonateActionData) {//person: TripleSubject
+    const donateAction = doc.addSubject();
+    donateAction.addRef(rdf.type, schema.DonateAction);
+    donateAction.addRef(schema.recipient, person); //person.asRef() //Not an agent because he received the money but we don't ask from whom
+    donateAction.addString(schema.identifier, donateActionData.identifier);
+    donateAction.addString(schema.description, donateActionData.description);
+    donateAction.addInteger(schema.price, donateActionData.price);
+    donateAction.addString(schema.priceCurrency, donateActionData.priceCurrency);
+    return donateAction; 
+}

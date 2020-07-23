@@ -15,3 +15,8 @@ export function areEmpty(args: any[]): boolean {
 
     return error;
 }
+
+export function isOnlyText(data: string): boolean {
+    let regex = RegExp(/^[a-zA-Z ]+$/);
+    return regex.exec(data) !== null;
+}
