@@ -1,11 +1,10 @@
 import React from "react";
-import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments, createExpense} from '../../utils/SolidWrapper';
 import {isEmpty, isNumber, areEmpty} from '../../utils/DataValidator';
 import Loading from '../loading';
 import ProfileDoesntExist from '../error/profileDoesntExist';
-import PersonInput from '../user';
+import PersonInput from './user';
 import InputAmount from '../form/inputAmount';
 
 class G103 extends React.Component {
@@ -25,13 +24,13 @@ class G103 extends React.Component {
         this.state.error = true;
     }
 
-    componentDidMount() { //Trigger when component is created or using route
+    componentDidMount() {
         if (this.props.appContainer !== undefined) {
             this.init();
         }
     }
 
-    componentDidUpdate(prevProps) { //Trigger when state or props change but not with route
+    componentDidUpdate(prevProps) {
         if (this.props.appContainer !== undefined && this.props.appContainer != prevProps.appContainer) {
             this.init();
         }
@@ -61,7 +60,6 @@ class G103 extends React.Component {
         this.state = {
             GAuthPerson: 'no', 
             GElectionExpense: 'no', 
-            //AuthorizedPerson
             authorizedPerson: {
                 Gfirstname: '', 
                 Glastname: '', 
@@ -70,7 +68,6 @@ class G103 extends React.Component {
                 GpostalCode: '', 
                 Glocality: ''
             },
-            //For expense
             expenses: {
                 EAuditoryAndOral1: { key: '1.1', description: 'Auditory and oral messages', amount: 0 },
                 EWrittenMessage1_1: { key: '2.1.1', description: 'Written messages - Design and production costs in the press', amount: 0 },
@@ -91,7 +88,6 @@ class G103 extends React.Component {
                 EOtherCost2: { key: '5.2', description: 'Other costs - Production costs for website or webpage designed for election purposes', amount: 0 },
                 EOtherCost3: { key: '5.3', description: 'Other costs - Varia', amount: 0 }
             },
-            //For fund
             funds: {
                 FSection1: 0,
                 FSection2_1: 0,
@@ -131,9 +127,9 @@ class G103 extends React.Component {
                 input.classList.add("vl-input-field--error");
 
                 if (input.type === 'number') {
-                    errorField.innerHTML = "This field must be a number!";
+                    errorField.innerHTML = "Dit veld moet met een nummer gevult worden!";
                 } else {
-                    errorField.innerHTML = "This field cannot be empty!";
+                    errorField.innerHTML = "Dit veld moet gevult worden!";
                 }
             } else {
                 errorField.innerHTML = "";
@@ -198,7 +194,7 @@ class G103 extends React.Component {
 
         if (value >= 125) {
             let section = document.getElementById("input-field-" + event.target.id + "-error");
-            section.innerHTML = "Please, don't forget to complete the form A106 because this amount exceeds 125€";
+            section.innerHTML = "Let op, dit bedrag is hoger dan €125. Vul daarom ook formulier G106 in.";
         }
 
         this.setState(state => {
@@ -229,21 +225,18 @@ class G103 extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        //console.log(this.state);
 
         if (this.props.appContainer != undefined) {
             let dataToSave = [];
             let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
             let meData = doc.addSubject({"identifier": "me"});
-            //Todo about number list and tracking number
-            //dataToSave.push(meData);
 
-            if (this.state.GAuthPerson === 'yes') { //Authorized person so we check his data
+            if (this.state.GAuthPerson === 'yes') {
                 if (areEmpty(Object.values(this.state.authorizedPerson))) {
                     for (const [key, value] of Object.entries(this.state.authorizedPerson)) {
                         this.setFieldValidation(key, value);
                     }
-                    alert("Authorized person are empty");
+                    alert("Alleen geautoriseerde gebruikers");
                     return false;
                 }
 
@@ -261,7 +254,7 @@ class G103 extends React.Component {
                 let error = false;
                 for (const [key, value] of Object.entries(this.state.expenses)) {
                     if (error) {
-                        alert("Expenses are empty");
+                        alert("Geen gedeclareerde uitgaven");
                         return false;
                     }
                     error = isEmpty(value.amount);
@@ -281,27 +274,11 @@ class G103 extends React.Component {
             }
 
             doc.save(dataToSave).then(function(e) {
-                alert("Your data have been saved!");
+                alert("Uw data is opgeslagen!");
             });
 
-            /*
-            fetch('http://api.sep.osoc.be/store', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                mode: 'cors',
-                cache: 'default',
-                body: {
-                    "uri": this.props.webId
-                }
-            })
-            .then(response => response.json())
-            .then(json => console.log(json));
-            */
         } else {
-            alert("Unable to access to your Solid Pod, server down?");
+            alert("Er is geen toegang tot uw Solid pod.");
         }
     }
   
@@ -314,32 +291,32 @@ class G103 extends React.Component {
             } else {
                 return (
                     <div id="userForm">
-                        <h1 class="vl-title vl-title--h1 vl-title--has-border">Declaration of election expenditure and of the origin of funds by lists:</h1>
+                        <h1 class="vl-title vl-title--h1 vl-title--has-border">Aangifte van de verkiezingsuitgaven en van de herkomst van de geldmiddelen door lijsten</h1>
                         <form onSubmit={this.handleSubmit}>
-                            <h2 class="vl-title vl-title--h2 vl-title--has-border">General:</h2>
+                            <h2 class="vl-title vl-title--h2 vl-title--has-border">Algemeen</h2>
 
                             <div class="vl-grid">
                                 <div className="form-group vl-form-col--8-12">
-                                    <label className="vl-form__label" htmlFor="Gnamelist">Name of the list :</label>
+                                    <label className="vl-form__label" htmlFor="Gnamelist">Lijstnaam :</label>
                                     <input type="text" id="Gnamelist" className="vl-input-field vl-input-field--block" name="Gnamelist" onChange={this.handleChange}></input>
                                     <p class="vl-form__error" id="input-field-Gnamelist-error"></p>
                                 </div>
         
                                 <div className="form-group vl-form-col--4-12">
-                                    <label className="vl-form__label" htmlFor="Gtrackingnumber">Tracking number :</label>
+                                    <label className="vl-form__label" htmlFor="Gtrackingnumber">Volgnummer :</label>
                                     <input type="number" min="0" id="Gtrackingnumber" className="vl-input-field vl-input-field--block" name="Gtrackingnumber" onChange={this.handleChange}></input>
                                     <p class="vl-form__error" id="input-field-Gtrackingnumber-error"></p>
                                 </div>
 
-                                <p>Are you a person authorised by the list-tractor?</p>
+                                <p>Bent u een persoon die in naam van de desbetreffende lijsttrekker dit formulier invult en daartoe gemachtigd is?</p>
                                 <div className="form-group vl-form-col--12-12">
                                     <label className="vl-radio" htmlFor="GAuthPersonYes">
                                         <input className="vl-radio__toggle" type="radio" id="GAuthPersonYes" name="GAuthPerson" value="yes" onChange={(e) => this.handleRadioShowOnYes(e, "sectionAuthorized")} checked={this.state.GAuthPerson === 'yes'} />
-                                        <div className="vl-radio__label">Yes</div>
+                                        <div className="vl-radio__label">Ja</div>
                                     </label>
                                     <label className="vl-radio" htmlFor="GAuthPersonNo">
                                         <input className="vl-radio__toggle" type="radio" id="GAuthPersonNo" name="GAuthPerson" value="no" onChange={(e) => this.handleRadioShowOnYes(e, "sectionAuthorized")} checked={this.state.GAuthPerson === 'no'} />
-                                        <div className="vl-radio__label">No</div>
+                                        <div className="vl-radio__label">Nee</div>
                                     </label>
                                 </div>
 
@@ -347,40 +324,40 @@ class G103 extends React.Component {
                                     <PersonInput prefix="G" handleChange={this.handleAuthorizedPerson} />
                                 </div>
 
-                                <p>Before the elections on 14 October 2018, did the list of which you are the head of incur election expenses?</p>
+                                <p>Heeft de lijst waarvan u de lijsttrekker bent, voor de verkiezingen van 14 oktober 2018 verkiezingsuitgaven gedaan? </p>
                                 <div className="form-group vl-form-col--12-12">
                                     <label className="vl-radio" htmlFor="GElectionExpenseYes">
                                         <input className="vl-radio__toggle" type="radio" id="GElectionExpenseYes" name="GElectionExpense" value="yes" onChange={(e) => this.handleRadioShowOnYes(e, "sectionElectionExpenditure", "sectionOriginOfFund")} checked={this.state.GElectionExpense === 'yes'} />
-                                        <div className="vl-radio__label">Yes</div>
+                                        <div className="vl-radio__label">Ja</div>
                                     </label>
                                     <label className="vl-radio" htmlFor="GElectionExpenseNo">
                                         <input className="vl-radio__toggle" type="radio" id="GElectionExpenseNo" name="GElectionExpense" value="no" onChange={(e) => this.handleRadioShowOnYes(e, "sectionElectionExpenditure", "sectionOriginOfFund")} checked={this.state.GElectionExpense === 'no'} />
-                                        <div className="vl-radio__label">No</div>
+                                        <div className="vl-radio__label">Nee</div>
                                     </label>
                                 </div>
                             </div>
 
                             <div id="sectionElectionExpenditure" class="vl-u-hidden">
-                                <h2 class="vl-title vl-title--h2 vl-title--has-border">Declaration of election expenditure:</h2>
+                                <h2 class="vl-title vl-title--h2 vl-title--has-border">Aangifte van de verkiezingsuitgaven</h2>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Auditory and oral messages:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Auditieve en mondelinge boodschappen</h3>
                                 <div class="vl-grid">
                                     <div className="form-group">
                                         <InputAmount
                                             var="EAuditoryAndOral1"
-                                            label="For example: non-commercial telephone campaigns or an indelible political message on an information carrier. Attach a list of all messages and their respective cost price to your declaration (attach files):"
+                                            label="Bijvoorbeeld: niet-commerciële telefooncampagnes of een onuitwisbare politieke boodschap op een informatiedrager. Voeg een lijst van alle boodschappen en hun respectieve kostprijs bij uw aangifte."
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EAuditoryAndOral1.amount}
                                         />
                                     </div>
                                 </div>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Written messages:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Geschreven boodschappen</h3>
                                 <div class="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EWrittenMessage1_1"
-                                            label="Design and production costs in the press:"
+                                            label="Ontwerp- en productiekosten van advertenties in de pers:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EWrittenMessage1_1.amount}
                                         />
@@ -389,7 +366,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EWrittenMessage1_2"
-                                            label="Price for the advertising space in the press:"
+                                            label="Prijs voor advertentieruimte in de pers:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EWrittenMessage1_2.amount}
                                         />
@@ -398,7 +375,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EWrittenMessage2"
-                                            label="Design and production costs of election brochures:"
+                                            label="Ontwerp- en productiekosten van verkiezingsfolders:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EWrittenMessage2.amount}
                                         />
@@ -407,7 +384,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EWrittenMessage3"
-                                            label="Cost of letters and envelopes:"
+                                            label="Kostprijs van brieven en enveloppen:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EWrittenMessage3.amount}
                                         />
@@ -416,7 +393,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EWrittenMessage4"
-                                            label="Cost of other printed matter (attach files):"
+                                            label="Kostprijs van ander drukwerk:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EWrittenMessage4.amount}
                                         />
@@ -425,19 +402,19 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EWrittenMessage5"
-                                            label="Costs for e-mails and non-commercial SMS campaigns:"
+                                            label="Kosten voor e-mails en niet-commerciële sms-campages:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EWrittenMessage5.amount}
                                         />
                                     </div>
                                 </div>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Shipping and distribution costs for election propaganda:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Verzendings- en distributiekosten voor verkiezingspropaganda</h3>
                                 <div class="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EShippingAndDistribution1_1"
-                                            label="Addressed shipments in election printing:"
+                                            label="Geadresseerde zendingen:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EShippingAndDistribution1_1.amount}
                                         />
@@ -446,7 +423,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EShippingAndDistribution1_2"
-                                            label="Non-addressed shipments in election printing:"
+                                            label="Niet-geaddresseerde:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EShippingAndDistribution1_2.amount}
                                         />
@@ -455,7 +432,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EShippingAndDistribution2"
-                                            label="Other costs of distribution (attach files):"
+                                            label="Portkosten voor andere zendingen:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EShippingAndDistribution2.amount}
                                         />
@@ -464,19 +441,19 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EShippingAndDistribution3"
-                                            label="Costs for e-mails and non-commercial SMS campaigns:"
+                                            label="Andere distributie kosten:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EShippingAndDistribution3.amount}
                                         />
                                     </div>
                                 </div>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Visual messages:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Visuele boodschappen</h3>
                                 <div class="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EVisualMessage1"
-                                            label="A production and rental costs for non-commercial signs of 4 m² or less:"
+                                            label="Productie- en huurkosten voor niet-commerciële borden van 4 m² of minder:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EVisualMessage1.amount}
                                         />
@@ -485,7 +462,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EVisualMessage2"
-                                            label="Printing and production costs for posters of 4 m² or less:"
+                                            label="Druk- en productiekosten voor affiches van 4 m² of minder:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EVisualMessage2.amount}
                                         />
@@ -494,7 +471,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EVisualMessage3"
-                                            label="Internet commercials or internet campaigns:"
+                                            label="Reclamespots op het internet of internetcampagnes:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EVisualMessage3.amount}
                                         />
@@ -503,19 +480,19 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EVisualMessage4"
-                                            label="Other costs for visual messages (attach files):"
+                                            label="Andere kosten voor visuele boodschappen:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EVisualMessage4.amount}
                                         />
                                     </div>
                                 </div>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Other costs:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Overige uitgaven</h3>
                                 <div class="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EOtherCost1"
-                                            label="Election manifestations:"
+                                            label="Verkiezingsmanifestaties:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EOtherCost1.amount}
                                         />
@@ -524,7 +501,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EOtherCost2"
-                                            label="Production costs for website or webpage designed for election purposes:"
+                                            label="Productiekosten voor website of webpagina, ontworpen met verkiezingsdoeleinden:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EOtherCost2.amount}
                                         />
@@ -533,37 +510,37 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EOtherCost3"
-                                            label="Varia (attach files):"
+                                            label="Varia:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EOtherCost3.amount}
                                         />
                                     </div>
                                 </div>
 
-                                <p>Total expenses: {this.getTotalExpense()}</p>
+                                <p>Totaalbedrag: {this.getTotalExpense()}</p>
                             </div>
 
                             <div id="sectionOriginOfFund" class="vl-u-hidden">
-                                <h2 class="vl-title vl-title--h2 vl-title--has-border">Declaration of the origin of the funds:</h2>
+                                <h2 class="vl-title vl-title--h2 vl-title--has-border">Aangifte van de herkomst van de geldmiddelen :</h2>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Section 1:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Rubriek 1</h3>
                                 <div class="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection1"
-                                            label="Funds deriving from the list's own patrimony:"
+                                            label="Geldmiddelen die afkomstig zijn van het eigen patrimonium van de lijst :"
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection1}
                                         />
                                     </div>
                                 </div>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Section 2:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Rubriek 2</h3>
                                 <div class="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection2_1"
-                                            label="Donations of EUR 125 or more per donor:"
+                                            label="Giften van 125 euro of meer per schenker:"
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection2_1}
                                         />
@@ -572,19 +549,19 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection2_2"
-                                            label="Donations of less than €125 per donor:"
+                                            label="Giften van minder dan 125 euro per schenker:"
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection2_2}
                                         />
                                     </div>
                                 </div>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Section 3:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Rubriek 3</h3>
                                 <div class="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection3_1"
-                                            label="Sponsorship of EUR 125 or more per sponsor:"
+                                            label="Bedragen van 125 euro of meer per sponsor:"
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection3_1}
                                         />
@@ -593,42 +570,42 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection3_2"
-                                            label="Sponsorship of less than EUR 125 per sponsor:"
+                                            label="Bedragen van minder dan 125 euro per sponsor:"
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection3_2}
                                         />
                                     </div>
                                 </div>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Section 4:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Rubriek 4</h3>
                                 <div class="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection4"
-                                            label="Financing by (a component of) the political party:"
+                                            label="Financiering door (een component van) de politieke partij :"
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection4}
                                         />
                                     </div>
                                 </div>
 
-                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Section 5:</h3>
+                                <h3 class="vl-title vl-title--h3 vl-title--has-border">Rubriek 5</h3>
                                 <div class="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection5"
-                                            label="Other source:"
+                                            label="Andere herkomst:"
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection5}
                                         />
                                     </div>
                                 </div>
 
-                                <p>Total funds: {this.getTotalFunds()}</p>
+                                <p>Totaalbedrag: {this.getTotalFunds()}</p>
                             </div>
         
                             <button className="vl-button mt-3">
-                                <span className="vl-button__label">Send</span>
+                                <span className="vl-button__label">Versturen</span>
                             </button>
                         </form>
                     </div>

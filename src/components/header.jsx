@@ -22,8 +22,8 @@ export default function Header() {
             </a>
 
             <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/test">Home</RouterLink>
-            <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/profile">Profile</RouterLink>
-            <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/new-declaration">New Declaration</RouterLink>
+            <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/profile">Profiel</RouterLink>
+            <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/new-declaration">Declareer</RouterLink>
 
             <a href="#content" className="au-c-main-header__skiplink">Naar de hoofdinhoud</a>
         </div>
@@ -32,11 +32,11 @@ export default function Header() {
             <ul className="au-c-list-horizontal">
                 <LoggedIn>
                     <li className="au-c-list-horizontal__item">
-                        <Link class="nav-link" href="user"> Welcome, <Value src="user.name"/></Link>     
+                        <Link class="nav-link" href="user"> Welkom, <Value src="user.name"/></Link>     
                     </li>
                 </LoggedIn>
                 <li className="au-c-list-horizontal__item">
-                    <AuthButton popup="/popup.html" login="Log in" logout="Log out"/>
+                    <AuthButton popup="/popup.html" login="Inloggen" logout="Uitloggen"/>
                 </li>
             </ul>
         </nav>

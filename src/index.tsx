@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {useWebId} from '@solid/react';
-import {fetchDocument, TripleDocument} from 'tripledoc';
-import {foaf} from 'rdf-namespaces';
-import {initAppStorage, createAppDocument} from './utils/SolidWrapper';
+import {TripleDocument} from 'tripledoc';
+import {initAppStorage} from './utils/SolidWrapper';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { LoggedIn, LoggedOut, LoginButton } from '@solid/react';
-import CandidateDataForm from "./components/solid/candidateDataForm";
+import CandidateDataForm from "./components/form/candidateDataForm";
 import G103 from "./components/form/G103";
 import Footer from "./components/footer";
 import App from './App';
@@ -16,7 +15,6 @@ const Index: React.FC = () => {
     const [appContainer, setAppContainer] = useState<TripleDocument>();
     const APP_NAME = "solidelections";
 
-    //Update when "WebId" change
     useEffect(() => {
         const getAppStorage = async (webID: string) => {
             const appContainer = await initAppStorage(webID, APP_NAME);
@@ -80,11 +78,6 @@ const Index: React.FC = () => {
                             </div>
                         </section>
                     </Route>
-                    <Route path="/">
-                        <div className="container">
-                            <h1>Welcome !</h1>
-                        </div>
-                    </Route>
                 </Switch>
             </LoggedIn>
             <LoggedOut>
@@ -97,7 +90,7 @@ const Index: React.FC = () => {
                             <div className="vl-alert__content">
                                 <p className="vl-alert__title">Opgelet!</p>
                                 <div className="vl-alert__message">
-                                    <p>You are not connected! Please <LoginButton popup="/popup.html">login</LoginButton> !</p>
+                                    <p>U bent niet verbonden. Log <LoginButton popup="/popup.html">hier</LoginButton> in!</p>
                                 </div>
                             </div>
                         </div>
