@@ -50,7 +50,8 @@ class G103 extends React.Component {
             if (userDataDoc != null) {
                 let userData = userDataDoc.getSubject("#me");
                 if (userData != null) {
-                    alert(userData.getString(schema.givenName) + " " + userData.getString(schema.familyName));
+                    //Can be use to fetch name of the list and tracking number
+                    //alert(userData.getString(schema.givenName) + " " + userData.getString(schema.familyName));
                 }
             }
         }
