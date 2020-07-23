@@ -21,7 +21,7 @@ export default function Header() {
                 </p>
             </a>
 
-            <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/test">Home</RouterLink>
+            <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/">Home</RouterLink>
             <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/profile">Profiel</RouterLink>
             <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/new-declaration">Declareer</RouterLink>
 

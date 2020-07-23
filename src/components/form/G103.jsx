@@ -1,7 +1,8 @@
-import React from 'react';
+import React from "react";
+import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments, createExpense, createDonation} from '../../utils/SolidWrapper';
-import {isEmpty, isNumber, areEmpty} from '../../utils/DataValidator';
+import {isEmpty, isNumber, isOnlyText} from '../../utils/DataValidator';
 import Loading from '../alert/loading';
 import ProfileDoesntExist from '../alert/profileDoesntExist';
 import PersonInput from './user';
@@ -10,7 +11,7 @@ import { Redirect } from 'react-router-dom'
 
 class G103 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
-    FILE_NAME = "g103.ttl";
+    FILE_NAME = "g103-test.ttl";
 
     constructor(props) {
         super(props);
@@ -38,11 +39,21 @@ class G103 extends React.Component {
         }
     }
 
-    init() {
+    async init() {
         this.setState({"loaded": true});
         this.profileExist().then(value => {
             this.setState({"error": !value});
         })
+
+        if (this.state.profile != null) {
+            let userDataDoc = await fetchDocument(this.state.profile);
+            if (userDataDoc != null) {
+                let userData = userDataDoc.getSubject("#me");
+                if (userData != null) {
+                    alert(userData.getString(schema.givenName) + " " + userData.getString(schema.familyName));
+                }
+            }
+        }
     }
 
     async profileExist() {
@@ -122,7 +133,7 @@ class G103 extends React.Component {
         return total;
     }
 
-    setFieldValidation(id, value) { //Use to update field if he is empty
+    setFieldValidation(id, value) { //Use to update field if he is empty | Return false if there is no error
         let errorField = document.getElementById("input-field-" + id + "-error");
         let input = document.getElementById(id);
 
@@ -135,11 +146,24 @@ class G103 extends React.Component {
                 } else {
                     errorField.innerHTML = "Dit veld moet gevult worden!";
                 }
+
+                return true;
             } else {
-                errorField.innerHTML = "";
-                input.classList.remove("vl-input-field--error");
+                if (input.type !== 'number') {
+                    if (!isOnlyText(value)) {
+                        errorField.innerHTML = "This field must be text!";
+                        input.classList.add("vl-input-field--error");
+
+                        return true;
+                    }
+                }
             }
+
+            errorField.innerHTML = "";
+            input.classList.remove("vl-input-field--error");
         }
+
+        return false;
     }
 
     handleChange(event) { //Use for data
@@ -235,12 +259,16 @@ class G103 extends React.Component {
             let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
             let meData = doc.addSubject({"identifier": "me"});
 
-            if (this.state.GAuthPerson === 'yes') {
-                if (areEmpty(Object.values(this.state.authorizedPerson))) {
-                    for (const [key, value] of Object.entries(this.state.authorizedPerson)) {
-                        this.setFieldValidation(key, value);
-                    }
-                    alert("Alleen geautoriseerde gebruikers");
+            if (this.state.GAuthPerson === 'yes') { //Authorized person so we check his data
+                let errorData = false;
+                let fieldValidError;
+                for (const [key, value] of Object.entries(this.state.authorizedPerson)) {
+                    fieldValidError = this.setFieldValidation(key, value);
+                    if (!errorData) errorData = fieldValidError; //At the first empty, it will be true whatever 
+                }
+
+                if (errorData) {
+                    alert("Geen geautoriseerde personen gevonden");
                     return false;
                 }
 
@@ -304,6 +332,7 @@ class G103 extends React.Component {
                 thisObject.setState({redirect: true});
             });
 
+            /* Now it's made into profile
             //We send WebID to the API
             fetch('http://api.sep.osoc.be/store', {
                 method: 'POST',
@@ -327,6 +356,7 @@ class G103 extends React.Component {
             .then(json => {
                 console.log(json.message);
             });
+            */
         } else {
             alert("Er is geen toegang tot uw Solid pod.");
         }

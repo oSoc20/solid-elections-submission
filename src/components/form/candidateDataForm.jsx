@@ -31,7 +31,7 @@ class CandidateDataForm extends React.Component {
     }
 
     async setDefaultValue() {
-        this.state = {firstname: '', lastname: '', street: '', streetNumber: '', locality: '', postalCode: ''};
+        this.state = {firstname: '', lastname: '', street: '', streetNumber: '', locality: '', postalCode: '', lblodid: ''};
     }
 
     async fetchUserData() {
@@ -51,7 +51,8 @@ class CandidateDataForm extends React.Component {
                         firstname: userData.getString(schema.givenName),
                         lastname: userData.getString(schema.familyName),
                         locality: userData.getString(schema.addressLocality),
-                        postalCode: userData.getInteger(schema.postalCode)
+                        postalCode: userData.getInteger(schema.postalCode),
+                        lblodid: userData.getString(schema.sameAs)
                     });
 
                     let streetNumber = userData.getString(schema.streetAddress).split(', ');
@@ -66,7 +67,7 @@ class CandidateDataForm extends React.Component {
         }
     }
 
-    setFieldValidation(id, value) { //Return true if there is no error
+    setFieldValidation(id, value) { //Return false if there is no error
         let errorField = document.getElementById("input-field-" + id + "-error");
         let input = document.getElementById(id);
 
@@ -83,7 +84,7 @@ class CandidateDataForm extends React.Component {
                 return true;
             }
 
-            if (input.type !== 'number') {
+            if (input.type !== 'number' && input.id != 'lblodid') {
                 if (!isOnlyText(value)) {
                     errorField.innerHTML = "Dit veld mag alleen tekst bevatten!";
                     input.classList.add("vl-input-field--error");
@@ -106,27 +107,60 @@ class CandidateDataForm extends React.Component {
 
     handleSubmit(event) {
         let errorData = !isNumber(this.state.streetNumber) || !isNumber(this.state.streetNumber);
+        let errorMessage = "Some data are empty!";
         let fieldValidError;
         for (const [key, value] of Object.entries(this.state)) {
             fieldValidError = this.setFieldValidation(key, value);
             if (!errorData) errorData = fieldValidError; //At the first empty, it will be true whatever 
         }
+
+        let thisObject = this;
+        //We send WebID to the API
+        fetch('http://api.sep.osoc.be/store', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            mode: 'cors',
+            cache: 'default',
+            body: JSON.stringify({
+                "uri": this.props.webId,
+                "lblod_id": this.state.lblodid
+            })
+        })
+        .then(response => {
+            if (response.status != 200 && response.status != 201) {
+                errorData = true;
+                errorMessage = response.statusText;
+            }
+
+            return {json: response.json(), errorData, errorMessage };
+        })
+        .then(data => {
+            if (!data.errorData) {
+                data.errorData = data.json.success;
+                data.errorMessage = data.json.message;
+            }
+
+            if (!data.errorData) { //We don't save data if there is any error
+                let doc = createAppDocument(thisObject.props.appContainer, thisObject.FILE_NAME);
+                const formData = doc.addSubject({"identifier": "me"});
+                formData.addString(schema.givenName, thisObject.state.firstname);
+                formData.addString(schema.familyName, thisObject.state.lastname);
+                formData.addString(schema.streetAddress, thisObject.state.street + ", " + thisObject.state.streetNumber);
+                formData.addInteger(schema.postalCode, parseInt(thisObject.state.postalCode));
+                formData.addString(schema.addressLocality, thisObject.state.locality);
+                formData.addString(schema.sameAs, thisObject.state.lblodid);
         
-        if (!errorData) {
-            let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
-            const formData = doc.addSubject({"identifier": "me"});
-            formData.addString(schema.givenName, this.state.firstname);
-            formData.addString(schema.familyName, this.state.lastname);
-            formData.addString(schema.streetAddress, this.state.street + ", " + this.state.streetNumber);
-            formData.addInteger(schema.postalCode, parseInt(this.state.postalCode));
-            formData.addString(schema.addressLocality, this.state.locality);
-    
-            doc.save([formData]).then(function(e) {
-                alert("Uw data is opgeslagen!");
-            });
-        } else {
-            alert("Er mist data!");
-        }
+                doc.save([formData]).then(function(e) {
+                    alert("Your data have been saved!");
+                });
+            } else {
+                alert(data.errorMessage);
+            }
+        });
+        
         event.preventDefault();
     }
   
@@ -171,6 +205,12 @@ class CandidateDataForm extends React.Component {
                                 <label className="vl-form__label" htmlFor="postalCode">Postcode :</label>
                                 <input type="number" min="0" id="postalCode" className="vl-input-field vl-input-field--block" name="postalCode" value={this.state.postalCode} onChange={this.handleChange}></input>
                                 <p className="vl-form__error" id="input-field-postalCode-error"></p>
+                            </div>
+
+                            <div className="form-group vl-col--12-12--m vl-col--6-12">
+                                <label className="vl-form__label" htmlFor="lblodid">LBLOD ID :</label>
+                                <input type="text" id="lblodid" className="vl-input-field vl-input-field--block" name="lblodid" value={this.state.lblodid} onChange={this.handleChange}></input>
+                                <p className="vl-form__error" id="input-field-lblodid-error"></p>
                             </div>
                         </div>
 
