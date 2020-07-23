@@ -105,9 +105,11 @@ class CandidateDataForm extends React.Component {
         this.setState({[event.target.id]: event.target.value});
     }
 
-    handleSubmit(event) {
+    async handleSubmit(event) {
+        event.preventDefault();
+
         let errorData = !isNumber(this.state.streetNumber) || !isNumber(this.state.streetNumber);
-        let errorMessage = "Some data are empty!";
+        let errorMessage = "Er mist data!";
         let fieldValidError;
         for (const [key, value] of Object.entries(this.state)) {
             fieldValidError = this.setFieldValidation(key, value);
@@ -116,7 +118,7 @@ class CandidateDataForm extends React.Component {
 
         let thisObject = this;
         //We send WebID to the API
-        fetch('http://api.sep.osoc.be/store', {
+        let response = await fetch('http://api.sep.osoc.be/store', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -128,22 +130,17 @@ class CandidateDataForm extends React.Component {
                 "uri": this.props.webId,
                 "lblod_id": this.state.lblodid
             })
-        })
-        .then(response => {
-            if (response.status != 200 && response.status != 201) {
-                errorData = true;
-                errorMessage = response.statusText;
-            }
+        });
 
-            return {json: response.json(), errorData, errorMessage };
-        })
-        .then(data => {
-            if (!data.errorData) {
-                data.errorData = data.json.success;
-                data.errorMessage = data.json.message;
-            }
+        if (response.status != 200 && response.status != 201 && response.status != 400) {
+            errorData = true;
+            errorMessage = response.statusText;
+        }
 
-            if (!data.errorData) { //We don't save data if there is any error
+        let data = await response.json();
+
+        if (!errorData) {
+            if (data.success) {
                 let doc = createAppDocument(thisObject.props.appContainer, thisObject.FILE_NAME);
                 const formData = doc.addSubject({"identifier": "me"});
                 formData.addString(schema.givenName, thisObject.state.firstname);
@@ -154,14 +151,12 @@ class CandidateDataForm extends React.Component {
                 formData.addString(schema.sameAs, thisObject.state.lblodid);
         
                 doc.save([formData]).then(function(e) {
-                    alert("Your data have been saved!");
+                    alert("Uw data is opgeslagen!");
                 });
             } else {
-                alert(data.errorMessage);
+                alert(data.message);
             }
-        });
-        
-        event.preventDefault();
+        }
     }
   
     render() {
@@ -207,9 +202,9 @@ class CandidateDataForm extends React.Component {
                                 <p className="vl-form__error" id="input-field-postalCode-error"></p>
                             </div>
 
-                            <div className="form-group vl-col--12-12--m vl-col--6-12">
+                            <div className="form-group vl-col--12-12">
                                 <label className="vl-form__label" htmlFor="lblodid">LBLOD ID :</label>
-                                <input type="text" id="lblodid" className="vl-input-field vl-input-field--block" name="lblodid" value={this.state.lblodid} onChange={this.handleChange}></input>
+                                <input type="text" id="lblodid" placeholder="http://data.lblod.info/id/identificatoren/xxx" className="vl-input-field vl-input-field--block" name="lblodid" value={this.state.lblodid} onChange={this.handleChange}></input>
                                 <p className="vl-form__error" id="input-field-lblodid-error"></p>
                             </div>
                         </div>

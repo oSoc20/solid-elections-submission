@@ -7,11 +7,11 @@ import Loading from '../alert/loading';
 import ProfileDoesntExist from '../alert/profileDoesntExist';
 import PersonInput from './user';
 import InputAmount from '../form/inputAmount';
-import { Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom';
 
 class G103 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
-    FILE_NAME = "g103-test.ttl";
+    FILE_NAME = "g103.ttl";
 
     constructor(props) {
         super(props);
@@ -332,32 +332,6 @@ class G103 extends React.Component {
                 //Redirect to the home page
                 thisObject.setState({redirect: true});
             });
-
-            /* Now it's made into profile
-            //We send WebID to the API
-            fetch('http://api.sep.osoc.be/store', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                mode: 'cors',
-                cache: 'default',
-                body: JSON.stringify({
-                    "uri": this.props.webId
-                })
-            })
-            .then(response => {
-                if (response.status != 200 && response.status != 201) {
-                    console.log("Error: " + response.statusText);
-                }
-
-                return response.json();
-            })
-            .then(json => {
-                console.log(json.message);
-            });
-            */
         } else {
             alert("Er is geen toegang tot uw Solid pod.");
         }
