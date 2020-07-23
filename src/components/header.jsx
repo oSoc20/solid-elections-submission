@@ -36,7 +36,7 @@ export default function Header() {
                     </li>
                 </LoggedIn>
                 <li className="au-c-list-horizontal__item">
-                    <AuthButton popup="/popup.html" login="Inloggen" logout="Uitloggen"/>
+                    <AuthButton popup="popup.html" login="Inloggen" logout="Uitloggen"/>
                 </li>
             </ul>
         </nav>
