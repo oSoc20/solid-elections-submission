@@ -4,6 +4,7 @@ import { LoginButton } from '@solid/react';
 export default function NotConnected() {
   return (
     //Can't use showAlert because we use LoginButton
+    //Can't use popup="/popup.html" because React is forcing route to popup, don't know why so we use link
     <div className="vl-alert vl-alert--error" role="alert">
         <div className="vl-alert__icon">
             <i className="vl-icon vl-vi vl-vi-alert-triangle-filled" aria-hidden="true"></i>
@@ -11,7 +12,7 @@ export default function NotConnected() {
         <div className="vl-alert__content">
             <p className="vl-alert__title">Opgelet!</p>
             <div className="vl-alert__message">
-                <p>U bent niet verbonden! Log <LoginButton popup="popup.html">hier</LoginButton> in!</p>
+                <p>U bent niet verbonden! Log <LoginButton popup="https://solid.github.io/solid-auth-client/dist/popup.html">hier</LoginButton> in!</p>
             </div>
         </div>
     </div>
