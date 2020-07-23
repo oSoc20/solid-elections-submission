@@ -2,7 +2,7 @@ import React from "react";
 import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
-import {isEmpty, isNumber} from '../../utils/DataValidator';
+import {isEmpty, isNumber, isOnlyText} from '../../utils/DataValidator';
 import Loading from '../alert/loading';
 
 class CandidateDataForm extends React.Component {
@@ -66,7 +66,7 @@ class CandidateDataForm extends React.Component {
         }
     }
 
-    setFieldValidation(id, value) {
+    setFieldValidation(id, value) { //Return true if there is no error
         let errorField = document.getElementById("input-field-" + id + "-error");
         let input = document.getElementById(id);
 
@@ -79,11 +79,24 @@ class CandidateDataForm extends React.Component {
                 } else {
                     errorField.innerHTML = "This field cannot be empty!";
                 }
-            } else {
-                errorField.innerHTML = "";
-                input.classList.remove("vl-input-field--error");
+
+                return true;
             }
+
+            if (input.type !== 'number') {
+                if (!isOnlyText(value)) {
+                    errorField.innerHTML = "This field must be text";
+                    input.classList.add("vl-input-field--error");
+
+                    return true;
+                }
+            }
+
+            errorField.innerHTML = "";
+            input.classList.remove("vl-input-field--error");
         }
+
+        return false;
     }
   
     handleChange(event) {   
@@ -93,9 +106,10 @@ class CandidateDataForm extends React.Component {
 
     handleSubmit(event) {
         let errorData = !isNumber(this.state.streetNumber) || !isNumber(this.state.streetNumber);
+        let fieldValidError;
         for (const [key, value] of Object.entries(this.state)) {
-            if (!errorData) errorData = isEmpty(value); //At the first empty, it will be true whatever 
-            this.setFieldValidation(key, value);
+            fieldValidError = this.setFieldValidation(key, value);
+            if (!errorData) errorData = fieldValidError; //At the first empty, it will be true whatever 
         }
         
         if (!errorData) {
