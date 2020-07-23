@@ -1,12 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {useWebId} from '@solid/react';
-import {fetchDocument, TripleDocument} from 'tripledoc';
-import {foaf} from 'rdf-namespaces';
-import {initAppStorage, createAppDocument} from './utils/SolidWrapper';
+import {TripleDocument} from 'tripledoc';
+import {initAppStorage} from './utils/SolidWrapper';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { LoggedIn, LoggedOut } from '@solid/react';
-import CandidateDataForm from "./components/solid/candidateDataForm";
+import CandidateDataForm from "./components/form/candidateDataForm";
 import FormSent from "./components/alert/formSent";
 import NotConnected from "./components/alert/notConnected";
 import G103 from "./components/form/G103";
@@ -18,7 +17,6 @@ const Index: React.FC = () => {
     const [appContainer, setAppContainer] = useState<TripleDocument>();
     const APP_NAME = "solidelections";
 
-    //Update when "WebId" change
     useEffect(() => {
         const getAppStorage = async (webID: string) => {
             const appContainer = await initAppStorage(webID, APP_NAME);
@@ -88,11 +86,6 @@ const Index: React.FC = () => {
                                 </div>
                             </div>
                         </section>
-                    </Route>
-                    <Route path="/">
-                        <div className="container">
-                            <h1>Welcome !</h1>
-                        </div>
                     </Route>
                 </Switch>
             </LoggedIn>

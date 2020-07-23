@@ -7,7 +7,7 @@ export class ShowAlert extends React.Component {
 
     getTitle() {
         if (this.props.type == "error") return "Error!";
-        if (this.props.type == "success") return "Success!";
+        if (this.props.type == "success") return "Succes!";
         else return "Hum...";
     }
 

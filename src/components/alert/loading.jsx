@@ -6,7 +6,7 @@ export default function Loading() {
         <div class="vl-region">
             <div class="vl-u-align-center">
                 <div class="vl-loader" role="alert" aria-busy="true"></div>
-                <p>Page is loading, please wait</p>
+                <p>Pagina laadt, even wachten aub...</p>
             </div>
         </div>
     </div>

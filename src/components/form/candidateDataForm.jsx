@@ -76,9 +76,9 @@ class CandidateDataForm extends React.Component {
                 input.classList.add("vl-input-field--error");
 
                 if (input.type === 'number') {
-                    errorField.innerHTML = "This field must be a number!";
+                    errorField.innerHTML = "Dit veld mag alleen nummers bevatten!";
                 } else {
-                    errorField.innerHTML = "This field cannot be empty!";
+                    errorField.innerHTML = "Dit veld moet gevult worden!";
                 }
 
                 return true;
@@ -86,7 +86,7 @@ class CandidateDataForm extends React.Component {
 
             if (input.type !== 'number' && input.id != 'lblodid') {
                 if (!isOnlyText(value)) {
-                    errorField.innerHTML = "This field must be text";
+                    errorField.innerHTML = "Dit veld mag alleen tekst bevatten!";
                     input.classList.add("vl-input-field--error");
 
                     return true;
@@ -168,41 +168,41 @@ class CandidateDataForm extends React.Component {
         if (this.state.loaded) {
             return (
                 <div id="userForm">
-                    <h1 class="vl-title vl-title--h1 vl-title--has-border">Your information:</h1>
+                    <h1 class="vl-title vl-title--h1 vl-title--has-border">Uw informatie:</h1>
                     <form onSubmit={this.handleSubmit}>
                         <div class="vl-grid">
                             <div className="form-group vl-form-col--6-12">
-                                <label className="vl-form__label" htmlFor="firstname">First name :</label>
+                                <label className="vl-form__label" htmlFor="firstname">Voornaam :</label>
                                 <input type="text" id="firstname" className="vl-input-field vl-input-field--block" name="firstname" value={this.state.firstname} onChange={this.handleChange}></input>
                                 <p class="vl-form__error" id="input-field-firstname-error"></p>
                             </div>
     
                             <div className="form-group vl-form-col--6-12">
-                                <label className="vl-form__label" htmlFor="lastname">Last name :</label>
+                                <label className="vl-form__label" htmlFor="lastname">Achternaam :</label>
                                 <input type="text" id="lastname" className="vl-input-field vl-input-field--block" name="lastname" value={this.state.lastname} onChange={this.handleChange}></input>
                                 <p class="vl-form__error" id="input-field-lastname-error"></p>
                             </div>
     
                             <div className="form-group vl-col--12-12--m vl-col--10-12">
-                                <label className="vl-form__label" htmlFor="street">Street :</label>
+                                <label className="vl-form__label" htmlFor="street">Straatnaam :</label>
                                 <input type="text" id="street" className="vl-input-field vl-input-field--block" name="street" value={this.state.street} onChange={this.handleChange}></input>
                                 <p class="vl-form__error" id="input-field-street-error"></p>
                             </div>
     
                             <div className="form-group vl-col--12-12--m vl-col--2-12">
-                                <label className="vl-form__label" htmlFor="streetNumber">Number :</label>
+                                <label className="vl-form__label" htmlFor="streetNumber">Huisnummer :</label>
                                 <input type="number" min="1" id="streetNumber" className="vl-input-field vl-input-field--block" name="streetNumber" value={this.state.streetNumber} onChange={this.handleChange}></input>
                                 <p class="vl-form__error" id="input-field-streetNumber-error"></p>
                             </div>
     
                             <div className="form-group vl-col--12-12--m vl-col--10-12">
-                                <label className="vl-form__label" htmlFor="locality">Locality :</label>
+                                <label className="vl-form__label" htmlFor="locality">Gemeente :</label>
                                 <input type="text" id="locality" className="vl-input-field vl-input-field--block" name="locality" value={this.state.locality} onChange={this.handleChange}></input>
                                 <p class="vl-form__error" id="input-field-locality-error"></p>
                             </div>
     
                             <div className="form-group vl-col--12-12--m vl-col--2-12">
-                                <label className="vl-form__label" htmlFor="postalCode">Postal Code :</label>
+                                <label className="vl-form__label" htmlFor="postalCode">Postcode :</label>
                                 <input type="number" min="0" id="postalCode" className="vl-input-field vl-input-field--block" name="postalCode" value={this.state.postalCode} onChange={this.handleChange}></input>
                                 <p className="vl-form__error" id="input-field-postalCode-error"></p>
                             </div>
@@ -213,9 +213,9 @@ class CandidateDataForm extends React.Component {
                                 <p className="vl-form__error" id="input-field-lblodid-error"></p>
                             </div>
                         </div>
-    
+
                         <button className="vl-button mt-3">
-                            <span className="vl-button__label">Save</span>
+                            <span className="vl-button__label">Opslaan</span>
                         </button>
                     </form>
                 </div>

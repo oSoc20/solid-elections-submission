@@ -11,7 +11,7 @@ export default function NotConnected() {
         <div className="vl-alert__content">
             <p className="vl-alert__title">Opgelet!</p>
             <div className="vl-alert__message">
-                <p>You are not connected! Please <LoginButton popup="/popup.html">login</LoginButton> !</p>
+                <p>U bent niet verbonden! Log <LoginButton popup="/popup.html">hier</LoginButton> in!</p>
             </div>
         </div>
     </div>
