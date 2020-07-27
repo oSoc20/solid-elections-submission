@@ -120,7 +120,7 @@ class CandidateDataForm extends React.Component {
         let response;
         //We send WebID to the API
         try {
-            response = await fetch('http://api.sep.osoc.be/store', {
+            response = await fetch('https://api.sep.osoc.be/store', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -134,6 +134,7 @@ class CandidateDataForm extends React.Component {
                 })
             }); 
         } catch (e) {
+            console.error(e.message);
             alert("Can't access to the database!");
             return false;
         }
@@ -167,37 +168,37 @@ class CandidateDataForm extends React.Component {
         if (this.state.loaded) {
             return (
                 <div id="userForm">
-                    <h1 class="vl-title vl-title--h1 vl-title--has-border">Uw informatie:</h1>
+                    <h1 className="vl-title vl-title--h1 vl-title--has-border">Uw informatie:</h1>
                     <form onSubmit={this.handleSubmit}>
-                        <div class="vl-grid">
+                        <div className="vl-grid">
                             <div className="form-group vl-form-col--6-12">
                                 <label className="vl-form__label" htmlFor="firstname">Voornaam :</label>
                                 <input type="text" id="firstname" className="vl-input-field vl-input-field--block" name="firstname" value={this.state.firstname} onChange={this.handleChange}></input>
-                                <p class="vl-form__error" id="input-field-firstname-error"></p>
+                                <p className="vl-form__error" id="input-field-firstname-error"></p>
                             </div>
     
                             <div className="form-group vl-form-col--6-12">
                                 <label className="vl-form__label" htmlFor="lastname">Achternaam :</label>
                                 <input type="text" id="lastname" className="vl-input-field vl-input-field--block" name="lastname" value={this.state.lastname} onChange={this.handleChange}></input>
-                                <p class="vl-form__error" id="input-field-lastname-error"></p>
+                                <p className="vl-form__error" id="input-field-lastname-error"></p>
                             </div>
     
                             <div className="form-group vl-col--12-12--m vl-col--10-12">
                                 <label className="vl-form__label" htmlFor="street">Straatnaam :</label>
                                 <input type="text" id="street" className="vl-input-field vl-input-field--block" name="street" value={this.state.street} onChange={this.handleChange}></input>
-                                <p class="vl-form__error" id="input-field-street-error"></p>
+                                <p className="vl-form__error" id="input-field-street-error"></p>
                             </div>
     
                             <div className="form-group vl-col--12-12--m vl-col--2-12">
                                 <label className="vl-form__label" htmlFor="streetNumber">Huisnummer :</label>
                                 <input type="number" min="1" id="streetNumber" className="vl-input-field vl-input-field--block" name="streetNumber" value={this.state.streetNumber} onChange={this.handleChange}></input>
-                                <p class="vl-form__error" id="input-field-streetNumber-error"></p>
+                                <p className="vl-form__error" id="input-field-streetNumber-error"></p>
                             </div>
     
                             <div className="form-group vl-col--12-12--m vl-col--10-12">
                                 <label className="vl-form__label" htmlFor="locality">Gemeente :</label>
                                 <input type="text" id="locality" className="vl-input-field vl-input-field--block" name="locality" value={this.state.locality} onChange={this.handleChange}></input>
-                                <p class="vl-form__error" id="input-field-locality-error"></p>
+                                <p className="vl-form__error" id="input-field-locality-error"></p>
                             </div>
     
                             <div className="form-group vl-col--12-12--m vl-col--2-12">

@@ -282,8 +282,8 @@ class G103 extends React.Component {
 
                 dataToSave.push(authorizedPersonData);
             }
-
-            if (this.state.GElectionExpense === 'yes') { //Incur election expenses
+            //Uncomment to save only if the user say yes, else it will go over this step
+            //if (this.state.GElectionExpense === 'yes') { //Incur election expenses
                 let error = false;
                 for (const [key, value] of Object.entries(this.state.expenses)) {
                     if (error) {
@@ -324,7 +324,7 @@ class G103 extends React.Component {
 
                     dataToSave.push(createDonation(doc, this.state.profile, donateActionData));
                 }
-            }
+            //}
 
             let thisObject = this;
             doc.save(dataToSave).then(function(e) {

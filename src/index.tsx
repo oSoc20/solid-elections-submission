@@ -23,7 +23,7 @@ const Index: React.FC = () => {
             if (appContainer != null) {
                 setAppContainer(appContainer);
             } else {
-                console.error("PANIC: We couldn't acces the app folder on the Solid Pod.");
+                alert("PANIC: We couldn't acces the app folder on the Solid Pod.");
             }
         };
         if (typeof webId === 'string') {
@@ -32,7 +32,7 @@ const Index: React.FC = () => {
     }, [webId]);
 
     return (
-        <Router>
+        <Router basename="/">
             <App />
             <LoggedIn>
                 <Switch>
