@@ -117,20 +117,26 @@ class CandidateDataForm extends React.Component {
         }
 
         let thisObject = this;
+        let response;
         //We send WebID to the API
-        let response = await fetch('http://api.sep.osoc.be/store', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            mode: 'cors',
-            cache: 'default',
-            body: JSON.stringify({
-                "uri": this.props.webId,
-                "lblod_id": this.state.lblodid
-            })
-        });
+        try {
+            response = await fetch('http://api.sep.osoc.be/store', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                mode: 'cors',
+                cache: 'default',
+                body: JSON.stringify({
+                    "uri": this.props.webId,
+                    "lblod_id": this.state.lblodid
+                })
+            }); 
+        } catch (e) {
+            alert("Can't access to the database!");
+            return false;
+        }
 
         if (response.status != 200 && response.status != 201 && response.status != 400) {
             errorData = true;
@@ -139,23 +145,21 @@ class CandidateDataForm extends React.Component {
 
         let data = await response.json();
 
-        if (!errorData) {
-            if (data.success) {
-                let doc = createAppDocument(thisObject.props.appContainer, thisObject.FILE_NAME);
-                const formData = doc.addSubject({"identifier": "me"});
-                formData.addString(schema.givenName, thisObject.state.firstname);
-                formData.addString(schema.familyName, thisObject.state.lastname);
-                formData.addString(schema.streetAddress, thisObject.state.street + ", " + thisObject.state.streetNumber);
-                formData.addInteger(schema.postalCode, parseInt(thisObject.state.postalCode));
-                formData.addString(schema.addressLocality, thisObject.state.locality);
-                formData.addString(schema.sameAs, thisObject.state.lblodid);
-        
-                doc.save([formData]).then(function(e) {
-                    alert("Uw data is opgeslagen!");
-                });
-            } else {
-                alert(data.message);
-            }
+        if (!errorData && data.success) {
+            let doc = createAppDocument(thisObject.props.appContainer, thisObject.FILE_NAME);
+            const formData = doc.addSubject({"identifier": "me"});
+            formData.addString(schema.givenName, thisObject.state.firstname);
+            formData.addString(schema.familyName, thisObject.state.lastname);
+            formData.addString(schema.streetAddress, thisObject.state.street + ", " + thisObject.state.streetNumber);
+            formData.addInteger(schema.postalCode, parseInt(thisObject.state.postalCode));
+            formData.addString(schema.addressLocality, thisObject.state.locality);
+            formData.addString(schema.sameAs, thisObject.state.lblodid);
+    
+            doc.save([formData]).then(function(e) {
+                alert("Uw data is opgeslagen!");
+            });
+        } else {
+            alert(data.message);
         }
     }
   
