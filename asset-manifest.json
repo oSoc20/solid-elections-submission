@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/solid-elections-submission/static/css/main.a128a05e.chunk.css",
-    "main.js": "/solid-elections-submission/static/js/main.d4f99b5f.chunk.js",
-    "main.js.map": "/solid-elections-submission/static/js/main.d4f99b5f.chunk.js.map",
+    "main.js": "/solid-elections-submission/static/js/main.e6a043e1.chunk.js",
+    "main.js.map": "/solid-elections-submission/static/js/main.e6a043e1.chunk.js.map",
     "runtime-main.js": "/solid-elections-submission/static/js/runtime-main.32217598.js",
     "runtime-main.js.map": "/solid-elections-submission/static/js/runtime-main.32217598.js.map",
     "static/js/2.4a574edd.chunk.js": "/solid-elections-submission/static/js/2.4a574edd.chunk.js",
     "static/js/2.4a574edd.chunk.js.map": "/solid-elections-submission/static/js/2.4a574edd.chunk.js.map",
     "index.html": "/solid-elections-submission/index.html",
-    "precache-manifest.c41537117b669b3d865d2d2bca713ffd.js": "/solid-elections-submission/precache-manifest.c41537117b669b3d865d2d2bca713ffd.js",
+    "precache-manifest.ddd676732f17be359e998be45e680bc8.js": "/solid-elections-submission/precache-manifest.ddd676732f17be359e998be45e680bc8.js",
     "service-worker.js": "/solid-elections-submission/service-worker.js",
     "static/css/main.a128a05e.chunk.css.map": "/solid-elections-submission/static/css/main.a128a05e.chunk.css.map",
     "static/js/2.4a574edd.chunk.js.LICENSE.txt": "/solid-elections-submission/static/js/2.4a574edd.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.32217598.js",
     "static/js/2.4a574edd.chunk.js",
     "static/css/main.a128a05e.chunk.css",
-    "static/js/main.d4f99b5f.chunk.js"
+    "static/js/main.e6a043e1.chunk.js"
   ]
 }
