@@ -4,6 +4,7 @@ import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
 import {isEmpty, isNumber, isOnlyText} from '../../utils/DataValidator';
 import Loading from '../alert/loading';
+import {fetchGetDb, fetchPostDb} from '../../utils/RequestDatabase';
 
 class CandidateDataForm extends React.Component {
     FILE_NAME = "me.ttl";
@@ -54,6 +55,8 @@ class CandidateDataForm extends React.Component {
                         postalCode: userData.getInteger(schema.postalCode),
                         lblodid: userData.getString(schema.sameAs)
                     });
+                    //It exists, user can't change it
+                    document.getElementById("lblodid").disabled = true;
 
                     let streetNumber = userData.getString(schema.streetAddress).split(', ');
                     if (streetNumber.length === 2) {
@@ -118,50 +121,62 @@ class CandidateDataForm extends React.Component {
 
         let thisObject = this;
         let response;
-        //We send WebID to the API
-        try {
-            response = await fetch('https://api.sep.osoc.be/store', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                mode: 'cors',
-                cache: 'default',
-                body: JSON.stringify({
-                    "uri": this.props.webId,
-                    "lblod_id": this.state.lblodid
-                })
-            }); 
-        } catch (e) {
-            console.error(e.message);
-            alert("Can't access to the database!");
+        //We check if person ID exist
+        //http://data.lblod.info/id/personen/6fa97cdcc58d2387e55dc666e832a9cd9dff3666d57d892f6c79373bef899e4c
+        let uri = new URLSearchParams({
+            personURI: this.state.lblodid
+        });
+        response = await fetchGetDb("person", uri);
+
+        if (!response.success) {
+            alert(response.message);
             return false;
         }
 
-        if (response.status != 200 && response.status != 201 && response.status != 400) {
-            errorData = true;
-            errorMessage = response.statusText;
-        }
-
-        let data = await response.json();
-
-        if (!errorData && data.success) {
-            let doc = createAppDocument(thisObject.props.appContainer, thisObject.FILE_NAME);
-            const formData = doc.addSubject({"identifier": "me"});
-            formData.addString(schema.givenName, thisObject.state.firstname);
-            formData.addString(schema.familyName, thisObject.state.lastname);
-            formData.addString(schema.streetAddress, thisObject.state.street + ", " + thisObject.state.streetNumber);
-            formData.addInteger(schema.postalCode, parseInt(thisObject.state.postalCode));
-            formData.addString(schema.addressLocality, thisObject.state.locality);
-            formData.addString(schema.sameAs, thisObject.state.lblodid);
-    
-            doc.save([formData]).then(function(e) {
-                alert("Uw data is opgeslagen!");
-            });
+        if (response.result.success) {
+            if (response.result.result.length == 0) {
+                errorData = true;
+                errorMessage = "This LBLOD ID doesn't exist!";
+            }
         } else {
-            alert(data.message);
+            errorData = true;
+            errorMessage = response.result.message;
         }
+
+        if (errorData) {
+            alert(errorMessage);
+            return false;
+        }
+
+        //We send WebID to the API
+        //If any error like : logged in as ... but don't have permission that's because this website is not allowed on the solid pod
+        response = await fetchPostDb("store", JSON.stringify({
+            "uri": this.props.webId,
+            "lblod_id": this.state.lblodid
+        }));
+
+        if (!response.result.success) {
+            alert(response.result.message);
+            return false;
+        }
+
+        //response.result.updated = true: Added to the database, falsed: nothing change
+
+        let doc = createAppDocument(thisObject.props.appContainer, thisObject.FILE_NAME);
+        const formData = doc.addSubject({"identifier": "me"});
+        formData.addString(schema.givenName, thisObject.state.firstname);
+        formData.addString(schema.familyName, thisObject.state.lastname);
+        formData.addString(schema.streetAddress, thisObject.state.street + ", " + thisObject.state.streetNumber);
+        formData.addInteger(schema.postalCode, parseInt(thisObject.state.postalCode));
+        formData.addString(schema.addressLocality, thisObject.state.locality);
+        formData.addString(schema.sameAs, thisObject.state.lblodid);
+        
+        doc.save([formData]).then(function(e) {
+            alert("Uw data is opgeslagen!");
+        });
+
+        //It exists, user can't change it
+        document.getElementById("lblodid").disabled = true;
     }
   
     render() {
@@ -209,7 +224,7 @@ class CandidateDataForm extends React.Component {
 
                             <div className="form-group vl-col--12-12">
                                 <label className="vl-form__label" htmlFor="lblodid">LBLOD ID :</label>
-                                <input type="text" id="lblodid" placeholder="http://data.lblod.info/id/identificatoren/xxx" className="vl-input-field vl-input-field--block" name="lblodid" value={this.state.lblodid} onChange={this.handleChange}></input>
+                                <input type="text" id="lblodid" placeholder="http://data.lblod.info/id/personen/xxx" className="vl-input-field vl-input-field--block" name="lblodid" value={this.state.lblodid} onChange={this.handleChange}></input>
                                 <p className="vl-form__error" id="input-field-lblodid-error"></p>
                             </div>
                         </div>

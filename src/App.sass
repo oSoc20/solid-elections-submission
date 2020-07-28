@@ -50,6 +50,10 @@ a
 .vl-form__error 
   color: red
 
+/* Fix tooltip overflow */
+.__react_component_tooltip
+  max-width: 70vw
+
 /* Form */
 #formSelection 
   margin-bottom: 10px
@@ -62,3 +66,22 @@ a
 #formSelection a.nav-link 
   color: black
   background-color: #fff
+
+/* Modal help */
+.modal-tooltip
+  font-size: 15px
+  height: 150px
+
+.modal-tooltip > .header 
+  width: 100%
+  border-bottom: 1px solid gray
+  font-size: 22px
+  text-align: center
+  padding: 5px
+
+.modal-tooltip > .content 
+  width: 100%
+  padding: 10px 5px
+
+.clickable 
+  cursor: pointer

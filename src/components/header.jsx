@@ -32,11 +32,11 @@ export default function Header() {
             <ul className="au-c-list-horizontal">
                 <LoggedIn>
                     <li className="au-c-list-horizontal__item">
-                        <Link class="nav-link" href="user"> Welkom, <Value src="user.name"/></Link>     
+                        <Link className="nav-link" href="user"> Welkom, <Value src="user.name"/></Link>     
                     </li>
                 </LoggedIn>
                 <li className="au-c-list-horizontal__item">
-                    <AuthButton popup="https://solid.github.io/solid-auth-client/dist/popup.html" login="Inloggen" logout="Uitloggen"/>
+                    <AuthButton popup="https://osoc20.github.io/sep-submission/popup.html" login="Inloggen" logout="Uitloggen"/>
                 </li>
             </ul>
         </nav>
