@@ -12,7 +12,7 @@ export default function NotConnected() {
         <div className="vl-alert__content">
             <p className="vl-alert__title">Opgelet!</p>
             <div className="vl-alert__message">
-                <p>U bent niet verbonden! Log <LoginButton popup="https://osoc20.github.io/sep-submission/popup.html">hier</LoginButton> in!</p>
+                <p>U bent niet verbonden! Log <LoginButton popup="https://osoc20.github.io/solid-elections-submission/popup.html">hier</LoginButton> in!</p>
             </div>
         </div>
     </div>

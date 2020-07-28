@@ -36,7 +36,7 @@ export default function Header() {
                     </li>
                 </LoggedIn>
                 <li className="au-c-list-horizontal__item">
-                    <AuthButton popup="https://osoc20.github.io/sep-submission/popup.html" login="Inloggen" logout="Uitloggen"/>
+                    <AuthButton popup="https://osoc20.github.io/solid-elections-submission/popup.html" login="Inloggen" logout="Uitloggen"/>
                 </li>
             </ul>
         </nav>
