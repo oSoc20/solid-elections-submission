@@ -1,5 +1,6 @@
 import React from 'react';
 
+//Default component to show alert, we send type and message to know which color, icon and message to show to the user
 export class ShowAlert extends React.Component {
     constructor(props) {
         super(props);

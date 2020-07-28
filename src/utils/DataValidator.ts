@@ -1,9 +1,11 @@
+//Functions used to check data validation
+
 export function isEmpty(data: Object): boolean {
     return data === undefined || data === null || data === "";
 }
 
 export function isNumber(data: string): boolean {
-    return !isNaN(parseInt(data));
+    return !isNaN(parseFloat(data));
 }
 
 export function areEmpty(args: any[]): boolean {

@@ -17,17 +17,19 @@ class CandidateDataForm extends React.Component {
         this.state.loaded = false;
     }
 
+    init() {
+        this.fetchUserData();
+    }
+
     componentDidMount() { //Trigger when component is created or using route
         if (this.props.appContainer !== undefined) {
-            this.fetchUserData();
-            this.setState({"loaded": true});
+            this.init();
         }
     }
 
     componentDidUpdate(prevProps) { //Trigger when state or props change but not with route
         if (this.props.appContainer !== undefined && this.props.appContainer != prevProps.appContainer) {
-            this.fetchUserData();
-            this.setState({"loaded": true});
+            this.init();
         }
     }
 
@@ -35,7 +37,9 @@ class CandidateDataForm extends React.Component {
         this.state = {firstname: '', lastname: '', street: '', streetNumber: '', locality: '', postalCode: '', lblodid: ''};
     }
 
+    //Used to fetch profile information if already exist on the solid pod
     async fetchUserData() {
+        //We check all documents and try to file the one which contains FILE_NAME (me.ttl)
         let documents = listDocuments(this.props.appContainer);
         let userDataLink = documents.find(link => {
             let indexFile = link.lastIndexOf('/');
@@ -43,10 +47,10 @@ class CandidateDataForm extends React.Component {
 
             return file == this.FILE_NAME;
         });
-        if (userDataLink != null) {
-            let userDataDoc = await fetchDocument(userDataLink);
+        if (userDataLink != null) { //If file is found
+            let userDataDoc = await fetchDocument(userDataLink); //We fetch the document
             if (userDataDoc != null) {
-                let userData = userDataDoc.getSubject("#me");
+                let userData = userDataDoc.getSubject("#me"); //We fetch the subject
                 if (userData != null) {
                     let id = userData.getString(schema.sameAs);
                     this.setState({
@@ -56,8 +60,13 @@ class CandidateDataForm extends React.Component {
                         postalCode: userData.getInteger(schema.postalCode),
                         lblodid: id
                     });
-                    if (id != null && id != "") {
-                        document.getElementById("lblodid").disabled = true;
+
+                    //We loaded the page now because after we change some elements
+                    this.setState({"loaded": true});
+
+                    if (id != null && id != "") { //Used to disabled the LBLOD ID if already exist (user can submit one but not change it)
+                        let lblodField = document.getElementById("lblodid");
+                        if (lblodField != null) lblodField.disabled = true;
                     }
 
                     let streetNumber = userData.getString(schema.streetAddress).split(', ');
@@ -72,6 +81,7 @@ class CandidateDataForm extends React.Component {
         }
     }
 
+    //Method use to veriry input and also return if there is an error or not
     setFieldValidation(id, value) { //Return false if there is no error
         let errorField = document.getElementById("input-field-" + id + "-error");
         let input = document.getElementById(id);
@@ -105,42 +115,43 @@ class CandidateDataForm extends React.Component {
         return false;
     }
   
+    //Used when input data is change
     handleChange(event) {   
         this.setFieldValidation(event.target.id, event.target.value);
         this.setState({[event.target.id]: event.target.value});
     }
 
+    //Used when submitting data
     async handleSubmit(event) {
         event.preventDefault();
 
-        let errorData = !isNumber(this.state.streetNumber) || !isNumber(this.state.streetNumber);
+        let errorData = !isNumber(this.state.streetNumber) || !isNumber(this.state.postalCode);
         let errorMessage = "Er mist data!";
         let fieldValidError;
+        //We check all state (for "loaded" we go over in the fieldValidation because no input with this ID) if any is empty we put true in errorData
         for (const [key, value] of Object.entries(this.state)) {
             fieldValidError = this.setFieldValidation(key, value);
             if (!errorData) errorData = fieldValidError; //At the first empty, it will be true whatever 
         }
 
-        let thisObject = this;
         let response;
         //We check if person ID exist
-        //http://data.lblod.info/id/personen/6fa97cdcc58d2387e55dc666e832a9cd9dff3666d57d892f6c79373bef899e4c
         let uri = new URLSearchParams({
             personURI: this.state.lblodid
         });
         response = await fetchGetDb("person", uri);
 
-        if (!response.success) {
+        if (!response.success) { //If there is an error with fetch
             alert(response.message);
             return false;
         }
 
-        if (response.result.success) {
-            if (response.result.result.length == 0) {
+        if (response.result.success) { //Result contains result of the request page (in this case, the API)
+            if (response.result.result.length == 0) { //because it return an array
                 errorData = true;
                 errorMessage = "This LBLOD ID doesn't exist!";
             }
-        } else {
+        } else { //An error occured with the API, we show the message to the user
             errorData = true;
             errorMessage = response.result.message;
         }
@@ -151,34 +162,45 @@ class CandidateDataForm extends React.Component {
         }
 
         //We send WebID to the API
-        //If any error like : logged in as ... but don't have permission that's because this website is not allowed on the solid pod
+        //If any error like : logged in as ... but don't have permission that's because this website is not allowed on the solid pod,
+        //for that we have to use the popup.html ON THE SAME server as this app
         response = await fetchPostDb("store", JSON.stringify({
             "uri": this.props.webId,
             "lblod_id": this.state.lblodid
         }));
+
+        if (!response.success) { //If there is an error with fetch
+            alert(response.message);
+            return false;
+        }
 
         if (!response.result.success) {
             alert(response.result.message);
             return false;
         }
 
-        //response.result.updated = true: Added to the database, falsed: nothing change
+        //response.result.updated = true: Added to the database, false: nothing change
 
-        let doc = createAppDocument(thisObject.props.appContainer, thisObject.FILE_NAME);
+        //We create a new document (if exist, will be override)
+        let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
+        //We add a subject
         const formData = doc.addSubject({"identifier": "me"});
-        formData.addString(schema.givenName, thisObject.state.firstname);
-        formData.addString(schema.familyName, thisObject.state.lastname);
-        formData.addString(schema.streetAddress, thisObject.state.street + ", " + thisObject.state.streetNumber);
-        formData.addInteger(schema.postalCode, parseInt(thisObject.state.postalCode));
-        formData.addString(schema.addressLocality, thisObject.state.locality);
-        formData.addString(schema.sameAs, thisObject.state.lblodid);
+        //We add value
+        formData.addString(schema.givenName, this.state.firstname);
+        formData.addString(schema.familyName, this.state.lastname);
+        formData.addString(schema.streetAddress, this.state.street + ", " + this.state.streetNumber);
+        formData.addInteger(schema.postalCode, parseInt(this.state.postalCode));
+        formData.addString(schema.addressLocality, this.state.locality);
+        formData.addString(schema.sameAs, this.state.lblodid);
         
+        //We add all subject to the document, save it and show a confirmation message
         doc.save([formData]).then(function(e) {
             alert("Uw data is opgeslagen!");
         });
 
         //It exists, user can't change it
         document.getElementById("lblodid").disabled = true;
+        this.props.refresh();
     }
   
     render() {
@@ -239,6 +261,8 @@ class CandidateDataForm extends React.Component {
             );
         } else {
             return (
+                //Show when appContainer is still null or undefined (use in init() from componentDidMount() and componentDidUpdate())
+                //We need the appContainer to fetch data from the solid pod or API
                 <Loading />
             );
         }

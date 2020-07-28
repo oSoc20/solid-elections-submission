@@ -27,7 +27,7 @@ class InputAmount extends React.Component {
                 <button className="vl-button vl-button--icon">
                     <span style={{"margin": "0px auto"}}>€</span>
                 </button>
-                <input type="number" value={this.props.val} min="0" id={this.props.var} className="vl-input-field vl-input-field--block" name={this.props.var} onChange={this.props.handleChange}></input>
+                <input type="number" value={this.props.val} min="0" step="0.01" id={this.props.var} className="vl-input-field vl-input-field--block" name={this.props.var} onChange={this.props.handleChange}></input>
                 </div>
                 <p className="vl-form__error" id={"input-field-" + this.props.var + "-error"}></p>
             </>

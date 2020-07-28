@@ -1,3 +1,5 @@
+//Functions used to fetch the API
+
 const URL = "https://api.sep.osoc.be/";
 
 interface DatabaseResponseResult {

@@ -2,6 +2,8 @@ import {fetchDocument, createDocument, TripleDocument, TripleSubject, LocalTripl
 import {solid, space, rdf, ldp, schema} from 'rdf-namespaces';
 import auth from 'solid-auth-client';
 
+//Functions used for solid pod: list documents, create document, read document, ...
+
 /**
  * Initialize an app directory inside the Solid Pod found at the webID.
  * 
@@ -165,7 +167,7 @@ export function createExpense(doc: TripleDocument, person: string, buyActionData
     buyAction.addRef(schema.agent, person); //person.asRef()
     buyAction.addString(schema.identifier, buyActionData.identifier);
     buyAction.addString(schema.description, buyActionData.description);
-    buyAction.addInteger(schema.price, buyActionData.price);
+    buyAction.addDecimal(schema.price, buyActionData.price);
     buyAction.addString(schema.priceCurrency, buyActionData.priceCurrency);
     // Don't forget that it is not save yet, doc.save([buyAction]) must be called for that
     return buyAction; 
@@ -184,7 +186,7 @@ export function createDonation(doc: TripleDocument, person: string, donateAction
     donateAction.addRef(schema.recipient, person); //person.asRef() //Not an agent because he received the money but we don't ask from whom
     donateAction.addString(schema.identifier, donateActionData.identifier);
     donateAction.addString(schema.description, donateActionData.description);
-    donateAction.addInteger(schema.price, donateActionData.price);
+    donateAction.addDecimal(schema.price, donateActionData.price);
     donateAction.addString(schema.priceCurrency, donateActionData.priceCurrency);
     return donateAction; 
 }

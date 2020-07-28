@@ -15,9 +15,18 @@ import App from './App';
 const Index: React.FC = () => {
     const webId = useWebId();
     const [appContainer, setAppContainer] = useState<TripleDocument>();
-    const APP_NAME = "solidelections";
+    const APP_NAME = "solidelections"; //This is the folder name on the solid pod
 
+    //We refresh appContainer and webID when data changed
     useEffect(() => {
+        updateAppContainer();
+    }, [webId]);
+
+    //This method is use by candidateDataForm to refresh appContainer after saving profile because if the file me.ttl
+    //doesn't exist before, form G103 will not refresh appContainer and so an error will append. That's why we have to refresh appContainer
+    //to fetch the new file into it.
+    async function updateAppContainer() {
+        console.log("appContainer is refreshing...");
         const getAppStorage = async (webID: string) => {
             const appContainer = await initAppStorage(webID, APP_NAME);
             if (appContainer != null) {
@@ -29,7 +38,7 @@ const Index: React.FC = () => {
         if (typeof webId === 'string') {
             getAppStorage(webId);
         }
-    }, [webId]);
+    }
 
     return (
         <Router basename="/">
@@ -39,7 +48,7 @@ const Index: React.FC = () => {
                     <Route path="/profile">
                         <section className="vl-region">
                             <div className="vl-layout">
-                                <CandidateDataForm appContainer={appContainer} webId={webId} />
+                                <CandidateDataForm appContainer={appContainer} webId={webId} refresh={updateAppContainer} />
                             </div>
                         </section>
                     </Route>

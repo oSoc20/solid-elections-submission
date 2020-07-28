@@ -43,12 +43,12 @@ class G103 extends React.Component {
     }
 
     async init() {
-        this.setState({"loaded": true});
         this.profileExist().then(value => {
             //Not updated after creating profile, maybe because appContainer must be redefined
             this.setState({"error": !value});
         })
 
+        //state.profile contains profile link (WebID + FILE_NAME_PROFILE.ttl)
         if (this.state.profile != null) {
             let userDataDoc = await fetchDocument(this.state.profile);
             if (userDataDoc != null) {
@@ -56,22 +56,33 @@ class G103 extends React.Component {
                 if (userData != null) {
                     let response;
                     let uri = new URLSearchParams({
-                        personURI: userData.getString(schema.sameAs) //"http://data.lblod.info/id/personen/6fa97cdcc58d2387e55dc666e832a9cd9dff3666d57d892f6c79373bef899e4c" <-- Work for testing
+                        personURI: userData.getString(schema.sameAs)
                     });
+                    //We ask for the person LBLOD ID
                     response = await fetchGetDb("person", uri);
             
+                    //If there is an error with fetch
                     if (!response.success) {
                         alert(response.message);
                         return false;
                     }
+
+                    //We loaded the page now because after we change some elements
+                    this.setState({"loaded": true});
             
+                    //If result of the API succeed or not
                     if (response.result.success) {
+                        //We show to the user the name of the list and tracking number (disabled)
+                        //result.result is the result of the API into result object, it's an array of people
+                        //In fact, we send an unique ID so if there is someone he is the index 0
+                        let gNameList = document.getElementById("Gnamelist");
+                        let gTrackingNumber = document.getElementById("Gtrackingnumber");
                         if (response.result.result.length > 0) {
-                            document.getElementById("Gnamelist").value = response.result.result[0].listName.value;
-                            document.getElementById("Gtrackingnumber").value = response.result.result[0].trackingNb.value;
+                            if (gNameList != null) gNameList.value = response.result.result[0].listName.value;
+                            if (gTrackingNumber != null) gTrackingNumber.value = response.result.result[0].trackingNb.value;
                         } else {
-                            document.getElementById("Gnamelist").value = "Error";
-                            document.getElementById("Gtrackingnumber").value = "Error";
+                            if (gNameList != null) gNameList.value = "Error";
+                            if (gTrackingNumber != null) gTrackingNumber.value = "Error";
                         }
                     } else {
                         alert(response.result.message);
@@ -81,6 +92,7 @@ class G103 extends React.Component {
         }
     }
 
+    //To get the profile link (WebID + FILE_NAME_PROFILE.ttl)
     async profileExist() {
         let documents = listDocuments(this.props.appContainer);
         let userDataLink = documents.find(link => {
@@ -108,7 +120,7 @@ class G103 extends React.Component {
                 GpostalCode: '', 
                 Glocality: ''
             },
-            expenses: { //If help exist, it will be a popup with "?" logo
+            expenses: { //If help exist, it will be a popup with "?" logo, we make popup with hover and clickable to let you choose
                 EAuditoryAndOral1: { key: '1.1', description: 'Auditory and oral messages', amount: 0, help: "Bijvoorbeeld: non-commerciele telefoon campanges of auditieve politieke berichten op informatie dragers" },
                 EWrittenMessage1_1: { key: '2.1.1', description: 'Written messages - Design and production costs in the press', amount: 0 },
                 EWrittenMessage1_2: { key: '2.1.2', description: 'Written messages - Price for the advertising space in the press', amount: 0 },
@@ -128,7 +140,7 @@ class G103 extends React.Component {
                 EOtherCost2: { key: '5.2', description: 'Other costs - Production costs for website or webpage designed for election purposes', amount: 0 },
                 EOtherCost3: { key: '5.3', description: 'Other costs - Varia', amount: 0 }
             },
-            funds: {
+            funds: { //If help exist, it will be a popup with "?" logo, we make popup with hover and clickable to let you choose
                 FSection1: { key: '1.1', description: 'Funds deriving from the list\'s own patrimony', amount: 0 },
                 FSection2_1: { key: '2.1.1', description: 'Donations of EUR 125 or more per donor', amount: 0 },
                 FSection2_2: { key: '2.1.2', description: 'Donations of less than €125 per donor', amount: 0 },
@@ -143,7 +155,9 @@ class G103 extends React.Component {
     getTotalExpense() {
         let total = 0;
         for (const [key, value] of Object.entries(this.state.expenses)) {
-            total += value.amount;
+            if (isNumber(value.amount)) { //IF there isn't an error with the field (not a number or empty), if there is we go over because else it will be bugged because number will be string and 13 + 0 + 0 = 1300€ 
+                total += value.amount;
+            }
         }
 
         return total;
@@ -152,12 +166,15 @@ class G103 extends React.Component {
     getTotalFunds() {
         let total = 0;
         for (const [key, value] of Object.entries(this.state.funds)) {
-            total += value.amount;
+            if (isNumber(value.amount)) { //IF there isn't an error with the field (not a number or empty), if there is we go over because else it will be bugged because number will be string and 13 + 0 + 0 = 1300€ 
+                total += value.amount;
+            }
         }
 
         return total;
     }
 
+    //Method use to veriry input and also return if there is an error or not
     setFieldValidation(id, value) { //Use to update field if he is empty | Return false if there is no error
         let errorField = document.getElementById("input-field-" + id + "-error");
         let input = document.getElementById(id);
@@ -191,6 +208,7 @@ class G103 extends React.Component {
         return false;
     }
 
+    //Used when input data is change
     handleChange(event) { //Use for data
         this.setFieldValidation(event.target.id, event.target.value);
         let value = event.target.value;
@@ -201,6 +219,7 @@ class G103 extends React.Component {
         this.setState({[event.target.name]: value});
     }
 
+    //Used when data of the authorized person is update (because is into state.authorizedPerson{})
     handleAuthorizedPerson(event) { //Use for authorized person section, because this is a custom state object
         event.persist();
         this.setFieldValidation(event.target.id, event.target.value);
@@ -219,12 +238,13 @@ class G103 extends React.Component {
         });
     }
 
+    //Used when data of the expenses is update (because is into state.expenses{})
     handleExpenses(event) { //Use for expenses section, because this is a custom state object
         event.persist();
         this.setFieldValidation(event.target.id, event.target.value);
         let value = event.target.value;
         if (isNumber(value)) {
-            value = parseInt(value);
+            value = parseFloat(value);
         }
 
         this.setState(state => {
@@ -237,12 +257,13 @@ class G103 extends React.Component {
         });
     }
 
+    //Used when data of the funds is update (because is into state.funds{})
     handleFunds(event) { //Use for funds section, because this is a custom state object with particullar "if" statement
         event.persist();
         this.setFieldValidation(event.target.id, event.target.value);
         let value = event.target.value;
         if (isNumber(value)) {
-            value = parseInt(value);
+            value = parseFloat(value);
         }
 
         if (value >= 125) {
@@ -260,6 +281,7 @@ class G103 extends React.Component {
         });
     }
  
+    //Used when radio button are change, ...ids is use to hide and show section of the form
     handleRadioShowOnYes(event, ...ids) { //Use for radio button to hide and show custom part depending on the choice
         this.handleChange(event);
         let section;
@@ -276,17 +298,20 @@ class G103 extends React.Component {
         }
     }
 
+    //Used when submitting data
     handleSubmit(event) {
         event.preventDefault();
 
         if (this.props.appContainer != undefined) {
             let dataToSave = [];
+            //Create a new document
             let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
-            let meData = doc.addSubject({"identifier": "me"});
 
+            //If authorized person is true we added all these data into a new subject
             if (this.state.GAuthPerson === 'yes') { //Authorized person so we check his data
                 let errorData = false;
                 let fieldValidError;
+                //Check if there is any error
                 for (const [key, value] of Object.entries(this.state.authorizedPerson)) {
                     fieldValidError = this.setFieldValidation(key, value);
                     if (!errorData) errorData = fieldValidError; //At the first empty, it will be true whatever 
@@ -297,6 +322,7 @@ class G103 extends React.Component {
                     return false;
                 }
 
+                //Add a new subject
                 let authorizedPersonData = doc.addSubject({"identifier": "authorizedPerson"});
                 authorizedPersonData.addString(schema.givenName, this.state.authorizedPerson.Gfirstname);
                 authorizedPersonData.addString(schema.familyName, this.state.authorizedPerson.Glastname);
@@ -304,11 +330,13 @@ class G103 extends React.Component {
                 authorizedPersonData.addInteger(schema.postalCode, parseInt(this.state.authorizedPerson.GpostalCode));
                 authorizedPersonData.addString(schema.addressLocality, this.state.authorizedPerson.Glocality);
 
+                //We add this subject to the list of subjetcs who will be save
                 dataToSave.push(authorizedPersonData);
             }
-            //Uncomment to save only if the user say yes, else it will go over this step
+            //Uncomment to save only if the user say yes, without condition it will be 0 by default even if the user answer "no" to the expence
             //if (this.state.GElectionExpense === 'yes') { //Incur election expenses
                 let error = false;
+                //Check if there is any error
                 for (const [key, value] of Object.entries(this.state.expenses)) {
                     if (error) {
                         alert("Geen gedeclareerde uitgaven");
@@ -319,9 +347,10 @@ class G103 extends React.Component {
 
                 let buyActionData;
                 let amountChecked;
+                //Loop for each expenses data and create a new subject
                 for (const [key, value] of Object.entries(this.state.expenses)) {
                     //We make that because setState is asynchronous
-                    if (this.state.GElectionExpense === 'no') {
+                    if (this.state.GElectionExpense === 'no') { //Because user can say "yes", complete form and finally say "no" and data will be save through, so we force to be 0 without formatting
                         amountChecked = 0;
                     } else {
                         amountChecked = value.amount;
@@ -330,16 +359,18 @@ class G103 extends React.Component {
                     buyActionData = {
                         identifier: value.key,
                         description: value.description,
-                        price: parseInt(amountChecked),
+                        price: parseFloat(amountChecked),
                         priceCurrency: 'EUR'
                     }
 
+                    //We add this new subject (new expense) to the list who will be save, 1 subject = 1 expense
                     dataToSave.push(createExpense(doc, this.state.profile, buyActionData));
                 }
 
+                //Same as expences but for funds
                 for (const [key, value] of Object.entries(this.state.funds)) {
                     if (error) {
-                        alert("Geen gedeclareerde uitgaven");
+                        alert("Funds are empty");
                         return false;
                     }
                     error = isEmpty(value.amount);
@@ -357,7 +388,7 @@ class G103 extends React.Component {
                     donateActionData = {
                         identifier: value.key,
                         description: value.description,
-                        price: parseInt(amountChecked),
+                        price: parseFloat(amountChecked),
                         priceCurrency: 'EUR'
                     }
 
@@ -365,10 +396,12 @@ class G103 extends React.Component {
                 }
             //}
 
+            //We use thisOject because this is not in the scope of the .then function
             let thisObject = this;
             doc.save(dataToSave).then(function(e) {
                 //alert("Uw data is opgeslagen!");
                 //Redirect to the home page
+                //With setting up redirect state, the component will update and show a success message
                 thisObject.setState({redirect: true});
             });
         } else {
@@ -376,6 +409,7 @@ class G103 extends React.Component {
         }
     }
 
+    //Method to be call in the render to check if we have to redirect
     renderRedirect = () => {
         if (this.state.redirect) {
             return <Redirect to='/formSent' />
@@ -389,7 +423,7 @@ class G103 extends React.Component {
                     <ProfileDoesntExist />
                 );
             } else {
-                return (
+                return ( //<ReactTooltip /> must be there one time to let the component know that it has to find tooltip to show
                     <div id="userForm">
                         {this.renderRedirect()}
                         <h1 className="vl-title vl-title--h1 vl-title--has-border">Aangifte van de verkiezingsuitgaven en van de herkomst van de geldmiddelen door lijsten</h1>
@@ -636,7 +670,7 @@ class G103 extends React.Component {
                                     </div>
                                 </div>
 
-                                <p className="mb-5">Totaalbedrag: {this.getTotalExpense()}</p>
+                                <p className="total-text mb-5">Totaalbedrag: {this.getTotalExpense().toLocaleString()}€</p>
                             </div>
 
                             <div id="sectionOriginOfFund" className="vl-u-hidden">
@@ -727,7 +761,7 @@ class G103 extends React.Component {
                                     </div>
                                 </div>
 
-                                <p>Totaalbedrag: {this.getTotalFunds()}</p>
+                                <p class="total-text">Totaalbedrag: {this.getTotalFunds().toLocaleString()}€</p>
                             </div>
         
                             <button className="vl-button mt-5">
@@ -740,6 +774,8 @@ class G103 extends React.Component {
             }
         } else {
             return (
+                //Show when appContainer is still null or undefined (use in init() from componentDidMount() and componentDidUpdate())
+                //We need the appContainer to fetch data from the solid pod or API
                 <Loading />
             );
         }

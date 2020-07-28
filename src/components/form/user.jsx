@@ -1,5 +1,6 @@
 import React from 'react';
 
+//Basic user form information
 class PersonInput extends React.Component {
     constructor(props) {
       super(props);
