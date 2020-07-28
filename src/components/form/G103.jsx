@@ -636,7 +636,7 @@ class G103 extends React.Component {
                                     </div>
                                 </div>
 
-                                <p>Totaalbedrag: {this.getTotalExpense()}</p>
+                                <p className="mb-5">Totaalbedrag: {this.getTotalExpense()}</p>
                             </div>
 
                             <div id="sectionOriginOfFund" className="vl-u-hidden">
@@ -730,7 +730,7 @@ class G103 extends React.Component {
                                 <p>Totaalbedrag: {this.getTotalFunds()}</p>
                             </div>
         
-                            <button className="vl-button mt-3">
+                            <button className="vl-button mt-5">
                                 <span className="vl-button__label">Onderteken en verstuur</span>
                             </button>
                         </form>
