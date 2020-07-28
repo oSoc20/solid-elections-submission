@@ -1,8 +1,8 @@
 {
-  "name": "sep-submission",
+  "name": "solid-elections-submission",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://osoc20.github.io/sep-submission",
+  "homepage": "https://osoc20.github.io/solid-elections-submission",
   "dependencies": {
     "@govflanders/vl-ui-alert": "^3.11.4",
     "@govflanders/vl-ui-button": "^3.11.4",
