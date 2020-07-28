@@ -48,15 +48,17 @@ class CandidateDataForm extends React.Component {
             if (userDataDoc != null) {
                 let userData = userDataDoc.getSubject("#me");
                 if (userData != null) {
+                    let id = userData.getString(schema.sameAs);
                     this.setState({
                         firstname: userData.getString(schema.givenName),
                         lastname: userData.getString(schema.familyName),
                         locality: userData.getString(schema.addressLocality),
                         postalCode: userData.getInteger(schema.postalCode),
-                        lblodid: userData.getString(schema.sameAs)
+                        lblodid: id
                     });
-                    //It exists, user can't change it
-                    document.getElementById("lblodid").disabled = true;
+                    if (id != null && id != "") {
+                        document.getElementById("lblodid").disabled = true;
+                    }
 
                     let streetNumber = userData.getString(schema.streetAddress).split(', ');
                     if (streetNumber.length === 2) {
