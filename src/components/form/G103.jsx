@@ -109,7 +109,7 @@ class G103 extends React.Component {
                 Glocality: ''
             },
             expenses: { //If help exist, it will be a popup with "?" logo
-                EAuditoryAndOral1: { key: '1.1', description: 'Auditory and oral messages', amount: 0, help: "For example: non-commercial telephone campaigns or an indelible political message on an information carrier." },
+                EAuditoryAndOral1: { key: '1.1', description: 'Auditory and oral messages', amount: 0, help: "Bijvoorbeeld: non-commerciele telefoon campanges of auditieve politieke berichten op informatie dragers" },
                 EWrittenMessage1_1: { key: '2.1.1', description: 'Written messages - Design and production costs in the press', amount: 0 },
                 EWrittenMessage1_2: { key: '2.1.2', description: 'Written messages - Price for the advertising space in the press', amount: 0 },
                 EWrittenMessage2: { key: '2.2', description: 'Written messages - Design and production costs of election brochures', amount: 0 },
@@ -120,7 +120,7 @@ class G103 extends React.Component {
                 EShippingAndDistribution1_2: { key: '3.1.2', description: 'Shipping and distribution - Non-addressed shipments in election printing', amount: 0 },
                 EShippingAndDistribution2: { key: '3.2', description: 'Shipping and distribution - Other costs of distribution', amount: 0 },
                 EShippingAndDistribution3: { key: '3.3', description: 'Shipping and distribution - Costs for e-mails and non-commercial SMS campaigns', amount: 0},
-                EVisualMessage1: { key: '4.1', description: 'Visual messages - A production and rental costs for non-commercial signs of 4 m² or less', amount: 0, help: "The cost of self-created or purchased signs can be written off over three elections in which the political party participates, with a minimum of one third of the cost per election. If these signs have been rented, the rental price must be indicated in full. The rent must be commercially justifiable (e.g. one third of the cost price). The use of fully depreciated signs does not have to be indicated." },
+                EVisualMessage1: { key: '4.1', description: 'Visual messages - A production and rental costs for non-commercial signs of 4 m² or less', amount: 0, help: "De huur of productie kosten van non-commerciële borden kleiner dan 4 m². Deze kosten kunnen verspreid worden over drie verkiezingen waar de partij aan meedoet waarbij minimaal een derde van de kost per verkiezing wordt toegeschreven. Huurprijzen moeten daarintegen volledig worden weergegeven." },
                 EVisualMessage2: { key: '4.2', description: 'Visual messages - Printing and production costs for posters of 4 m² or less', amount: 0 },
                 EVisualMessage3: { key: '4.3', description: 'Visual messages - Internet commercials or internet campaigns', amount: 0 },
                 EVisualMessage4: { key: '4.4', description: 'Visual messages - Other costs for visual messages', amount: 0 },
@@ -339,7 +339,7 @@ class G103 extends React.Component {
 
                 for (const [key, value] of Object.entries(this.state.funds)) {
                     if (error) {
-                        alert("Funds are empty");
+                        alert("Geen gedeclareerde uitgaven");
                         return false;
                     }
                     error = isEmpty(value.amount);
@@ -655,7 +655,7 @@ class G103 extends React.Component {
                                     </div>
                                 </div>
 
-                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Rubriek 2 <FaInfoCircle data-tip="donations in cash and/or the countervalue of donations in kind from natural persons" /></h3>
+                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Rubriek 2 <FaInfoCircle data-tip="Donaties van reguliere personen boven de 125 euro per donateur." /></h3>
                                 <div className="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
@@ -678,7 +678,7 @@ class G103 extends React.Component {
                                     </div>
                                 </div>
 
-                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Rubriek 3 <FaInfoCircle data-tip="sponsorship in cash and/or the equivalent of sponsorship in kind" /></h3>
+                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Rubriek 3 <FaInfoCircle data-tip="Buget afkomstig van sponsoren in bedragen hoger dan 125 per sponsor." /></h3>
                                 <div className="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
