@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c1eee7d9b57af278eeb7e71257f43e62",
+    "revision": "318913b3d929f31bc56a5a73e6536883",
     "url": "/solid-elections-submission/index.html"
   },
   {
-    "revision": "2370f4a84216337935cd",
+    "revision": "8042c42cbb30bc6bda56",
     "url": "/solid-elections-submission/static/css/main.a128a05e.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/solid-elections-submission/static/js/2.4a574edd.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "2370f4a84216337935cd",
-    "url": "/solid-elections-submission/static/js/main.bba8ab5b.chunk.js"
+    "revision": "8042c42cbb30bc6bda56",
+    "url": "/solid-elections-submission/static/js/main.d184b072.chunk.js"
   },
   {
     "revision": "b9792f7d8aea77c39cfb",
