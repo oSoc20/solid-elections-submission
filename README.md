@@ -23,7 +23,7 @@ You will also see any lint errors in the console.
 `npm run build`
 
 ### How to deploy
-**We use github to deploy.**
+**We use github to deploy.**<br/>
 First, you have to check in package.json if the homepage is the link to https://user.github.io/repo-name<br/>
 Then, you can use the command :
 `npm run deploy`
