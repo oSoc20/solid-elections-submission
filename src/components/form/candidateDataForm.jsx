@@ -78,6 +78,9 @@ class CandidateDataForm extends React.Component {
                     }
                 }
             }
+        } else {
+            //If file doesn't exist we can load it
+            this.setState({"loaded": true});
         }
     }
 

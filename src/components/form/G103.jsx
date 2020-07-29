@@ -89,6 +89,9 @@ class G103 extends React.Component {
                     }
                 }
             }
+        } else {
+            //Profile doesn't exist so it's loaded but there is an error (defined with profileExist().then(...))
+            this.setState({"loaded": true});
         }
     }
 
