@@ -15,6 +15,7 @@
     "@govflanders/vl-ui-input-field": "^3.11.4",
     "@govflanders/vl-ui-input-group": "^3.11.4",
     "@govflanders/vl-ui-link-list": "^3.11.4",
+    "@govflanders/vl-ui-loader": "^3.11.4",
     "@govflanders/vl-ui-radio": "^3.11.4",
     "@govflanders/vl-ui-tabs": "^3.11.4",
     "@govflanders/vl-ui-titles": "^3.11.4",

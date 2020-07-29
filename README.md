@@ -51,7 +51,7 @@ We decided to use **ReactJS**. This was the first time our team members had to u
 When you arrive at the website for the first time, you have to create an account on your solid server (solid.community or inrupt by default)<br/>
 Then, you have to login and authorize the app to access to read, write, and append you solid pod.<br/>
 After this step, you have to complete your profile in order to to create a new declaration.<br/>
-Complete your profile with your name and last name (which can be removed, as with LBLOD ID you can fetch this data), address, and LBLOD ID. (This LBLOD ID can be replaced by e-ID)<br/>
+Complete your profile with LBLOD ID and address. (This LBLOD ID can be replaced by e-ID later), if LBLOD ID is valid first name and last name will be fetch from the database.<br/>
 If your profile is completed and saved, you will now have access to a new form declaration. <br/>
 For this project we created the form G103. You have to follow these steps and complete the fields, and when it's done, you have to sign and send it.<br/>
 If there is no error, you will be redirected to a page "/formSent" with a success message.
@@ -92,11 +92,10 @@ We have some remarks below
 1. Webcomponent v3's icon is not working
 
 ### Improvements (Design)
-1. Remove user data into form G103 because we already know their data (mandate person from the list)
-1. Remove firstname and lastname in profile, input because we can fetch them from LBLOD ID (or e-ID)
 1. Change component inputAmount.jsx "€" to webcomponent icon
 
 ### Improvements (Technical)
 1. Use e-ID instead of LBLOD ID
 1. We use schema.org but it could be nice to use your own vocabulary
 1. Change component inputAmount.jsx "€" to webcomponent icon
+1. Create others forms

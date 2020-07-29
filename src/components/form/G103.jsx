@@ -5,7 +5,6 @@ import {createAppDocument, listDocuments, createExpense, createDonation} from '.
 import {isEmpty, isNumber, isOnlyText} from '../../utils/DataValidator';
 import Loading from '../alert/loading';
 import ProfileDoesntExist from '../alert/profileDoesntExist';
-import PersonInput from './user';
 import InputAmount from '../form/inputAmount';
 import { Redirect } from 'react-router-dom';
 import {fetchGetDb} from '../../utils/RequestDatabase';
@@ -24,7 +23,6 @@ class G103 extends React.Component {
         this.handleRadioShowOnYes = this.handleRadioShowOnYes.bind(this);
         this.handleExpenses = this.handleExpenses.bind(this);
         this.handleFunds = this.handleFunds.bind(this);
-        this.handleAuthorizedPerson = this.handleAuthorizedPerson.bind(this);
         this.state.loaded = false;
         this.state.error = true;
         this.state.redirect = false;
@@ -114,15 +112,6 @@ class G103 extends React.Component {
         this.state = {
             GAuthPerson: 'no', 
             GElectionExpense: 'no', 
-            //AuthorizedPerson
-            authorizedPerson: { //Empty because we need to check if any is empty when submitting
-                Gfirstname: '', 
-                Glastname: '', 
-                Gstreet: '', 
-                GstreetNumber: '', 
-                GpostalCode: '', 
-                Glocality: ''
-            },
             expenses: { //If help exist, it will be a popup with "?" logo, we make popup with hover and clickable to let you choose
                 EAuditoryAndOral1: { key: '1.1', description: 'Auditory and oral messages', amount: 0, help: "Bijvoorbeeld: non-commerciele telefoon campanges of auditieve politieke berichten op informatie dragers" },
                 EWrittenMessage1_1: { key: '2.1.1', description: 'Written messages - Design and production costs in the press', amount: 0 },
@@ -222,25 +211,6 @@ class G103 extends React.Component {
         this.setState({[event.target.name]: value});
     }
 
-    //Used when data of the authorized person is update (because is into state.authorizedPerson{})
-    handleAuthorizedPerson(event) { //Use for authorized person section, because this is a custom state object
-        event.persist();
-        this.setFieldValidation(event.target.id, event.target.value);
-        let value = event.target.value;
-        if (isNumber(value)) {
-            value = parseInt(value);
-        }
-
-        this.setState(state => {
-            let authorizedPersonData = state.authorizedPerson;
-            authorizedPersonData[event.target.name] = value;
-
-            return {
-                authorizedPerson: authorizedPersonData
-            };
-        });
-    }
-
     //Used when data of the expenses is update (because is into state.expenses{})
     handleExpenses(event) { //Use for expenses section, because this is a custom state object
         event.persist();
@@ -310,32 +280,11 @@ class G103 extends React.Component {
             //Create a new document
             let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
 
-            //If authorized person is true we added all these data into a new subject
-            if (this.state.GAuthPerson === 'yes') { //Authorized person so we check his data
-                let errorData = false;
-                let fieldValidError;
-                //Check if there is any error
-                for (const [key, value] of Object.entries(this.state.authorizedPerson)) {
-                    fieldValidError = this.setFieldValidation(key, value);
-                    if (!errorData) errorData = fieldValidError; //At the first empty, it will be true whatever 
-                }
+            //We store if he is a mandate person or not (yes means he is the head of the list)
+            let authorizedPersonData = doc.addSubject({"identifier": "authorizedPerson"});
+            authorizedPersonData.addString(schema.director, this.state.GAuthPerson);
+            dataToSave.push(authorizedPersonData);
 
-                if (errorData) {
-                    alert("Geen geautoriseerde personen gevonden");
-                    return false;
-                }
-
-                //Add a new subject
-                let authorizedPersonData = doc.addSubject({"identifier": "authorizedPerson"});
-                authorizedPersonData.addString(schema.givenName, this.state.authorizedPerson.Gfirstname);
-                authorizedPersonData.addString(schema.familyName, this.state.authorizedPerson.Glastname);
-                authorizedPersonData.addString(schema.streetAddress, this.state.authorizedPerson.Gstreet + ", " + this.state.authorizedPerson.GstreetNumber);
-                authorizedPersonData.addInteger(schema.postalCode, parseInt(this.state.authorizedPerson.GpostalCode));
-                authorizedPersonData.addString(schema.addressLocality, this.state.authorizedPerson.Glocality);
-
-                //We add this subject to the list of subjetcs who will be save
-                dataToSave.push(authorizedPersonData);
-            }
             //Uncomment to save only if the user say yes, without condition it will be 0 by default even if the user answer "no" to the expence
             //if (this.state.GElectionExpense === 'yes') { //Incur election expenses
                 let error = false;
@@ -449,17 +398,13 @@ class G103 extends React.Component {
                                 <p>Bent u een persoon die in naam van de desbetreffende lijsttrekker dit formulier invult en daartoe gemachtigd is?</p>
                                 <div className="form-group vl-form-col--12-12">
                                     <label className="vl-radio" htmlFor="GAuthPersonYes">
-                                        <input className="vl-radio__toggle" type="radio" id="GAuthPersonYes" name="GAuthPerson" value="yes" onChange={(e) => this.handleRadioShowOnYes(e, "sectionAuthorized")} checked={this.state.GAuthPerson === 'yes'} />
+                                        <input className="vl-radio__toggle" type="radio" id="GAuthPersonYes" name="GAuthPerson" value="yes" onChange={(e) => this.handleRadioShowOnYes(e)} checked={this.state.GAuthPerson === 'yes'} />
                                         <div className="vl-radio__label">Ja</div>
                                     </label>
                                     <label className="vl-radio" htmlFor="GAuthPersonNo">
-                                        <input className="vl-radio__toggle" type="radio" id="GAuthPersonNo" name="GAuthPerson" value="no" onChange={(e) => this.handleRadioShowOnYes(e, "sectionAuthorized")} checked={this.state.GAuthPerson === 'no'} />
+                                        <input className="vl-radio__toggle" type="radio" id="GAuthPersonNo" name="GAuthPerson" value="no" onChange={(e) => this.handleRadioShowOnYes(e)} checked={this.state.GAuthPerson === 'no'} />
                                         <div className="vl-radio__label">Nee</div>
                                     </label>
-                                </div>
-
-                                <div id="sectionAuthorized" className="form-group vl-form-col--12-12 vl-u-hidden">
-                                    <PersonInput prefix="G" handleChange={this.handleAuthorizedPerson} />
                                 </div>
 
                                 <p>Heeft de lijst waarvan u de lijsttrekker bent, voor de verkiezingen van 14 oktober 2018 verkiezingsuitgaven gedaan? </p>

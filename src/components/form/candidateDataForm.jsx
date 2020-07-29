@@ -5,6 +5,8 @@ import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
 import {isEmpty, isNumber, isOnlyText} from '../../utils/DataValidator';
 import Loading from '../alert/loading';
 import {fetchGetDb, fetchPostDb} from '../../utils/RequestDatabase';
+import ReactTooltip from "react-tooltip";
+import { FaInfoCircle } from 'react-icons/fa';
 
 class CandidateDataForm extends React.Component {
     FILE_NAME = "me.ttl";
@@ -34,7 +36,7 @@ class CandidateDataForm extends React.Component {
     }
 
     async setDefaultValue() {
-        this.state = {firstname: '', lastname: '', street: '', streetNumber: '', locality: '', postalCode: '', lblodid: ''};
+        this.state = {street: '', streetNumber: '', locality: '', postalCode: '', lblodid: ''};
     }
 
     //Used to fetch profile information if already exist on the solid pod
@@ -54,8 +56,6 @@ class CandidateDataForm extends React.Component {
                 if (userData != null) {
                     let id = userData.getString(schema.sameAs);
                     this.setState({
-                        firstname: userData.getString(schema.givenName),
-                        lastname: userData.getString(schema.familyName),
                         locality: userData.getString(schema.addressLocality),
                         postalCode: userData.getInteger(schema.postalCode),
                         lblodid: id
@@ -67,6 +67,22 @@ class CandidateDataForm extends React.Component {
                     if (id != null && id != "") { //Used to disabled the LBLOD ID if already exist (user can submit one but not change it)
                         let lblodField = document.getElementById("lblodid");
                         if (lblodField != null) lblodField.disabled = true;
+
+                        //We fetch name and family name from the LBLOD ID
+                        let uri = new URLSearchParams({
+                            personURI: id
+                        });
+                        let response = await fetchGetDb("person", uri);
+
+                        if (response.success) { //If there is an error with fetch
+                            if (response.result.success && response.result.result.length > 0) {
+                                let firstnameField = document.getElementById("firstname");
+                                let lastnameField = document.getElementById("lastname");
+
+                                if (firstnameField != null) firstnameField.value = response.result.result[0].name.value;
+                                if (lastnameField != null) lastnameField.value = response.result.result[0].familyName.value;
+                            }
+                        }
                     }
 
                     let streetNumber = userData.getString(schema.streetAddress).split(', ');
@@ -153,6 +169,10 @@ class CandidateDataForm extends React.Component {
             if (response.result.result.length == 0) { //because it return an array
                 errorData = true;
                 errorMessage = "This LBLOD ID doesn't exist!";
+            } else {
+                console.log(response.result);
+                document.getElementById("firstname").value = response.result.result[0].name.value;
+                document.getElementById("lastname").value = response.result.result[0].familyName.value;
             }
         } else { //An error occured with the API, we show the message to the user
             errorData = true;
@@ -189,8 +209,6 @@ class CandidateDataForm extends React.Component {
         //We add a subject
         const formData = doc.addSubject({"identifier": "me"});
         //We add value
-        formData.addString(schema.givenName, this.state.firstname);
-        formData.addString(schema.familyName, this.state.lastname);
         formData.addString(schema.streetAddress, this.state.street + ", " + this.state.streetNumber);
         formData.addInteger(schema.postalCode, parseInt(this.state.postalCode));
         formData.addString(schema.addressLocality, this.state.locality);
@@ -213,15 +231,21 @@ class CandidateDataForm extends React.Component {
                     <h1 className="vl-title vl-title--h1 vl-title--has-border">Uw informatie:</h1>
                     <form onSubmit={this.handleSubmit}>
                         <div className="vl-grid">
+                            <div className="form-group vl-col--12-12">
+                                <label className="vl-form__label" htmlFor="lblodid">LBLOD ID :</label>
+                                <input type="text" id="lblodid" placeholder="http://data.lblod.info/id/personen/xxx" className="vl-input-field vl-input-field--block" name="lblodid" value={this.state.lblodid} onChange={this.handleChange}></input>
+                                <p className="vl-form__error" id="input-field-lblodid-error"></p>
+                            </div>
+
                             <div className="form-group vl-form-col--6-12">
-                                <label className="vl-form__label" htmlFor="firstname">Voornaam :</label>
-                                <input type="text" id="firstname" className="vl-input-field vl-input-field--block" name="firstname" value={this.state.firstname} onChange={this.handleChange}></input>
+                                <label className="vl-form__label" htmlFor="firstname">Voornaam : <FaInfoCircle data-tip="Dit veld wordt automatisch aangevuld bij een geldig LBLOD ID." /></label>
+                                <input type="text" disabled={true} id="firstname" className="vl-input-field vl-input-field--block" name="firstname"></input>
                                 <p className="vl-form__error" id="input-field-firstname-error"></p>
                             </div>
     
                             <div className="form-group vl-form-col--6-12">
                                 <label className="vl-form__label" htmlFor="lastname">Achternaam :</label>
-                                <input type="text" id="lastname" className="vl-input-field vl-input-field--block" name="lastname" value={this.state.lastname} onChange={this.handleChange}></input>
+                                <input type="text" disabled={true} id="lastname" className="vl-input-field vl-input-field--block" name="lastname"></input>
                                 <p className="vl-form__error" id="input-field-lastname-error"></p>
                             </div>
     
@@ -248,18 +272,13 @@ class CandidateDataForm extends React.Component {
                                 <input type="number" min="0" id="postalCode" className="vl-input-field vl-input-field--block" name="postalCode" value={this.state.postalCode} onChange={this.handleChange}></input>
                                 <p className="vl-form__error" id="input-field-postalCode-error"></p>
                             </div>
-
-                            <div className="form-group vl-col--12-12">
-                                <label className="vl-form__label" htmlFor="lblodid">LBLOD ID :</label>
-                                <input type="text" id="lblodid" placeholder="http://data.lblod.info/id/personen/xxx" className="vl-input-field vl-input-field--block" name="lblodid" value={this.state.lblodid} onChange={this.handleChange}></input>
-                                <p className="vl-form__error" id="input-field-lblodid-error"></p>
-                            </div>
                         </div>
 
                         <button className="vl-button mt-3">
                             <span className="vl-button__label">Opslaan</span>
                         </button>
                     </form>
+                    <ReactTooltip />
                 </div>
             );
         } else {
