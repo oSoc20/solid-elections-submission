@@ -1,68 +1,102 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+**Team name :** Solid Elections
+**Declaration team members :** [Damien Brebion (Dev)](https://www.linkedin.com/in/damien-brebion/), [Bram Kreulen (Dev)](https://www.linkedin.com/in/bram-kreulen-3ba60a1b3/), [Akvilė Kovalčikaitė (Communication)](https://www.linkedin.com/in/kovalcikaite)
+**Project :** Solid Elections (Declaration part)
+**Project's description :** Digitize expense form declaration.
 
-In the project directory, you can run:
+## Starting
+### How to start
+First, make the command :
+```
+npm install
+npm start
+```
 
-### `npm start`
+Runs the app in the development mode.
+Open http://localhost:3000 to view it in the browser.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
+The page will reload if you make edits.
 You will also see any lint errors in the console.
 
-### `npm test`
+### How to build
+`npm run build`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### How to deploy
+**We use github to deploy.**
+First, you have to check in package.json if the homepage is the link to https://user.github.io/repo-name
+Then, you can use the command :
+`npm run deploy`
 
-### `npm run build`
+## Technologies
+### Solid
+Solid is used to allow the user to control their data. Users can authorize for the data to be publicly viewed on the website, and withdraw said authorization.
+You can heberg your own solid server and let the user use it to create their account. People can also create their own servers.
+Solid uses WebID to identify the user with Linked Data.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### WebID
+It is a unique link to your profile, which represents your ID online for your solid pod (eg: https://_username_.solid.community/card#me)
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Linked Data
+Linked data offers the ability to to publish data in an accessible and reusable format that allows people to link and combine data from different sources.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Useful link : https://lod-cloud.net/clouds/lod-cloud.svg 
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Frameworks
+We decided to use **ReactJS**. This was the first time our team members had to use a front-end framework. Initially, we tried to work with EmberJS, but it was too difficult to learn a new framework in such a short amount of time.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## The project
+### How it works
+When you arrive at the website for the first time, you have to create an account on your solid server (solid.community or inrupt by default)
+Then, you have to login and authorize the app to access to read, write, and append you solid pod.
+After this step, you have to complete your profile in order to to create a new declaration.
+Complete your profile with your name and last name (which can be removed, as with LBLOD ID you can fetch this data), address, and LBLOD ID. (This LBLOD ID can be replaced by e-ID)
+If your profile is completed and saved, you will now have access to a new form declaration. 
+For this project we created the form G103. You have to follow these steps and complete the fields, and when it's done, you have to sign and send it.
+If there is no error, you will be redirected to a page "/formSent" with a success message.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### More details
+When you save your profile, it will fetch your database to check if your LBLOD ID is defined. If it is not, the user will get an alert. If it is defined, then we fetch the database again to store our WebID and LBLOD ID. If it's a success, we can check with _updated_ if the LBLOD ID has been added or not (already there). If success is true, we can save the data to the solid pod at public/solidelections/me.ttl#me
+For the form, we ask to fetch the name of the list and tracking number with the LBLOD ID. An error message will come up in case there is a problem with the request.
+Then the user can fill in the fields and "sign and send". This step will check all data (empty, not a number, ...) and if everything is working, the file will be created in the solid pod at public/solidelections/g103.ttl with differents subjects for each data.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Storage
+Each file is stored at : solid pod/public/solidelections/_file_.ttl
+Where _file_ is me.ttl and g103.ttl for now. 
+We recommend to make a folder declarations/_year_/_file_.ttl
+Where _year_ is the year and _file_ is the declaration, so you can fetch old files and edit in case there is a mistake made.
 
-## Learn More
+### Working with database
+Our database provides some endpoint, but to let them know who we are, you have to send your WebID and LBLOD ID (or e-ID) and say :
+I'm _WebID_ and my data is store at _LBLOD ID_, this ID allows you to know which person has this solid pod.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### States
+Working on : https://osoc20.github.io/solid-elections-submission/
+We have some remarks below
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Problem encountered, but solved
+1. _App_ don't have access to your solid pod : Because popup must be on the same server as the APP
+1. Infinite loading : We have to set the state loading: true if the user's profile does not exist
+1. Favicon doesn't appear on build : Because it was too big. For that we use a website to generate : https://realfavicongenerator.net/
+1. Github page is blank: Because package.json/homepage isn't correct
 
-### Code Splitting
+### Bugs (Design)
+1. If we login, logout and login with **another account** you have to completelly refresh the page, because profile data is not updated
+--> Idea : Store state to know if person is logged out or not, and when the state becomes true, we refresh the container
+1. Refresh page on github create a 404 error because of Routing
+--> Idea : /
+1. Can't use popup.html in local href on React build, we have to use the absoluthe link (https://site.domain/popup.html) **Must be on the same server as the App**
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+### Bugs (Technical)
+1. Webcomponent v3's icon is not working
 
-### Analyzing the Bundle Size
+### Improvements (Design)
+1. Remove user data into form G103 because we already know their data (mandate person from the list)
+1. Remove firstname and lastname in profile, input because we can fetch them from LBLOD ID (or e-ID)
+1. Change component inputAmount.jsx "€" to webcomponent icon
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+### Improvements (Technical)
+1. Use e-ID instead of LBLOD ID
+1. We use schema.org but it could be nice to use your own vocabulary
+1. Change component inputAmount.jsx "€" to webcomponent icon
