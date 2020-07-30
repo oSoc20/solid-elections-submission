@@ -67,6 +67,36 @@ Where _file_ is me.ttl and g103.ttl for now. <br/>
 We recommend to make a folder declarations/_year_/_file_.ttl<br/>
 Where _year_ is the year and _file_ is the declaration, so you can fetch old files and edit in case there is a mistake made.
 
+### Storage structure
+#### me.ttl
+1. subject : #me
+    - [streetAddress](https://schema.org/streetAddress) : street, number (street and number are different field but we put these together
+    - [postalCode](https://schema.org/postalCode) : postal code
+    - [addressLocality](https://schema.org/addressLocality) : locality
+    - [sameAs](https://schema.org/sameAs) : LBLOD ID
+
+#### g103.ttl
+1. subject : #authorizedPerson
+    - [director](https://schema.org/director): yes or no (if he is a mandate person)
+
+1. subject : _generated id_ (expenses)
+    * BuyActionData:
+        - type : [https://schema.org/BuyAction](https://schema.org/BuyAction)
+        - [agent](http://schema.org/agent) : me.ttl (https://_<user>_.solid.community/public/solidelections/me.ttl#me)
+        - [identifier](https://schema.org/identifier) : Expense ID
+        - [description](http://schema.org/description) : Expense Description
+        - [price](http://schema.org/price) : Expense amount
+        - [currency](http://schema.org/priceCurrency) : Expense currency (€)
+
+1. subject : _generated id_ (funds)
+    * DonateActionData:
+        - type : [http://schema.org/DonateAction](http://schema.org/DonateAction) 
+        - [recipient](https://schema.org/recipient) : me.ttl (https://_<user>_.solid.community/public/solidelections/me.ttl#me)
+        - [identifier](https://schema.org/identifier) : Fund ID
+        - [description](http://schema.org/description) : Fund Description
+        - [price](http://schema.org/price) : Fund amount
+        - [currency](http://schema.org/priceCurrency) : Fund currency (€)
+
 ### Working with database
 Our database provides some endpoint, but to let them know who we are, you have to send your WebID and LBLOD ID (or e-ID) and say :
 I'm _WebID_ and my data is store at _LBLOD ID_, this ID allows you to know which person has this solid pod.<br/>
