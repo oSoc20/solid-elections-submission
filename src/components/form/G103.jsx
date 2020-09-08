@@ -10,6 +10,7 @@ import { Redirect } from 'react-router-dom';
 import {fetchGetDb} from '../../utils/RequestDatabase';
 import ReactTooltip from "react-tooltip";
 import { FaInfoCircle } from 'react-icons/fa';
+import deadlines from '../../data/deadline.json';
 
 class G103 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
@@ -26,6 +27,7 @@ class G103 extends React.Component {
         this.state.loaded = false;
         this.state.error = true;
         this.state.redirect = false;
+        this.state.formSending = false;
     }
 
     componentDidMount() {
@@ -34,9 +36,23 @@ class G103 extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps) { //Trigger when state or props change but not with route, we use it because appContainer is async
+    componentDidUpdate(prevProps, prevStates) { //Trigger when state or props change but not with route, we use it because appContainer is async
         if (this.props.appContainer !== undefined && this.props.appContainer != prevProps.appContainer) {
             this.init();
+        }
+
+        if (prevStates.formSending != this.state.formSending) {
+            this.setButtonLoading(this.state.formSending);
+        }
+    }
+
+    setButtonLoading(state) {
+        let button = document.getElementById("sendButton");
+
+        if (state) {
+            button.innerText = "Please wait...";
+        } else {
+            button.innerText = "Onderteken en verstuur";
         }
     }
 
@@ -275,6 +291,8 @@ class G103 extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
 
+        this.setState({"formSending": true});
+
         if (this.props.appContainer != undefined) {
             let dataToSave = [];
             //Create a new document
@@ -292,6 +310,7 @@ class G103 extends React.Component {
                 for (const [key, value] of Object.entries(this.state.expenses)) {
                     if (error) {
                         alert("Geen gedeclareerde uitgaven");
+                        this.setState({"formSending": false});
                         return false;
                     }
                     error = isEmpty(value.amount);
@@ -323,6 +342,7 @@ class G103 extends React.Component {
                 for (const [key, value] of Object.entries(this.state.funds)) {
                     if (error) {
                         alert("Funds are empty");
+                        this.setState({"formSending": false});
                         return false;
                     }
                     error = isEmpty(value.amount);
@@ -348,6 +368,15 @@ class G103 extends React.Component {
                 }
             //}
 
+            let errorForm = document.getElementById("error-form");
+            if (this.getTotalExpense() != this.getTotalFunds()) {
+                errorForm.innerText = "Het totaal van de uitgaven is niet gelijk aan het totaalbedrag waarvan u de herkomst aangaf.";
+                this.setState({"formSending": false});
+                return false;
+            }
+
+            errorForm.innerText = "";
+
             //We use thisOject because this is not in the scope of the .then function
             let thisObject = this;
             doc.save(dataToSave).then(function(e) {
@@ -359,6 +388,8 @@ class G103 extends React.Component {
         } else {
             alert("Er is geen toegang tot uw Solid pod.");
         }
+
+        this.setState({"formSending": false});
     }
 
     //Method to be call in the render to check if we have to redirect
@@ -367,7 +398,7 @@ class G103 extends React.Component {
             return <Redirect to='/formSent' />
         }
     }
-  
+
     render() {
         if (this.state.loaded) {
             if (this.state.error) {
@@ -422,6 +453,8 @@ class G103 extends React.Component {
 
                             <div id="sectionElectionExpenditure" className="vl-u-hidden">
                                 <h2 className="vl-title vl-title--h2 vl-title--has-border">Aangifte van de verkiezingsuitgaven</h2>
+
+                                <p className="text-bold">You can expenses maximum TODO€. (Also add security before submitting)</p>
 
                                 <h3 className="vl-title vl-title--h3 vl-title--has-border">Auditieve en mondelinge boodschappen</h3>
                                 <div className="vl-grid">
@@ -709,10 +742,14 @@ class G103 extends React.Component {
                                     </div>
                                 </div>
 
-                                <p class="total-text">Totaalbedrag: {this.getTotalFunds().toLocaleString()}€</p>
+                                <p className="total-text">Totaalbedrag: {this.getTotalFunds().toLocaleString()}€</p>
                             </div>
+
+                            <p id="error-form" className="vl-form__error"></p>
+
+                            <p className="text-bold">Verzend dit formulier ten laatste op {deadlines.forms.g103.deadline}.</p>
         
-                            <button className="vl-button mt-5">
+                            <button id="sendButton" className="vl-button mt-5" disabled={this.state.formSending}>
                                 <span className="vl-button__label">Onderteken en verstuur</span>
                             </button>
                         </form>

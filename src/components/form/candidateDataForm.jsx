@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments} from '../../utils/SolidWrapper';
@@ -20,6 +20,7 @@ class CandidateDataForm extends React.Component {
     }
 
     init() {
+        console.log("Initialising user data...");
         this.fetchUserData();
     }
 
@@ -78,6 +79,8 @@ class CandidateDataForm extends React.Component {
                             if (response.result.success && response.result.result.length > 0) {
                                 let firstnameField = document.getElementById("firstname");
                                 let lastnameField = document.getElementById("lastname");
+
+                                //console.log(response.result.result[0].name.value);
 
                                 if (firstnameField != null) firstnameField.value = response.result.result[0].name.value;
                                 if (lastnameField != null) lastnameField.value = response.result.result[0].familyName.value;
