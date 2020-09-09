@@ -351,9 +351,6 @@ class A105 extends React.Component {
                         let field = document.getElementById(key);
 
                         error = (field.getAttribute("data-min") == "125" && value.amount != 0 && value.amount < 125) || (field.getAttribute("data-max") == "125" && value.amount > 125);
-                    
-                        console.log("error : " + error);
-                        console.log(field);
                     }
                 }
                 
