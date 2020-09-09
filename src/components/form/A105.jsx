@@ -5,16 +5,18 @@ import {createAppDocument, listDocuments, createExpense, createDonation} from '.
 import {isEmpty, isNumber, isOnlyText} from '../../utils/DataValidator';
 import Loading from '../alert/loading';
 import ProfileDoesntExist from '../alert/profileDoesntExist';
-import InputAmount from '../form/inputAmount';
+import InputAmount from './inputAmount';
 import { Redirect } from 'react-router-dom';
 import {fetchGetDb} from '../../utils/RequestDatabase';
 import ReactTooltip from "react-tooltip";
 import { FaInfoCircle } from 'react-icons/fa';
 import deadlines from '../../data/deadline.json';
+import Help from "../alert/help";
 
-class G103 extends React.Component {
+class A105 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
-    FILE_NAME = "g103.ttl";
+    FILE_ID = "a105";
+    FILE_NAME = this.FILE_ID + ".ttl";
 
     constructor(props) {
         super(props);
@@ -50,7 +52,7 @@ class G103 extends React.Component {
         let button = document.getElementById("sendButton");
 
         if (state) {
-            button.innerText = "Please wait...";
+            button.innerText = "Wacht even...";
         } else {
             button.innerText = "Onderteken en verstuur";
         }
@@ -126,7 +128,6 @@ class G103 extends React.Component {
 
     async setDefaultValue() {
         this.state = {
-            GAuthPerson: 'no', 
             GElectionExpense: 'no', 
             expenses: { //If help exist, it will be a popup with "?" logo, we make popup with hover and clickable to let you choose
                 EAuditoryAndOral1: { key: '1.1', description: 'Auditory and oral messages', amount: 0, help: "Bijvoorbeeld: non-commerciele telefoon campanges of auditieve politieke berichten op informatie dragers" },
@@ -140,7 +141,7 @@ class G103 extends React.Component {
                 EShippingAndDistribution1_2: { key: '3.1.2', description: 'Shipping and distribution - Non-addressed shipments in election printing', amount: 0 },
                 EShippingAndDistribution2: { key: '3.2', description: 'Shipping and distribution - Other costs of distribution', amount: 0 },
                 EShippingAndDistribution3: { key: '3.3', description: 'Shipping and distribution - Costs for e-mails and non-commercial SMS campaigns', amount: 0},
-                EVisualMessage1: { key: '4.1', description: 'Visual messages - A production and rental costs for non-commercial signs of 4 m² or less', amount: 0, help: "De huur of productie kosten van non-commerciële borden kleiner dan 4 m². Deze kosten kunnen verspreid worden over drie verkiezingen waar de partij aan meedoet waarbij minimaal een derde van de kost per verkiezing wordt toegeschreven. Huurprijzen moeten daarintegen volledig worden weergegeven." },
+                EVisualMessage1: { key: '4.1', description: 'Visual messages - A production and rental costs for non-commercial signs of 4 m² or less', amount: 0, help: "De kostprijs van de borden die zelf zijn aangemaakt of aangekocht, kan worden afgeschreven over drie verkiezingen waaraan de politieke partij deelneemt, met een minimum van een derde van de kostprijs per verkiezing. Als die borden zijn gehuurd, moet de huurprijs in zijn geheel aangegeven worden. De huurprijs moet commercieel verantwoord zijn (bijvoorbeeld een derde van de kostprijs). Het gebruik van volledig afgeschreven borden hoeft niet te worden aangegeven." },
                 EVisualMessage2: { key: '4.2', description: 'Visual messages - Printing and production costs for posters of 4 m² or less', amount: 0 },
                 EVisualMessage3: { key: '4.3', description: 'Visual messages - Internet commercials or internet campaigns', amount: 0 },
                 EVisualMessage4: { key: '4.4', description: 'Visual messages - Other costs for visual messages', amount: 0 },
@@ -255,9 +256,14 @@ class G103 extends React.Component {
             value = parseFloat(value);
         }
 
-        if (value >= 125) {
-            let section = document.getElementById("input-field-" + event.target.id + "-error");
-            section.innerHTML = "Let op, dit bedrag is hoger dan €125. Vul daarom ook formulier G106 in.";
+        let section = document.getElementById("input-field-" + event.target.id + "-error");
+
+        if (event.target.getAttribute("data-min") == "125" && value > 0) {
+            if (value > 125) {
+                section.innerHTML = "Let op! U vult giften in die €125 of hoger bedragen. Vul daarom ook formulier G104 in.";
+            } else {
+                section.innerHTML = "Het bedrag dat u ingaf is lager dan 125€ en moet u in het veld hiernaast invullen.";
+            }
         }
 
         this.setState(state => {
@@ -298,11 +304,6 @@ class G103 extends React.Component {
             //Create a new document
             let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
 
-            //We store if he is a mandate person or not (yes means he is the head of the list)
-            let authorizedPersonData = doc.addSubject({"identifier": "authorizedPerson"});
-            authorizedPersonData.addString(schema.director, this.state.GAuthPerson);
-            dataToSave.push(authorizedPersonData);
-
             //Uncomment to save only if the user say yes, without condition it will be 0 by default even if the user answer "no" to the expence
             //if (this.state.GElectionExpense === 'yes') { //Incur election expenses
                 let error = false;
@@ -341,11 +342,19 @@ class G103 extends React.Component {
                 //Same as expences but for funds
                 for (const [key, value] of Object.entries(this.state.funds)) {
                     if (error) {
-                        alert("Funds are empty");
+                        alert("De fondsen zijn niet correct ingevuld");
                         this.setState({"formSending": false});
                         return false;
                     }
                     error = isEmpty(value.amount);
+                    if (!error) {
+                        let field = document.getElementById(key);
+
+                        error = (field.getAttribute("data-min") == "125" && value.amount != 0 && value.amount < 125) || (field.getAttribute("data-max") == "125" && value.amount > 125);
+                    
+                        console.log("error : " + error);
+                        console.log(field);
+                    }
                 }
                 
                 let donateActionData;
@@ -409,7 +418,7 @@ class G103 extends React.Component {
                 return ( //<ReactTooltip /> must be there one time to let the component know that it has to find tooltip to show
                     <div id="userForm">
                         {this.renderRedirect()}
-                        <h1 className="vl-title vl-title--h1 vl-title--has-border">Aangifte van de verkiezingsuitgaven en van de herkomst van de geldmiddelen door lijsten</h1>
+                        <h1 className="vl-title vl-title--h1 vl-title--has-border">Aangifte van de verkiezingsuitgaven en van de herkomst van de geldmiddelen door kandidaten</h1>
                         <form onSubmit={this.handleSubmit}>
                             <h2 className="vl-title vl-title--h2 vl-title--has-border">Algemeen</h2>
 
@@ -419,23 +428,11 @@ class G103 extends React.Component {
                                     <input type="text" id="Gnamelist" disabled={true} className="vl-input-field vl-input-field--block" name="Gnamelist"></input>
                                     <p className="vl-form__error" id="input-field-Gnamelist-error"></p>
                                 </div>
-        
+
                                 <div className="form-group vl-form-col--4-12">
                                     <label className="vl-form__label" htmlFor="Gtrackingnumber">Volgnummer :</label>
                                     <input type="number" min="0" disabled={true} id="Gtrackingnumber" className="vl-input-field vl-input-field--block" name="Gtrackingnumber"></input>
                                     <p className="vl-form__error" id="input-field-Gtrackingnumber-error"></p>
-                                </div>
-
-                                <p>Bent u een persoon die in naam van de desbetreffende lijsttrekker dit formulier invult en daartoe gemachtigd is?</p>
-                                <div className="form-group vl-form-col--12-12">
-                                    <label className="vl-radio" htmlFor="GAuthPersonYes">
-                                        <input className="vl-radio__toggle" type="radio" id="GAuthPersonYes" name="GAuthPerson" value="yes" onChange={(e) => this.handleRadioShowOnYes(e)} checked={this.state.GAuthPerson === 'yes'} />
-                                        <div className="vl-radio__label">Ja</div>
-                                    </label>
-                                    <label className="vl-radio" htmlFor="GAuthPersonNo">
-                                        <input className="vl-radio__toggle" type="radio" id="GAuthPersonNo" name="GAuthPerson" value="no" onChange={(e) => this.handleRadioShowOnYes(e)} checked={this.state.GAuthPerson === 'no'} />
-                                        <div className="vl-radio__label">Nee</div>
-                                    </label>
                                 </div>
 
                                 <p>Heeft de lijst waarvan u de lijsttrekker bent, voor de verkiezingen van 14 oktober 2018 verkiezingsuitgaven gedaan? </p>
@@ -452,19 +449,40 @@ class G103 extends React.Component {
                             </div>
 
                             <div id="sectionElectionExpenditure" className="vl-u-hidden">
-                                <h2 className="vl-title vl-title--h2 vl-title--has-border">Aangifte van de verkiezingsuitgaven</h2>
+                                <h2 className="vl-title vl-title--h2 vl-title--has-border">Aangifte van de verkiezingsuitgaven
+                                    <Help message=
+                                    {
+                                        [
+                                            <p>Vermeld hier alle uitgaven en financiële verbintenissen voor mondelinge, schriftelijke, auditieve en visuele boodschappen die verricht zijn tijdens de sperperiode en erop gericht zijn het resultaat van de lijst gunstig te beïnvloeden.</p>,
+                                            <p>Vermeld hier ook de uitgaven die voor de lijst gedaan zijn door derden. U hoeft die uitgaven niet te vermelden als de lijst de derden onmiddellijk na de kennisneming van de door hen gevoerde campagne, per aangetekende brief ertoe heeft aangemaand de campagne te staken en aan de voorzitter van het verkiezingshoofdbureau een afschrift heeft bezorgd van die aangetekende brief, al dan niet vergezeld van het akkoord van de derden tot staking. Voeg dat afschrift bij deze aangifte. </p>,
+                                            <p>De uitgaven en financiële verbintenissen voor goederen, leveringen en diensten moeten tegen de geldende marktprijzen worden verrekend.</p>,
+                                            <p>Opgelet! Hou er bij het invullen van de aangifte rekening mee dat tijdens de sperperiode het gebruik van bepaalde campagnemiddelen verboden is. Lijsten, alsook derden die propaganda voor hen willen maken, mogen tijdens de sperperiode:</p>,
+                                            <ul>
+                                                <li>- geen geschenken of gadgets verkopen of verspreiden</li>
+                                                <li>- geen commerciële telefooncampagnes voeren</li>
+                                                <li>- niet gebruikmaken van commerciële reclameborden of affiches</li>
+                                                <li>- niet gebruikmaken van niet-commerciële reclameborden of affiches die groter zijn dan 4 m²</li>
+                                                <li>- niet gebruikmaken van commerciële reclamespots op radio, televisie en in bioscopen</li>
+                                            </ul>
+                                        ]
+                                    }
+                                    />
+                                </h2>
 
                                 <p className="text-bold">You can expenses maximum TODO€. (Also add security before submitting)</p>
 
-                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Auditieve en mondelinge boodschappen</h3>
+                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Auditieve en mondelinge boodschappen
+                                    <Help message={this.state.expenses.EAuditoryAndOral1.help} />
+                                </h3>
+                                
                                 <div className="vl-grid">
                                     <div className="form-group">
                                         <InputAmount
                                             var="EAuditoryAndOral1"
-                                            label="Bijvoorbeeld: niet-commerciële telefooncampagnes of een onuitwisbare politieke boodschap op een informatiedrager. Voeg een lijst van alle boodschappen en hun respectieve kostprijs bij uw aangifte."
+                                            label=""
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EAuditoryAndOral1.amount}
-                                            help={this.state.expenses.EAuditoryAndOral1.help}
+                                            help=""
                                         />
                                     </div>
                                 </div>
@@ -547,7 +565,7 @@ class G103 extends React.Component {
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="EShippingAndDistribution1_2"
-                                            label="Niet-geaddresseerde:"
+                                            label="Niet-geadresseerde zendingen:"
                                             handleChange={this.handleExpenses}
                                             val={this.state.expenses.EShippingAndDistribution1_2.amount}
                                             help={this.state.expenses.EShippingAndDistribution1_2.help}
@@ -655,14 +673,23 @@ class G103 extends React.Component {
                             </div>
 
                             <div id="sectionOriginOfFund" className="vl-u-hidden">
-                                <h2 className="vl-title vl-title--h2 vl-title--has-border">Aangifte van de herkomst van de geldmiddelen :</h2>
+                                <h2 className="vl-title vl-title--h2 vl-title--has-border">Aangifte van de herkomst van de geldmiddelen : 
+                                    <Help message=
+                                    {
+                                        [
+                                            <p>In deze rubriek maakt u een opsplitsing van de verkiezingsuitgaven die uw lijst heeft gedaan volgens de herkomst van de geldmiddelen waarmee die uitgaven gefinancierd zijn. Het totale bedrag van de uitgaven hierboven opgenomen, moet gelijk zijn aan het totale bedrag van de herkomst van de geldmiddelen dat hieronder is aangegeven.</p>,
+                                            <p>Giften en sponsorbedragen van 125 euro en meer worden elektronisch overgemaakt met een overschrijving, een lopende betalingsopdracht of een bank- of kredietkaart.</p>
+                                        ]
+                                    }
+                                    />
+                                </h2>
 
-                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Rubriek 1</h3>
+                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Geldmiddelen die afkomstig zijn van het eigen patrimonium van de lijst</h3>
                                 <div className="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection1"
-                                            label="Geldmiddelen die afkomstig zijn van het eigen patrimonium van de lijst :"
+                                            label=""
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection1.amount}
                                             help={this.state.funds.FSection1.help}
@@ -670,7 +697,14 @@ class G103 extends React.Component {
                                     </div>
                                 </div>
 
-                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Rubriek 2 <FaInfoCircle data-tip="Donaties van reguliere personen boven de 125 euro per donateur." /></h3>
+                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Giften 
+                                    <Help message={
+                                        [
+                                        <p>Zowel giften in geld als giften in natura worden als giften beschouwd. De prestaties die kosteloos of onder de reële kostprijs verleend worden, de ter beschikking gestelde kredietlijnen die niet moe-ten worden terugbetaald en de prestaties die door een politieke partij, een lijst of een kandidaat kennelijk boven de marktprijs zijn aangerekend, worden ook als gift beschouwd. Alleen natuurlijke personen mogen giften doen. Giften van rechtspersonen of feitelijke verenigingen, evenals giften van natuurlijke personen die feitelijk optreden als tussenpersonen van rechtspersonen of feitelijke verenigingen, zijn verboden.</p>,
+                                        <p>Opgelet! De lijsten mogen hun verkiezingspropaganda financieren met giften die per schenker maximum 500 euro of de tegenwaarde ervan bedragen.</p>
+                                        ]
+                                    }/>
+                                </h3>
                                 <div className="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
@@ -679,6 +713,7 @@ class G103 extends React.Component {
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection2_1.amount}
                                             help={this.state.funds.FSection2_1.help}
+                                            min="125"
                                         />
                                     </div>
 
@@ -689,11 +724,19 @@ class G103 extends React.Component {
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection2_2.amount}
                                             help={this.state.funds.FSection2_2.help}
+                                            max="124.99"
                                         />
                                     </div>
                                 </div>
 
-                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Rubriek 3 <FaInfoCircle data-tip="Buget afkomstig van sponsoren in bedragen hoger dan 125 per sponsor." /></h3>
+                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Sponsoring 
+                                    <Help message={
+                                        [
+                                        <p>Onder sponsoring wordt verstaan het volgens de geldende marktprijzen ter beschikking stellen van gelden of producten in ruil voor publiciteit. Ondernemingen, feitelijke verenigingen en rechtspersonen mogen sponsoren. Onder onderneming wordt verstaan elke natuurlijke persoon of rechtspersoon die op duurzame wijze een economisch doel nastreeft, alsmede zijn verenigingen.</p>,
+                                        <p>Opgelet! De lijsten mogen per sponsor maximum 500 euro of de tegenwaarde ervan ontvangen. </p>
+                                        ]   
+                                    }/>
+                                </h3>
                                 <div className="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
@@ -702,6 +745,7 @@ class G103 extends React.Component {
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection3_1.amount}
                                             help={this.state.funds.FSection3_1.help}
+                                            min="125"
                                         />
                                     </div>
 
@@ -712,6 +756,7 @@ class G103 extends React.Component {
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection3_2.amount}
                                             help={this.state.funds.FSection3_2.help}
+                                            max="124.99"
                                         />
                                     </div>
                                 </div>
@@ -747,7 +792,7 @@ class G103 extends React.Component {
 
                             <p id="error-form" className="vl-form__error"></p>
 
-                            <p className="text-bold">Verzend dit formulier ten laatste op {deadlines.forms.g103.deadline}.</p>
+                            <p className="text-bold">Verzend dit formulier ten laatste op {deadlines.forms[this.FILE_ID].deadline}.</p>
         
                             <button id="sendButton" className="vl-button mt-5" disabled={this.state.formSending}>
                                 <span className="vl-button__label">Onderteken en verstuur</span>
@@ -767,4 +812,4 @@ class G103 extends React.Component {
     }
 }
 
-export default G103;
+export default A105;

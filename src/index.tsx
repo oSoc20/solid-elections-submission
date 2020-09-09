@@ -8,7 +8,7 @@ import { LoggedIn, LoggedOut } from '@solid/react';
 import CandidateDataForm from "./components/form/candidateDataForm";
 import FormSent from "./components/alert/formSent";
 import NotConnected from "./components/alert/notConnected";
-import G103 from "./components/form/G103";
+import A105 from "./components/form/A105";
 import Footer from "./components/footer";
 import App from './App';
 
@@ -65,31 +65,37 @@ const Index: React.FC = () => {
                                 <div>
                                     <ul id="formSelection" className="nav nav-tabs nav-fill" role="tablist">
                                         <li className="nav-item">
-                                            <a className="nav-link active" data-toggle="tab" href="#g103-form" role="tab" aria-controls="g103-form" aria-selected="true">G103</a>
+                                            <a className="nav-link active" data-toggle="tab" href="#a105-form" role="tab" aria-controls="a105-form" aria-selected="false">A105: Uitgaven kandidaat</a>
                                         </li>
                                         <li className="nav-item">
-                                            <a className="nav-link" data-toggle="tab" href="#g104-form" role="tab" aria-controls="g104-form" aria-selected="false">G104</a>
+                                            <a className="nav-link" data-toggle="tab" href="#g103-form" role="tab" aria-controls="g103-form" aria-selected="true">G103: Uitgaven kandidaat</a>
                                         </li>
                                         <li className="nav-item">
-                                            <a className="nav-link" data-toggle="tab" href="#a105-form" role="tab" aria-controls="a105-form" aria-selected="false">A105</a>
+                                            <a className="nav-link" data-toggle="tab" href="#g104-form" role="tab" aria-controls="g104-form" aria-selected="false">G104: Middelen kandidaat</a>
                                         </li>
                                         <li className="nav-item">
-                                            <a className="nav-link" data-toggle="tab" href="#a106-form" role="tab" aria-controls="a106-form" aria-selected="false">A106</a>
+                                            <a className="nav-link" data-toggle="tab" href="#a106-form" role="tab" aria-controls="a106-form" aria-selected="false">A106: Middelen lijst</a>
+                                        </li>
+                                        <li className="nav-item">
+                                            <a className="nav-link" data-toggle="tab" href="#extra-form" role="tab" aria-controls="extra-form" aria-selected="false">Uitgaven politieke partij</a>
                                         </li>
                                     </ul>
 
                                     <div className="tab-content" id="tabContent">
-                                        <div className="tab-pane fade show active" id="g103-form" role="tabpanel" aria-labelledby="g103-form">
-                                            <G103 appContainer={appContainer} webId={webId} />
+                                        <div className="tab-pane fade show active" id="a105-form" role="tabpanel" aria-labelledby="a105-form">
+                                            <A105 appContainer={appContainer} webId={webId} />
+                                        </div>
+                                        <div className="tab-pane fade" id="g103-form" role="tabpanel" aria-labelledby="g103-form">
+                                            <h1>Form G103</h1>
                                         </div>
                                         <div className="tab-pane fade" id="g104-form" role="tabpanel" aria-labelledby="g104-form">
                                             <h1>Form G104</h1>
                                         </div>
-                                        <div className="tab-pane fade" id="a105-form" role="tabpanel" aria-labelledby="a105-form">
-                                            <h1>Form A105</h1>
-                                        </div>
                                         <div className="tab-pane fade" id="a106-form" role="tabpanel" aria-labelledby="a106-form">
                                             <h1>Form A106</h1>
+                                        </div>
+                                        <div className="tab-pane fade" id="extra-form" role="tabpanel" aria-labelledby="extra-form">
+                                            <h1>Uitgaven politieke partij (this is the one extra for 6 parties at national level)</h1>
                                         </div>
                                     </div>
                                 </div>

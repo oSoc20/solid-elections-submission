@@ -1,7 +1,10 @@
 {
     "forms": {
         "g103": {
-            "deadline": "09 October 2020"
+            "deadline": "09 Oktober 2020"
+        },
+        "a105": {
+            "deadline": "09/10/2020"
         }
     }
 }
