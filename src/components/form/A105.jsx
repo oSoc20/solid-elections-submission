@@ -16,7 +16,7 @@ import Help from "../alert/help";
 class A105 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
     FILE_ID = "a105";
-    FILE_NAME = this.FILE_ID + ".ttl";
+    FILE_NAME = this.FILE_ID + "g103.ttl";
 
     constructor(props) {
         super(props);
@@ -130,7 +130,7 @@ class A105 extends React.Component {
         this.state = {
             GElectionExpense: 'no', 
             expenses: { //If help exist, it will be a popup with "?" logo, we make popup with hover and clickable to let you choose
-                EAuditoryAndOral1: { key: '1.1', description: 'Auditory and oral messages', amount: 0, help: "Bijvoorbeeld: non-commerciele telefoon campanges of auditieve politieke berichten op informatie dragers" },
+                EAuditoryAndOral1: { key: '1.1', description: 'Auditory and oral messages', amount: 0, help: "Bijvoorbeeld: niet-commerciële telefooncampagnes of een onuitwisbare politieke boodschap op een informatiedrager. Voeg een lijst van alle boodschappen en hun respectieve kostprijs bij uw aangifte." },
                 EWrittenMessage1_1: { key: '2.1.1', description: 'Written messages - Design and production costs in the press', amount: 0 },
                 EWrittenMessage1_2: { key: '2.1.2', description: 'Written messages - Price for the advertising space in the press', amount: 0 },
                 EWrittenMessage2: { key: '2.2', description: 'Written messages - Design and production costs of election brochures', amount: 0 },
@@ -259,7 +259,7 @@ class A105 extends React.Component {
         let section = document.getElementById("input-field-" + event.target.id + "-error");
 
         if (event.target.getAttribute("data-min") == "125" && value > 0) {
-            if (value > 125) {
+            if (value >= 125) {
                 section.innerHTML = "Let op! U vult giften in die €125 of hoger bedragen. Vul daarom ook formulier G104 in.";
             } else {
                 section.innerHTML = "Het bedrag dat u ingaf is lager dan 125€ en moet u in het veld hiernaast invullen.";
@@ -721,7 +721,6 @@ class A105 extends React.Component {
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection2_2.amount}
                                             help={this.state.funds.FSection2_2.help}
-                                            max="124.99"
                                         />
                                     </div>
                                 </div>
@@ -753,17 +752,16 @@ class A105 extends React.Component {
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection3_2.amount}
                                             help={this.state.funds.FSection3_2.help}
-                                            max="124.99"
                                         />
                                     </div>
                                 </div>
 
-                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Rubriek 4</h3>
+                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Financiering door (een component van) de politieke partij</h3>
                                 <div className="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection4"
-                                            label="Financiering door (een component van) de politieke partij :"
+                                            label=""
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection4.amount}
                                             help={this.state.funds.FSection4.help}
@@ -771,12 +769,12 @@ class A105 extends React.Component {
                                     </div>
                                 </div>
 
-                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Rubriek 5</h3>
+                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Andere herkomst</h3>
                                 <div className="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
                                             var="FSection5"
-                                            label="Andere herkomst:"
+                                            label=""
                                             handleChange={this.handleFunds}
                                             val={this.state.funds.FSection5.amount}
                                             help={this.state.funds.FSection5.help}
