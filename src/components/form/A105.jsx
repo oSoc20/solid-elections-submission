@@ -16,7 +16,7 @@ import Help from "../alert/help";
 class A105 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
     FILE_ID = "a105";
-    FILE_NAME = this.FILE_ID + "g103.ttl";
+    FILE_NAME = this.FILE_ID + ".ttl";
 
     constructor(props) {
         super(props);

@@ -18,10 +18,6 @@ class InputAmount extends React.Component {
         return message;
     }
 
-    getLabel() {
-
-    }
-
     render() {
         return (
             <>
