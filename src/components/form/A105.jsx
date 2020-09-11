@@ -69,7 +69,7 @@ class A105 extends React.Component {
         this.state.userAmount = 0;
         this.state.listName = "";
         this.state.listNumber = "";
-        this.state.userGemeente = "TODO";
+        this.state.userGemeente = "";
         this.state.listPosition = "";
     }
 
@@ -92,7 +92,8 @@ class A105 extends React.Component {
                 userAmount: this.props.userInfo.userAmount,
                 listName: this.props.userInfo.lists[0].name,
                 listNumber: this.props.userInfo.lists[0].number,
-                listPosition: this.props.userInfo.lists[0].position
+                listPosition: this.props.userInfo.lists[0].position,
+                userGemeente: this.props.userInfo.address.municipality
             });
         } else { //in case of we switch between account 
             this.setState({"error": true});
@@ -493,7 +494,7 @@ class A105 extends React.Component {
                                     />
                                 </h2>
 
-                                <p className="text-bold">You can expenses maximum {this.state.userAmount}€.</p>
+                                <p className="text-bold">Het maximumbedrag dat u als kandidaat mag uitgeven, bedraagt {this.state.userAmount}€.</p>
 
                                 <h3 className="vl-title vl-title--h3 vl-title--has-border">Auditieve en mondelinge boodschappen
                                     <Help message={this.state.expenses.EAuditoryAndOral1.help} />

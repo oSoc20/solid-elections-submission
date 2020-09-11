@@ -191,7 +191,7 @@ const Index = () => {
                         "listAmount": listAmout != null ? listAmout.value : null,
                         "mandated": (dataExtra.length > 0 ? dataExtra[0].mandated.value : null),
                         "address": {
-                            "locality": userData.getString(schema.addressLocality),
+                            "municipality": userData.getString(schema.addressLocality),
                             "street": userData.getString(schema.streetAddress),
                             "postalCode": userData.getInteger(schema.postalCode)
                         }
@@ -256,6 +256,7 @@ const Index = () => {
                                         </div>
                                         <div className="tab-pane fade" id="g103-form" role="tabpanel" aria-labelledby="g103-form">
                                             <h1>U ziet dit formulier omdat u lijsttrekker bent.</h1>
+                                            <p>Het maximumbedrag dat u als lijst mag uitgeven bedraagt {userInfo != null ? userInfo.listAmount : ""}€</p>
                                         </div>
                                         <div className="tab-pane fade" id="g104-form" role="tabpanel" aria-labelledby="g104-form">
                                             <h1>Form G104</h1>
