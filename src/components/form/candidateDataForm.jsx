@@ -75,7 +75,6 @@ class CandidateDataForm extends React.Component {
                         });
                         let response = await fetchGetDb("person", uri);
 
-                        console.log(response);
                         if (response.success) { //If there is an error with fetch
                             if (response.result.success && response.result.result.length > 0) {
                                 let firstnameField = document.getElementById("firstname");

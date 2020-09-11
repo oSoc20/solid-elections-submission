@@ -3,6 +3,6 @@ import ShowAlert from './showAlert';
 
 export default function FormSent() {
     return (
-        <ShowAlert message="Uw formulier is opgestuurt!" type="success" />
+        <ShowAlert message="Uw formulier is opgestuurd!" type="success" />
     );
 }

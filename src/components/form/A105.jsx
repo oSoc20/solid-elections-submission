@@ -7,11 +7,12 @@ import Loading from '../alert/loading';
 import ProfileDoesntExist from '../alert/profileDoesntExist';
 import InputAmount from './inputAmount';
 import { Redirect } from 'react-router-dom';
-import {fetchGetDb} from '../../utils/RequestDatabase';
+import {fetchGetDb, fetchPostDb, fetchPostAbb} from '../../utils/RequestDatabase';
 import ReactTooltip from "react-tooltip";
 import { FaInfoCircle } from 'react-icons/fa';
 import deadlines from '../../data/deadline.json';
 import Help from "../alert/help";
+import { value } from "rdf-namespaces/dist/rdf";
 
 class A105 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
@@ -30,16 +31,23 @@ class A105 extends React.Component {
         this.state.error = true;
         this.state.redirect = false;
         this.state.formSending = false;
+        //To know if the user have filled in more than 125€ and unlock tab
+        this.state.fieldsFundsFilled = [];
+        this.state.userAmount = 0;
+        this.state.listName = "";
+        this.state.listNumber = "";
+        this.state.userGemeente = "TODO";
+        this.state.listPosition = "";
     }
 
     componentDidMount() {
-        if (this.props.appContainer !== undefined) {
+        if (this.props.userInfo !== undefined) {
             this.init();
         }
     }
 
     componentDidUpdate(prevProps, prevStates) { //Trigger when state or props change but not with route, we use it because appContainer is async
-        if (this.props.appContainer !== undefined && this.props.appContainer != prevProps.appContainer) {
+        if (this.props.userInfo !== undefined && this.props.userInfo != prevProps.userInfo) {
             this.init();
         }
 
@@ -58,72 +66,20 @@ class A105 extends React.Component {
         }
     }
 
+    //The page still loading when userInfo is not configured (and should show the error)
     async init() {
-        this.profileExist().then(value => {
-            //Not updated after creating profile, maybe because appContainer must be redefined
-            this.setState({"error": !value});
-        })
+        if (this.props.userInfo != null) {
+            this.setState({"error": false});
 
-        //state.profile contains profile link (WebID + FILE_NAME_PROFILE.ttl)
-        if (this.state.profile != null) {
-            let userDataDoc = await fetchDocument(this.state.profile);
-            if (userDataDoc != null) {
-                let userData = userDataDoc.getSubject("#me");
-                if (userData != null) {
-                    let response;
-                    let uri = new URLSearchParams({
-                        personURI: userData.getString(schema.sameAs)
-                    });
-                    //We ask for the person LBLOD ID
-                    response = await fetchGetDb("person", uri);
-            
-                    //If there is an error with fetch
-                    if (!response.success) {
-                        alert(response.message);
-                        return false;
-                    }
+            this.setState({
+                userAmount: this.props.userInfo.userAmount,
+                listName: this.props.userInfo.lists[0].name,
+                listNumber: this.props.userInfo.lists[0].number,
+                listPosition: this.props.userInfo.lists[0].position
+            });
 
-                    //We loaded the page now because after we change some elements
-                    this.setState({"loaded": true});
-            
-                    //If result of the API succeed or not
-                    if (response.result.success) {
-                        //We show to the user the name of the list and tracking number (disabled)
-                        //result.result is the result of the API into result object, it's an array of people
-                        //In fact, we send an unique ID so if there is someone he is the index 0
-                        let gNameList = document.getElementById("Gnamelist");
-                        let gTrackingNumber = document.getElementById("Gtrackingnumber");
-                        if (response.result.result.length > 0) {
-                            if (gNameList != null) gNameList.value = response.result.result[0].listName.value;
-                            if (gTrackingNumber != null) gTrackingNumber.value = response.result.result[0].trackingNb.value;
-                        } else {
-                            if (gNameList != null) gNameList.value = "Error";
-                            if (gTrackingNumber != null) gTrackingNumber.value = "Error";
-                        }
-                    } else {
-                        alert(response.result.message);
-                    }
-                }
-            }
-        } else {
-            //Profile doesn't exist so it's loaded but there is an error (defined with profileExist().then(...))
             this.setState({"loaded": true});
         }
-    }
-
-    //To get the profile link (WebID + FILE_NAME_PROFILE.ttl)
-    async profileExist() {
-        let documents = listDocuments(this.props.appContainer);
-        let userDataLink = documents.find(link => {
-            let indexFile = link.lastIndexOf('/');
-            let file = link.substr(indexFile + 1);
-
-            return file == this.FILE_NAME_PROFILE;
-        });
-
-        //We store profile (webId) because we have to send it to the API (stored if the user doesn't exist before)
-        this.state.profile = userDataLink;
-        return userDataLink != null;
     }
 
     async setDefaultValue() {
@@ -258,11 +214,53 @@ class A105 extends React.Component {
 
         let section = document.getElementById("input-field-" + event.target.id + "-error");
 
-        if (event.target.getAttribute("data-min") == "125" && value > 0) {
+        if (event.target.getAttribute("data-min") == "125") {
             if (value >= 125) {
-                section.innerHTML = "Let op! U vult giften in die €125 of hoger bedragen. Vul daarom ook formulier G104 in.";
+                section.innerHTML = event.target.getAttribute("data-message");
+
+                //Check if we can allow the user to the tab G104
+                this.setState(state => {
+                    let fieldsFunds = state.fieldsFundsFilled;
+
+                    if (!fieldsFunds.includes(event.target.id)) {
+                        fieldsFunds.push(event.target.id);
+
+                        if (fieldsFunds.length >= 1) {
+                            document.getElementById("tab-g104").classList.remove("disabled");
+                            document.getElementById("tab-g104").parentElement.classList.remove("disabled");
+                        }
+                    }
+
+                    return {
+                        fieldsFundsFilled: fieldsFunds
+                    }
+                });
             } else {
-                section.innerHTML = "Het bedrag dat u ingaf is lager dan 125€ en moet u in het veld hiernaast invullen.";
+                //Condition there because no error if it's 0 but we have to remove the tab if necessary
+                if (value > 0) {
+                    section.innerHTML = "Het bedrag dat u ingaf is lager dan 125€ en moet u in het veld hiernaast invullen.";
+                }
+                
+                //Check if we can remove the user to the tab G104
+                this.setState(state => {
+                    let fieldsFunds = state.fieldsFundsFilled;
+
+                    if (fieldsFunds.includes(event.target.id)) {
+                        let index = fieldsFunds.indexOf(event.target.id);
+                        if (index != -1) fieldsFunds = fieldsFunds.slice(0, index).concat(fieldsFunds.slice(index + 1))
+
+                        console.log(fieldsFunds);
+
+                        if (fieldsFunds.length == 0) {
+                            document.getElementById("tab-g104").classList.add("disabled");
+                            document.getElementById("tab-g104").parentElement.classList.add("disabled");
+                        }
+                    }
+
+                    return {
+                        fieldsFundsFilled: fieldsFunds
+                    }
+                });
             }
         }
 
@@ -299,10 +297,10 @@ class A105 extends React.Component {
 
         this.setState({"formSending": true});
 
-        if (this.props.appContainer != undefined) {
+        if (this.props.userInfo.appContainer != undefined) {
             let dataToSave = [];
             //Create a new document
-            let doc = createAppDocument(this.props.appContainer, this.FILE_NAME);
+            let doc = createAppDocument(this.props.userInfo.appContainer, this.FILE_NAME);
 
             //Uncomment to save only if the user say yes, without condition it will be 0 by default even if the user answer "no" to the expence
             //if (this.state.GElectionExpense === 'yes') { //Incur election expenses
@@ -336,7 +334,7 @@ class A105 extends React.Component {
                     }
 
                     //We add this new subject (new expense) to the list who will be save, 1 subject = 1 expense
-                    dataToSave.push(createExpense(doc, this.state.profile, buyActionData));
+                    dataToSave.push(createExpense(doc, this.props.userInfo.profile, buyActionData));
                 }
 
                 //Same as expences but for funds
@@ -370,13 +368,13 @@ class A105 extends React.Component {
                         priceCurrency: 'EUR'
                     }
 
-                    dataToSave.push(createDonation(doc, this.state.profile, donateActionData));
+                    dataToSave.push(createDonation(doc, this.props.userInfo.profile, donateActionData));
                 }
             //}
 
             let errorForm = document.getElementById("error-form");
             if (this.getTotalExpense() != this.getTotalFunds()) {
-                errorForm.innerText = "Het totaal van de uitgaven is niet gelijk aan het totaalbedrag waarvan u de herkomst aangaf.";
+                errorForm.innerText = "Het totaalbedrag van de uitgaven is niet gelijk aan het totaalbedrag van de herkomst van de geldmiddelen";
                 this.setState({"formSending": false});
                 return false;
             }
@@ -422,17 +420,29 @@ class A105 extends React.Component {
                             <div className="vl-grid">
                                 <div className="form-group vl-form-col--8-12">
                                     <label className="vl-form__label" htmlFor="Gnamelist">Lijstnaam :</label>
-                                    <input type="text" id="Gnamelist" disabled={true} className="vl-input-field vl-input-field--block" name="Gnamelist"></input>
+                                    <input type="text" id="Gnamelist" disabled={true} className="vl-input-field vl-input-field--block" value={this.state.listName} name="Gnamelist"></input>
                                     <p className="vl-form__error" id="input-field-Gnamelist-error"></p>
                                 </div>
 
                                 <div className="form-group vl-form-col--4-12">
                                     <label className="vl-form__label" htmlFor="Gtrackingnumber">Volgnummer :</label>
-                                    <input type="number" min="0" disabled={true} id="Gtrackingnumber" className="vl-input-field vl-input-field--block" name="Gtrackingnumber"></input>
+                                    <input type="number" min="0" disabled={true} id="Gtrackingnumber" className="vl-input-field vl-input-field--block" value={this.state.listNumber} name="Gtrackingnumber"></input>
                                     <p className="vl-form__error" id="input-field-Gtrackingnumber-error"></p>
                                 </div>
 
-                                <p>Heeft de lijst waarvan u de lijsttrekker bent, voor de verkiezingen van 14 oktober 2018 verkiezingsuitgaven gedaan? </p>
+                                <div className="form-group vl-form-col--8-12">
+                                    <label className="vl-form__label" htmlFor="Ggemeente">Gemeentebestuur :</label>
+                                    <input type="text" disabled={true} id="Ggemeente" className="vl-input-field vl-input-field--block" value={this.state.userGemeente} name="Ggemeente"></input>
+                                    <p className="vl-form__error" id="input-field-Ggemeente-error"></p>
+                                </div>
+
+                                <div className="form-group vl-form-col--4-12">
+                                    <label className="vl-form__label" htmlFor="GlistPosition">Plaats op de lijst :</label>
+                                    <input type="number" min="0" disabled={true} id="GlistPosition" className="vl-input-field vl-input-field--block" value={this.state.listPosition} name="GlistPosition"></input>
+                                    <p className="vl-form__error" id="input-field-GlistPosition-error"></p>
+                                </div>
+
+                                <p>Heeft u als kandidaat voor de verkiezingen van 14 oktober 2018 verkiezingsuitgaven gedaan?</p>
                                 <div className="form-group vl-form-col--12-12">
                                     <label className="vl-radio" htmlFor="GElectionExpenseYes">
                                         <input className="vl-radio__toggle" type="radio" id="GElectionExpenseYes" name="GElectionExpense" value="yes" onChange={(e) => this.handleRadioShowOnYes(e, "sectionElectionExpenditure", "sectionOriginOfFund")} checked={this.state.GElectionExpense === 'yes'} />
@@ -466,7 +476,7 @@ class A105 extends React.Component {
                                     />
                                 </h2>
 
-                                <p className="text-bold">You can expenses maximum TODO€. (Also add security before submitting)</p>
+                                <p className="text-bold">You can expenses maximum {this.state.userAmount}€.</p>
 
                                 <h3 className="vl-title vl-title--h3 vl-title--has-border">Auditieve en mondelinge boodschappen
                                     <Help message={this.state.expenses.EAuditoryAndOral1.help} />
@@ -681,7 +691,7 @@ class A105 extends React.Component {
                                     />
                                 </h2>
 
-                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Geldmiddelen die afkomstig zijn van het eigen patrimonium van de lijst</h3>
+                                <h3 className="vl-title vl-title--h3 vl-title--has-border">Geldmiddelen die afkomstig zijn van het eigen patrimonium van de kandidaat</h3>
                                 <div className="vl-grid">
                                     <div className="form-group vl-form-col--6-12">
                                         <InputAmount
@@ -711,6 +721,7 @@ class A105 extends React.Component {
                                             val={this.state.funds.FSection2_1.amount}
                                             help={this.state.funds.FSection2_1.help}
                                             min="125"
+                                            message="Let op! U vult giften in die €125 of hoger bedragen. Vul daarom ook het formulier voor de identificatie van de schenkers en sponsors in."
                                         />
                                     </div>
 
@@ -742,6 +753,7 @@ class A105 extends React.Component {
                                             val={this.state.funds.FSection3_1.amount}
                                             help={this.state.funds.FSection3_1.help}
                                             min="125"
+                                            message="Let op! U vult sponsoring in die €125 of hoger bedraagt. Vul daarom ook het formulier voor de identificatie van de schenkers en sponsors in."
                                         />
                                     </div>
 
