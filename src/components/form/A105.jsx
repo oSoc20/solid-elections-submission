@@ -33,27 +33,44 @@ class A105 extends React.Component {
         this.state.formSending = false;
         //To know if the user have filled in more than 125€ and unlock tab
         this.state.fieldsFundsFilled = [];
-        this.state.userAmount = 0;
-        this.state.listName = "";
-        this.state.listNumber = "";
-        this.state.userGemeente = "TODO";
-        this.state.listPosition = "";
     }
 
-    componentDidMount() {
-        if (this.props.userInfo !== undefined) {
-            this.init();
+    async componentDidMount() {
+        this.resetStateUserInfo();
+        this.setState({"loaded": this.props.loaded});
+
+        if (this.props.userInfo != null) {
+            await this.init();
         }
     }
 
-    componentDidUpdate(prevProps, prevStates) { //Trigger when state or props change but not with route, we use it because appContainer is async
-        if (this.props.userInfo !== undefined && this.props.userInfo != prevProps.userInfo) {
-            this.init();
+    async componentDidUpdate(prevProps, prevStates) { //Trigger when state or props change but not with route, we use it because appContainer is async
+        if (this.props.userInfo == null) {
+            this.resetStateUserInfo();
+        }
+        
+        if (this.props.userInfo !== null && this.props.userInfo != prevProps.userInfo) {
+            await this.resetStateUserInfo();
+            await this.init();
+            this.setState({"loaded": this.props.loaded});
+        }
+
+        //Just in case the loaded props take times to update
+        if (this.props.loaded != prevProps.loaded) {
+            this.setState({"loaded": this.props.loaded});
         }
 
         if (prevStates.formSending != this.state.formSending) {
             this.setButtonLoading(this.state.formSending);
         }
+    }
+
+    resetStateUserInfo() {
+        this.state.userAmount = 0;
+        this.state.listName = "";
+        this.state.listNumber = "";
+        this.state.userGemeente = "TODO";
+        this.state.listPosition = "";
     }
 
     setButtonLoading(state) {
@@ -77,8 +94,8 @@ class A105 extends React.Component {
                 listNumber: this.props.userInfo.lists[0].number,
                 listPosition: this.props.userInfo.lists[0].position
             });
-
-            this.setState({"loaded": true});
+        } else { //in case of we switch between account 
+            this.setState({"error": true});
         }
     }
 

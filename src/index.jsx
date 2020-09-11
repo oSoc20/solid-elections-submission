@@ -22,6 +22,7 @@ const Index = () => {
     const [userData, setUserData] = useState(); 
     const [userInfo, setUserInfo] = useState(null); //Contains all user info we can use
     const [profileUri, setProfileUri] = useState(null); //Contains WebID + me.ttl (user's profile info)
+    const [loaded, setLoaded] = useState(false);
     const APP_NAME = "solidelections"; //This is the folder name on the solid pod
 
     //We refresh appContainer and webID when data changed
@@ -38,7 +39,11 @@ const Index = () => {
     }, [userData]);
 
     useEffect(() => {
-        console.log(userInfo);
+        //console.log(userInfo);
+        if (userInfo != null) {
+            //The userInfo is now set, we tell to the component it can load
+            setLoaded(true);
+        }
     }, [userInfo]);
 
     //This method is use by candidateDataForm to refresh appContainer after saving profile because if the file me.ttl
@@ -46,6 +51,8 @@ const Index = () => {
     //to fetch the new file into it.
     async function updateAppContainer() {
         console.log("appContainer is refreshing...");
+        setLoaded(false);
+        setUserInfo(null);
         const getAppStorage = async (webID) => {
             const appContainer = await initAppStorage(webID, APP_NAME);
             if (appContainer != null) {
@@ -77,6 +84,9 @@ const Index = () => {
                 if (userDataDoc != null) {
                     setUserData(userDataDoc.getSubject("#me"));
                 }
+            } else {
+                //No file "me.ttl", the user profile doesn't exist tell the component it can load
+                setLoaded(true);
             }
         }
     }
@@ -186,38 +196,16 @@ const Index = () => {
                             "postalCode": userData.getInteger(schema.postalCode)
                         }
                     });
+
+                    return true;
                 }
-                
-
-                /*
-                let uri = new URLSearchParams({
-                    "personURI": personURI
-                });
-
-                let responseUser = await fetchGetDb("person", uri);
-
-                if (responseUser.success && responseUser.result.success) {
-                    let data = responseUser.result.result;
-
-                    let lists = data.map((list) => {
-                        return {
-                            "URI": list.listURI.value,
-                            "name": list.listName.value,
-                            "number": list.trackingNb.value,
-                        }
-                    });
-
-                    userInfo = {
-                        "name": data[0].name.value,
-                        "familyName": data[0].familyName.value,
-                        "lists": lists
-                    };
-
-                    console.log(userInfo);
-                }
-                */
             }
+
+            //Error with the file, the user profile doesn't exist tell the component it can load
+            setLoaded(true);
         }
+        
+        return false;
     }
 
     //{"nav-link" + false ? "" : "disabled"} must be replace if candidate is the head of the list
@@ -264,7 +252,7 @@ const Index = () => {
 
                                     <div className="tab-content" id="tabContent">
                                         <div className="tab-pane fade show active" id="a105-form" role="tabpanel" aria-labelledby="a105-form">
-                                            <A105 userInfo={userInfo} />
+                                            <A105 userInfo={userInfo} loaded={loaded} />
                                         </div>
                                         <div className="tab-pane fade" id="g103-form" role="tabpanel" aria-labelledby="g103-form">
                                             <h1>U ziet dit formulier omdat u lijsttrekker bent.</h1>
