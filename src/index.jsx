@@ -208,7 +208,7 @@ const Index = () => {
         return false;
     }
 
-    //{"nav-link" + false ? "" : "disabled"} must be replace if candidate is the head of the list
+    //we must send appContainer to the profile page because userInfo will be null if the profile doesn't exist (me.ttl)
     return (
         <Router basename="/">
             <App />
@@ -217,7 +217,7 @@ const Index = () => {
                     <Route path="/profile">
                         <section className="vl-region">
                             <div className="vl-layout">
-                                <CandidateDataForm appContainer={appContainer} webId={webId} refresh={updateAppContainer} />
+                                <CandidateDataForm appContainer={appContainer} userInfo={userInfo} loaded={loaded} webId={webId} refresh={updateAppContainer} />
                             </div>
                         </section>
                     </Route>
@@ -265,7 +265,6 @@ const Index = () => {
                                             <h1>Form A106</h1>
                                         </div>
                                         <div className="tab-pane fade" id="extra-form" role="tabpanel" aria-labelledby="extra-form">
-                                            <h1>Uitgaven politieke partij (this is the one extra for 6 parties at national level)</h1>
                                             <p>U ziet dit formulier omdat u gemandateerde bent vanuit uw partij.</p>
                                         </div>
                                     </div>

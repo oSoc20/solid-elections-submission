@@ -21,86 +21,52 @@ class CandidateDataForm extends React.Component {
 
     init() {
         console.log("Initialising user data...");
-        this.fetchUserData();
+        if (this.props.userInfo != null) {
+            let streetNumber = this.props.userInfo.address.street.split(', ');
+            if (streetNumber.length === 2) {
+                this.setState({
+                    locality: this.props.userInfo.address.municipality,
+                    postalCode: this.props.userInfo.address.postalCode,
+                    street: streetNumber[0],
+                    streetNumber: streetNumber[1],
+                    lblodid: this.props.userInfo.personUri,
+                    firstname: this.props.userInfo.name,
+                    lastname: this.props.userInfo.familyName,
+                    lblodExist: true
+                });
+            }
+        }
+        //this.fetchUserData();
     }
 
-    componentDidMount() { //Trigger when component is created or using route
-        if (this.props.appContainer !== undefined) {
-            this.init();
+    async componentDidMount() { //Trigger when component is created or using route
+        this.setDefaultValue();
+        this.setState({"loaded": this.props.loaded});
+
+        if (this.props.userInfo != null) {
+            await this.init();
         }
     }
 
-    componentDidUpdate(prevProps) { //Trigger when state or props change but not with route
-        if (this.props.appContainer !== undefined && this.props.appContainer != prevProps.appContainer) {
-            this.init();
+    async componentDidUpdate(prevProps, prevStates) { //Trigger when state or props change but not with route, we use it because appContainer is async
+        if (this.props.userInfo != prevProps.userInfo) {
+            this.setDefaultValue();
+
+            if (this.props.userInfo !== null) {
+                await this.setDefaultValue();
+                await this.init();
+                this.setState({"loaded": this.props.loaded});
+            }
+        }
+
+        //Just in case the loaded props take times to update
+        if (this.props.loaded != prevProps.loaded) {
+            this.setState({"loaded": this.props.loaded});
         }
     }
 
     async setDefaultValue() {
-        this.state = {street: '', streetNumber: '', locality: '', postalCode: '', lblodid: ''};
-    }
-
-    //Used to fetch profile information if already exist on the solid pod
-    async fetchUserData() {
-        //We check all documents and try to file the one which contains FILE_NAME (me.ttl)
-        let documents = listDocuments(this.props.appContainer);
-        let userDataLink = documents.find(link => {
-            let indexFile = link.lastIndexOf('/');
-            let file = link.substr(indexFile + 1);
-
-            return file == this.FILE_NAME;
-        });
-        if (userDataLink != null) { //If file is found
-            let userDataDoc = await fetchDocument(userDataLink); //We fetch the document
-            if (userDataDoc != null) {
-                let userData = userDataDoc.getSubject("#me"); //We fetch the subject
-                if (userData != null) {
-                    let id = userData.getString(schema.sameAs);
-                    this.setState({
-                        locality: userData.getString(schema.addressLocality),
-                        postalCode: userData.getInteger(schema.postalCode),
-                        lblodid: id
-                    });
-
-                    //We loaded the page now because after we change some elements
-                    this.setState({"loaded": true});
-
-                    if (id != null && id != "") { //Used to disabled the LBLOD ID if already exist (user can submit one but not change it)
-                        let lblodField = document.getElementById("lblodid");
-                        if (lblodField != null) lblodField.disabled = true;
-
-                        //We fetch name and family name from the LBLOD ID
-                        let uri = new URLSearchParams({
-                            personURI: id
-                        });
-                        let response = await fetchGetDb("person", uri);
-
-                        if (response.success) { //If there is an error with fetch
-                            if (response.result.success && response.result.result.length > 0) {
-                                let firstnameField = document.getElementById("firstname");
-                                let lastnameField = document.getElementById("lastname");
-
-                                //console.log(response.result.result[0].name.value);
-
-                                if (firstnameField != null) firstnameField.value = response.result.result[0].name.value;
-                                if (lastnameField != null) lastnameField.value = response.result.result[0].familyName.value;
-                            }
-                        }
-                    }
-
-                    let streetNumber = userData.getString(schema.streetAddress).split(', ');
-                    if (streetNumber.length === 2) {
-                        this.setState({
-                            street: streetNumber[0],
-                            streetNumber: streetNumber[1]
-                        });
-                    }
-                }
-            }
-        } else {
-            //If file doesn't exist we can load it
-            this.setState({"loaded": true});
-        }
+        this.state = {street: '', streetNumber: '', locality: '', postalCode: '', lblodid: '', firstname: '', lastname: '', lblodExist: false};
     }
 
     //Method use to veriry input and also return if there is an error or not
@@ -109,36 +75,39 @@ class CandidateDataForm extends React.Component {
         let input = document.getElementById(id);
 
         if (errorField != null && input != null) {
-            if (isEmpty(value)) {
-                input.classList.add("vl-input-field--error");
+            if (input.getAttribute("data-type") != "auto") {
 
-                if (input.type === 'number') {
-                    errorField.innerHTML = "Dit veld mag alleen nummers bevatten!";
-                } else {
-                    errorField.innerHTML = "Dit veld moet gevult worden!";
-                }
-
-                return true;
-            }
-
-            if (input.type !== 'number' && input.id != 'lblodid') {
-                if (!isOnlyText(value)) {
-                    errorField.innerHTML = "Dit veld mag alleen tekst bevatten!";
+                if (isEmpty(value)) {
                     input.classList.add("vl-input-field--error");
-
+    
+                    if (input.type === 'number') {
+                        errorField.innerHTML = "Dit veld mag alleen nummers bevatten!";
+                    } else {
+                        errorField.innerHTML = "Dit veld moet gevult worden!";
+                    }
+    
                     return true;
                 }
+    
+                if (input.type !== 'number' && input.id != 'lblodid') {
+                    if (!isOnlyText(value)) {
+                        errorField.innerHTML = "Dit veld mag alleen tekst bevatten!";
+                        input.classList.add("vl-input-field--error");
+    
+                        return true;
+                    }
+                }
+    
+                errorField.innerHTML = "";
+                input.classList.remove("vl-input-field--error");
             }
-
-            errorField.innerHTML = "";
-            input.classList.remove("vl-input-field--error");
         }
 
         return false;
     }
   
     //Used when input data is change
-    handleChange(event) {   
+    handleChange(event) {
         this.setFieldValidation(event.target.id, event.target.value);
         this.setState({[event.target.id]: event.target.value});
     }
@@ -158,6 +127,10 @@ class CandidateDataForm extends React.Component {
 
         let response;
         //We check if person ID exist
+        if (this.state.lblodid == null || this.state.lblodid == '') {
+            return false;
+        }
+        
         let uri = new URLSearchParams({
             personURI: this.state.lblodid
         });
@@ -173,9 +146,10 @@ class CandidateDataForm extends React.Component {
                 errorData = true;
                 errorMessage = "This LBLOD ID doesn't exist!";
             } else {
-                console.log(response.result);
-                document.getElementById("firstname").value = response.result.result[0].name.value;
-                document.getElementById("lastname").value = response.result.result[0].familyName.value;
+                this.setState({
+                    firstname: response.result.result[0].name.value,
+                    lastname: response.result.result[0].familyName.value
+                });
             }
         } else { //An error occured with the API, we show the message to the user
             errorData = true;
@@ -183,7 +157,7 @@ class CandidateDataForm extends React.Component {
         }
 
         if (errorData) {
-            alert(errorMessage);
+            alert("Fatal error : " + errorMessage);
             return false;
         }
 
@@ -218,12 +192,10 @@ class CandidateDataForm extends React.Component {
         formData.addString(schema.sameAs, this.state.lblodid);
         
         //We add all subject to the document, save it and show a confirmation message
-        doc.save([formData]).then(function(e) {
+        await doc.save([formData]).then(function(e) {
             alert("Uw data is opgeslagen!");
         });
 
-        //It exists, user can't change it
-        document.getElementById("lblodid").disabled = true;
         this.props.refresh();
     }
   
@@ -236,19 +208,19 @@ class CandidateDataForm extends React.Component {
                         <div className="vl-grid">
                             <div className="form-group vl-col--12-12">
                                 <label className="vl-form__label" htmlFor="lblodid">LBLOD ID :</label>
-                                <input type="text" id="lblodid" placeholder="http://data.lblod.info/id/personen/xxx" className="vl-input-field vl-input-field--block" name="lblodid" value={this.state.lblodid} onChange={this.handleChange}></input>
+                                <input type="text" id="lblodid" placeholder="http://data.lblod.info/id/personen/xxx" className="vl-input-field vl-input-field--block" name="lblodid" value={this.state.lblodid} onChange={this.handleChange} disabled={(this.state.lblodExist)}></input>
                                 <p className="vl-form__error" id="input-field-lblodid-error"></p>
                             </div>
 
                             <div className="form-group vl-form-col--6-12">
                                 <label className="vl-form__label" htmlFor="firstname">Voornaam : <FaInfoCircle data-tip="Dit veld wordt automatisch aangevuld bij een geldig LBLOD ID." /></label>
-                                <input type="text" disabled={true} id="firstname" className="vl-input-field vl-input-field--block" name="firstname"></input>
+                                <input type="text" disabled={true} id="firstname" className="vl-input-field vl-input-field--block" data-type="auto" name="firstname" value={this.state.firstname}></input>
                                 <p className="vl-form__error" id="input-field-firstname-error"></p>
                             </div>
     
                             <div className="form-group vl-form-col--6-12">
                                 <label className="vl-form__label" htmlFor="lastname">Achternaam :</label>
-                                <input type="text" disabled={true} id="lastname" className="vl-input-field vl-input-field--block" name="lastname"></input>
+                                <input type="text" disabled={true} id="lastname" className="vl-input-field vl-input-field--block" data-type="auto" name="lastname" value={this.state.lastname}></input>
                                 <p className="vl-form__error" id="input-field-lastname-error"></p>
                             </div>
     
