@@ -105,7 +105,7 @@ class CandidateDataForm extends React.Component {
 
         return false;
     }
-  
+
     //Used when input data is change
     handleChange(event) {
         this.setFieldValidation(event.target.id, event.target.value);

@@ -443,7 +443,7 @@ class A105 extends React.Component {
                                 </div>
 
                                 <div className="form-group vl-form-col--4-12">
-                                    <label className="vl-form__label" htmlFor="Gtrackingnumber">Volgnummer :</label>
+                                    <label className="vl-form__label" htmlFor="Gtrackingnumber">Lijstnummer :</label>
                                     <input type="number" min="0" disabled={true} id="Gtrackingnumber" className="vl-input-field vl-input-field--block" value={this.state.listNumber} name="Gtrackingnumber"></input>
                                     <p className="vl-form__error" id="input-field-Gtrackingnumber-error"></p>
                                 </div>
