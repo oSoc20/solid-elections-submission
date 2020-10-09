@@ -6,8 +6,11 @@ i18n
     .use(Backend)
     .use(initReactI18next)
     .init({
-        fallbackLng: "nl",
-        debug: false,
+        backend: {
+            loadPath: '/solid-elections-submission/locales/{{lng}}/{{ns}}.json'
+        },
+        fallbackLng: 'nl',
+        debug: true,
         interpolation: {
             escapeValue: false
         }
