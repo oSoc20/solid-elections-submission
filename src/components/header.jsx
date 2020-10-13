@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 
 export default function Header() {
 
-    const { t } = useTranslation();
+    const { t } = useTranslation(["header"]);
 
     return (
         <header className="au-c-main-header">
             <div className="au-c-main-header__title-group">
                 <div tabIndex="-1" className="au-u-hidden-visually ember-sr-only ember-sr-only-focusable" id="ember-a11y-refocus-nav-message">
-                    Nieuwe pagina geladen. Je kan nu verder navigeren.
+                    {t('New page loaded')}. {t('You can now continue to navigate')}.
                 </div>
                 <a href="https://www.vlaanderen.be/nl" className="au-c-brand au-c-brand--link ">
                     <div className="au-c-brand__logo ex-header-icon">
@@ -25,22 +25,22 @@ export default function Header() {
                     </p>
                 </a>
 
-    <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/">{t('home')}</RouterLink>
-    <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/profile">{t('profile')}</RouterLink>
-                <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/new-declaration">Declareer</RouterLink>
+                <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/">{t('home')}</RouterLink>
+                <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/profile">{t('profile')}</RouterLink>
+                <RouterLink className="ember-view au-c-main-header__title au-c-main-header__title--link" to="/new-declaration">{t('declare')}</RouterLink>
 
-                <a href="#content" className="au-c-main-header__skiplink">Naar de hoofdinhoud</a>
+                <a href="#content" className="au-c-main-header__skiplink">{t('Back to the main item')}</a>
             </div>
 
             <nav className="au-c-main-header__actions">
                 <ul className="au-c-list-horizontal">
                     <LoggedIn>
                         <li className="au-c-list-horizontal__item">
-                            <Link className="nav-link" href="user"> Welkom, <Value src="user.name"/></Link>     
+                            <Link className="nav-link" href="user"> {t('Welcome')}, <Value src="user.name"/></Link>     
                         </li>
                     </LoggedIn>
                     <li className="au-c-list-horizontal__item">
-                        <AuthButton popup="https://osoc20.github.io/solid-elections-submission/popup.html" login="Inloggen" logout="Uitloggen"/>
+                        <AuthButton popup="https://osoc20.github.io/solid-elections-submission/popup.html" login={t('Log in')} logout={t('Log out')}/>
                     </li>
                 </ul>
             </nav>
