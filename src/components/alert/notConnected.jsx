@@ -1,20 +1,20 @@
 import React from 'react';
 import { LoginButton } from '@solid/react';
 import ShowAlert from './showAlert';
+import { useTranslation } from 'react-i18next';
 
-export default class NotConnected extends React.Component {
-  //getMessage because we can't send directly texte + component + text to showAlert message, so we call this function into it
-  getMessage() {
-    return (
+export default function NotConnected(props) {
+
+  const { t } = useTranslation(["alert"]);
+
+  return (
+    <ShowAlert type="error">
       <>
-        U bent niet verbonden! <LoginButton popup="https://osoc20.github.io/solid-elections-submission/popup.html">Log hier in</LoginButton>!
+        {t('You are not connected')}! 
+        <LoginButton popup="https://osoc20.github.io/solid-elections-submission/popup.html">
+          {t('Log in here')}!
+        </LoginButton>!
       </>
-    );
-  }
-
-  render() {
-    return (
-      <ShowAlert message={this.getMessage()} type="error" />
-    );
-  }
-}
+    </ShowAlert>
+  );
+};
