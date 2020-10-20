@@ -8,7 +8,6 @@ import {fetchGetDb, fetchPostDb} from '../../utils/RequestDatabase';
 import ReactTooltip from "react-tooltip";
 import { FaInfoCircle } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
-import { useForm } from 'react-hook-form';
 import { updateStatement } from "typescript";
 import { valid } from "rdf-namespaces/dist/dct";
 
@@ -285,8 +284,6 @@ export default function CandidateDataForm(props) {
     const [municipality, setMunicipality] = useState('');
     const [postalCode, setPostalCode] = useState(2330);
 
-    const { register, handleSubmit, errors } = useForm();
-
     useEffect(() => {
         setLoadedState(props.loaded);
     })
@@ -475,7 +472,6 @@ export default function CandidateDataForm(props) {
                                 LBLOD ID:
                             </label>
                             <input
-                            ref={register} 
                             type="text" 
                             id="lblodId" 
                             placeholder="http://data.lblod.info/id/personen/xxx" 
@@ -526,7 +522,6 @@ export default function CandidateDataForm(props) {
                                 {t('Street name')}:
                             </label>
                             <input
-                            ref={register} 
                             type="text" 
                             id="streetName" 
                             className="vl-input-field vl-input-field--block" 
@@ -540,8 +535,7 @@ export default function CandidateDataForm(props) {
                             <label className="vl-form__label" htmlFor="streetNumber">
                                 {t('House number')}:
                             </label>
-                            <input
-                            ref={register}  
+                            <input 
                             type="number" 
                             min="1" 
                             id="houseNb" 
@@ -556,8 +550,7 @@ export default function CandidateDataForm(props) {
                             <label className="vl-form__label" htmlFor="locality">
                                 {t('Municipality')}:
                             </label>
-                            <input
-                            ref={register}  
+                            <input  
                             type="text" 
                             id="municipality" 
                             className="vl-input-field vl-input-field--block" 
@@ -571,8 +564,7 @@ export default function CandidateDataForm(props) {
                             <label className="vl-form__label" htmlFor="postalCode">
                                 {t('Postal code')}:
                             </label>
-                            <input
-                            ref={register}  
+                            <input  
                             type="number" 
                             min="0" 
                             id="postalCode" 
