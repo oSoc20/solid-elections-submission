@@ -240,19 +240,64 @@ const Index = () => {
                                         <div>
                                             <ul id="formSelection" className="nav nav-tabs nav-fill" role="tablist">
                                                 <li className="nav-item">
-                                                    <a id="tab-a105" className="nav-link active" data-toggle="tab" href="#a105-form" role="tab" aria-controls="a105-form" aria-selected="false">Uitgaven kandidaat</a>
+                                                    <a 
+                                                    id="tab-a105" 
+                                                    className="nav-link active" 
+                                                    data-toggle="tab" 
+                                                    href="#a105-form" 
+                                                    role="tab" 
+                                                    aria-controls="a105-form" 
+                                                    aria-selected="false">
+                                                        Uitgaven kandidaat
+                                                    </a>
                                                 </li>
                                                 <li className={"nav-item " + (userInfo != null && userInfo.lists[0].position == 1 ? "" : "disabled")}>
-                                                    <a id="tab-g103" className={"nav-link " + (userInfo != null && userInfo.lists[0].position == 1 ? "" : "disabled")} data-toggle="tab" href="#g103-form" role="tab" aria-controls="g103-form" aria-selected="true">Uitgaven lijst</a>
+                                                    <a 
+                                                    id="tab-g103" 
+                                                    className={"nav-link " + (userInfo != null && userInfo.lists[0].position == 1 ? "" : "disabled")} 
+                                                    data-toggle="tab" 
+                                                    href="#g103-form" 
+                                                    role="tab" 
+                                                    aria-controls="g103-form" 
+                                                    aria-selected="true">
+                                                        Uitgaven lijst
+                                                    </a>
                                                 </li>
                                                 <li className="nav-item disabled">
-                                                    <a id="tab-g104" className="nav-link disabled" data-toggle="tab" href="#g104-form" role="tab" aria-controls="g104-form" aria-selected="false">Schenkers/sponsors kandidaat</a>
+                                                    <a 
+                                                    id="tab-g104" 
+                                                    className="nav-link disabled" 
+                                                    data-toggle="tab" 
+                                                    href="#g104-form" 
+                                                    role="tab" 
+                                                    aria-controls="g104-form" 
+                                                    aria-selected="false">
+                                                        Schenkers/sponsors kandidaat
+                                                    </a>
                                                 </li>
                                                 <li className="nav-item disabled">
-                                                    <a id="tab-a106" className="nav-link disabled" data-toggle="tab" href="#a106-form" role="tab" aria-controls="a106-form" aria-selected="false">Schenkers/sponsors lijst</a>
+                                                    <a 
+                                                    id="tab-a106" 
+                                                    className="nav-link disabled" 
+                                                    data-toggle="tab" 
+                                                    href="#a106-form" 
+                                                    role="tab" 
+                                                    aria-controls="a106-form" 
+                                                    aria-selected="false">
+                                                        Schenkers/sponsors lijst
+                                                    </a>
                                                 </li>
                                                 <li className={"nav-item " + (userInfo != null && userInfo.mandated > 0 ? "" : "disabled")}>
-                                                    <a id="tab-extra" className={"nav-link " + (userInfo != null && userInfo.mandated > 0 ? "" : "disabled")} data-toggle="tab" href="#extra-form" role="tab" aria-controls="extra-form" aria-selected="false">Uitgaven politieke partij</a>
+                                                    <a 
+                                                    id="tab-extra" 
+                                                    className={"nav-link " + (userInfo != null && userInfo.mandated > 0 ? "" : "disabled")} 
+                                                    data-toggle="tab" 
+                                                    href="#extra-form" 
+                                                    role="tab" 
+                                                    aria-controls="extra-form" 
+                                                    aria-selected="false">
+                                                        Uitgaven politieke partij
+                                                    </a>
                                                 </li>
                                             </ul>
 

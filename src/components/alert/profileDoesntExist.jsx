@@ -3,6 +3,8 @@ import ShowAlert from './showAlert';
 
 export default function ProfileDoesntExist() {
   return (
-    <ShowAlert message="Uw profiel is niet compleet!" type="error" />
+    <ShowAlert type="error">
+      <> Uw profiel is niet compleet!</>
+    </ShowAlert>
   );
 }

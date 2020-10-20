@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {fetchDocument} from 'tripledoc';
 import {schema} from 'rdf-namespaces';
 import {createAppDocument, listDocuments, createExpense, createDonation} from '../../utils/SolidWrapper';
@@ -9,12 +9,11 @@ import InputAmount from './inputAmount';
 import { Redirect } from 'react-router-dom';
 import {fetchGetDb, fetchPostDb, fetchPostAbb} from '../../utils/RequestDatabase';
 import ReactTooltip from "react-tooltip";
-import { FaInfoCircle } from 'react-icons/fa';
 import deadlines from '../../data/deadline.json';
 import Help from "../alert/help";
-import { value } from "rdf-namespaces/dist/rdf";
+import { useTranslation } from 'react-i18next';
 
-class A105 extends React.Component {
+class TestA105 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
     FILE_ID = "a105";
     FILE_NAME = this.FILE_ID + ".ttl";
@@ -837,4 +836,201 @@ class A105 extends React.Component {
     }
 }
 
-export default A105;
+// export default TestA105;
+
+export default function A105(props) {
+
+    const { t } = useTranslation(["A105", "alert"]);
+
+    const [loaded, setLoadedState] = useState(props.loaded);
+    const [completeProfile, setCompleteProfile] = useState(false);
+    const [listName, setListName] = useState('');
+    const [listNb, setListNb] = useState(0);
+    const [municipality, setMunicipality] = useState('');
+    const [listPosition, setListPosition] = useState(0);
+    const [completeForm, setCompleteForm] = useState(false);
+
+    useEffect(() => {
+        setLoadedState(props.loaded);
+    });
+
+    useEffect(() => {
+        let userInfo = props.userInfo;
+        if (userInfo != null) {
+            setCompleteProfile(true);
+            setListName(
+                userInfo.lists[0].name
+            );
+            setListNb(
+                userInfo.lists[0].number
+            );
+            setMunicipality(
+                userInfo.address.municipality
+            );
+            setListPosition(
+                userInfo.lists[0].position
+            );
+        } else {
+            setCompleteProfile(false);
+        }
+    }, [loaded]);
+
+    const anabeCompleteForm = function() {
+        setCompleteForm(true);
+    }
+
+    const disableCompleteForm = function() {
+        setCompleteForm(false);
+    }
+
+    const handleSubmit = function(event) {
+
+    };
+
+    if (! loaded) {
+        return (
+            <Loading />
+        );
+    } else {
+        if (! completeProfile) {
+            return (
+                <ProfileDoesntExist />
+            );
+        } else {
+            return (
+                <div id="userForm">
+                    <h1 
+                    className="vl-title vl-title--h1 vl-title--has-border">
+                        {t('A105:Declaration of election expenses and of the origin of the funds by candidates')}
+                    </h1>
+                    <form onSubmit={handleSubmit}>
+                    <h2 
+                    className="vl-title vl-title--h2 vl-title--has-border">
+                        {t('A105:General')}
+                    </h2>
+                    <div className="vl-grid">
+                        <div className="form-group vl-form-col--8-12">
+                            <label 
+                            className="vl-form__label" 
+                            htmlFor="Gnamelist">
+                                {t('A105:List name')} :
+                            </label>
+                            <input 
+                            type="text" 
+                            id="Gnamelist" 
+                            disabled={true} 
+                            className="vl-input-field vl-input-field--block" 
+                            value= {listName}
+                            name="Gnamelist"></input>
+                            <p 
+                            className="vl-form__error" 
+                            id="input-field-Gnamelist-error"></p>
+                        </div>
+
+                        <div className="form-group vl-form-col--4-12">
+                            <label 
+                            className="vl-form__label" 
+                            htmlFor="Gtrackingnumber">
+                                {t('A105:List number')} :
+                            </label>
+                            <input 
+                            type="number" 
+                            min="0" 
+                            disabled={true} 
+                            id="Gtrackingnumber" 
+                            className="vl-input-field vl-input-field--block" 
+                            value={listNb} 
+                            name="Gtrackingnumber"></input>
+                            <p 
+                            className="vl-form__error" 
+                            id="input-field-Gtrackingnumber-error"></p>
+                        </div>
+
+                        <div className="form-group vl-form-col--8-12">
+                            <label 
+                            className="vl-form__label" 
+                            htmlFor="Ggemeente">
+                                {t('A105:Municipal administration')} :
+                            </label>
+                            <input 
+                            type="text" 
+                            disabled={true} 
+                            id="Ggemeente" 
+                            className="vl-input-field vl-input-field--block" 
+                            value={municipality} 
+                            name="Ggemeente"></input>
+                            <p 
+                            className="vl-form__error" 
+                            id="input-field-Ggemeente-error"></p>
+                        </div>
+
+                        <div className="form-group vl-form-col--4-12">
+                            <label 
+                            className="vl-form__label" 
+                            htmlFor="GlistPosition">
+                                {t('A105:Place on the list')} :
+                            </label>
+                            <input 
+                            type="number" 
+                            min="0" 
+                            disabled={true} 
+                            id="GlistPosition" 
+                            className="vl-input-field vl-input-field--block" 
+                            value={listPosition} 
+                            name="GlistPosition"></input>
+                            <p 
+                            className="vl-form__error" 
+                            id="input-field-GlistPosition-error"></p>
+                        </div>
+
+                        <p>
+                            {t('A105:As a candidate for the October 14, 2018 elections, did you make any election expenses')}?
+                        </p>
+                        <div className="form-group vl-form-col--12-12">
+                            <label className="vl-radio" htmlFor="GElectionExpenseYes">
+                                <input 
+                                className="vl-radio__toggle" 
+                                type="radio" 
+                                id="GElectionExpenseYes" 
+                                name="GElectionExpense" 
+                                value="yes"
+                                onClick={anabeCompleteForm}
+                                checked={completeForm} />
+                                <div className="vl-radio__label">
+                                    {t('A105:Yes')}
+                                </div>
+                            </label>
+                            <label className="vl-radio" htmlFor="GElectionExpenseNo">
+                                <input 
+                                className="vl-radio__toggle" 
+                                type="radio" 
+                                id="GElectionExpenseNo" 
+                                name="GElectionExpense" 
+                                value="no"
+                                onClick={disableCompleteForm}  
+                                checked={! completeForm} />
+                                <div className="vl-radio__label">
+                                    {t('A105:No')}
+                                </div>
+                            </label>
+                        </div>
+
+                        <div 
+                        id="sectionElectionExpenditure" 
+                        className={completeForm ? "" : "vl-u-hidden"}>
+                            EXPENDITURE
+                        </div>
+
+                        <div 
+                        id="sectionOriginOfFund" 
+                        className={completeForm ? "" : "vl-u-hidden"}>
+                            ORIGIN OF FUNDS
+                        </div>
+                    </div>
+                    </form>
+                    <ReactTooltip />
+                </div>
+            );
+        }
+    }
+};
