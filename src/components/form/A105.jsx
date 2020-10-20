@@ -11,6 +11,8 @@ import {fetchGetDb, fetchPostDb, fetchPostAbb} from '../../utils/RequestDatabase
 import ReactTooltip from "react-tooltip";
 import deadlines from '../../data/deadline.json';
 import Help from "../alert/help";
+import A105Expenses from "./A105Expenses";
+import A105Funds from "./A105Funds";
 import { useTranslation } from 'react-i18next';
 
 class TestA105 extends React.Component {
@@ -1015,17 +1017,10 @@ export default function A105(props) {
                             </label>
                         </div>
 
-                        <div 
-                        id="sectionElectionExpenditure" 
-                        className={completeForm ? "" : "vl-u-hidden"}>
-                            EXPENDITURE
-                        </div>
+                        <A105Expenses show={completeForm}/>
 
-                        <div 
-                        id="sectionOriginOfFund" 
-                        className={completeForm ? "" : "vl-u-hidden"}>
-                            ORIGIN OF FUNDS
-                        </div>
+                        <A105Funds show={completeForm}/>
+
                     </div>
                     </form>
                     <ReactTooltip />
