@@ -323,7 +323,7 @@ export default function A105Expenses(props) {
             </div>
 
             <p className="total-text mb-5">
-                Totaalbedrag: {totalAmount}€
+                {t('A105:Total amount') + ": " +  totalAmount}€
             </p>
         </div>
     );

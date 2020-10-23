@@ -64,5 +64,27 @@
         "Verkiezingsmanifestaties",
     "Production costs for website or web page, designed for election purposes":
         "Productiekosten voor website of webpagina, ontworpen met verkiezingsdoeleinden",
-    "Other": "Varia"
+    "Other": "Varia",
+    "Total amount":
+        "Totaal bedrag",
+    "Declaration of the origin of the funds": 
+        "Aangifte van de herkomst van de geldmiddelen",
+    "Funds that come from the candidate's own assests":
+        "Geldmiddelen die afkomstig zijn van het eigen patrimonium van de kandidaat",
+    "Gifts":
+        "Giften",
+    "Gifts of 125 euros or more per donor":
+        "Giften van 125 euro of meer per schenker",
+    "Gifts of less than 125 euros per donor":
+        "Giften van minder dan 125 euro per schenker",
+    "Sponsorship":
+        "Sponsoring",
+    "Amounts of 125 euros or more per sponsor":
+        "Bedragen van 125 euro of meer per sponsor",
+    "Amounts of less than 125 euros per sponsor":
+        "Bedragen van minder dan 125 euro per sponsor",
+    "Financing by (a component of) the political party":
+        "Financiering door (een component van) de politieke partij",
+    "Different origin":
+        "Andere herkomst"
 }
