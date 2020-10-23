@@ -851,6 +851,7 @@ export default function A105(props) {
     const [municipality, setMunicipality] = useState('');
     const [listPosition, setListPosition] = useState(0);
     const [completeForm, setCompleteForm] = useState(false);
+    const [maxExpensesAmount, setMaxExpensesAmount] = useState(0);
 
     useEffect(() => {
         setLoadedState(props.loaded);
@@ -871,6 +872,9 @@ export default function A105(props) {
             );
             setListPosition(
                 userInfo.lists[0].position
+            );
+            setMaxExpensesAmount(
+                userInfo.userAmount
             );
         } else {
             setCompleteProfile(false);
@@ -1017,7 +1021,10 @@ export default function A105(props) {
                             </label>
                         </div>
 
-                        <A105Expenses show={completeForm}/>
+                        <A105Expenses 
+                            show={completeForm}
+                            maxAmount={maxExpensesAmount}
+                        />
 
                         <A105Funds show={completeForm}/>
 
