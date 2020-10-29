@@ -54,13 +54,12 @@ const Index = () => {
     //doesn't exist before, form G103 will not refresh appContainer and so an error will append. That's why we have to refresh appContainer
     //to fetch the new file into it.
     async function updateAppContainer() {
-        console.log("appContainer is refreshing...");
         setLoaded(false);
         setUserInfo(null);
         const getAppStorage = async (webID) => {
-            const appContainer = await initAppStorage(webID, APP_NAME);
-            if (appContainer != null) {
-                setAppContainer(appContainer);
+            const container = await initAppStorage(webID, APP_NAME);
+            if (container != null) {
+                setAppContainer(container);
             } else {
                 alert("PANIC: We couldn't acces the app folder on the Solid Pod.");
             }
@@ -71,7 +70,6 @@ const Index = () => {
     }
 
     async function profileExist() {
-        console.log("Checking if profile exist...");
         if (appContainer != null) {
             let documents = listDocuments(appContainer);
             let userDataLink = documents.find(link => {
@@ -96,7 +94,6 @@ const Index = () => {
     }
 
     async function updateUserInfo() {
-        console.log("Updating user info...");
         if (userData != null) {
             let personURI = userData.getString(schema.sameAs);
             if (personURI != null) {

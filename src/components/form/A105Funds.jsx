@@ -1,53 +1,15 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import Help from "../alert/help";
 import InputAmount from './inputAmount';
+import {isEmpty, isNumber, isOnlyText} from '../../utils/DataValidator';
+import useFundsForm from '../../utils/useFundsForm';
 import { useTranslation } from 'react-i18next';
 
 export default function A105Funds(props) {
 
     const { t } = useTranslation(["A105", "alert"]);
 
-    const [patrimony, setPatrimony] = useState(0);
-
-    const [donations1, setDonations1] = useState(0);
-    const [donations2, setDonations2] = useState(0);
-    
-    const [sponsorship1, setSponsorship1] = useState(0);
-    const [sponsorship2, setSponsorship2] = useState(0);
-
-    const [politicalParty, setPoliticalParty] = useState(0);
-
-    const [otherSource, setOtherSource] = useState(0);
-
-    const [totalAmount, setTotalAmount] = useState(0);
-
-    const handleChange = function(event) {
-        const target = event.target;
-        validateChange(target.id, target.value);
-        updateState(target.id, target.value);
-    }
-
-    const validateChange = function(id, value) {
-        return true;
-    }
-
-    const updateState = function(id, value) {
-        if (id == 'patrimony') {
-            setPatrimony(value);
-        } else if (id == 'donations1') {
-            setDonations1(value);
-        } else if (id == 'donations2') {
-            setDonations2(value);
-        } else if (id == 'sponsorship1') {
-            setSponsorship1(value);
-        } else if (id == 'sponsorship2') {
-            setSponsorship2(value);
-        } else if (id == 'politicalParty') {
-            setPoliticalParty(value);
-        } else if (id == 'otherSource') {
-            setOtherSource(value);
-        }
-    }
+    const {handleFundsChange, fundsValues, total} = useFundsForm();
 
     return (
         <div 
@@ -70,10 +32,10 @@ export default function A105Funds(props) {
             <div className="vl-grid">
                 <div className="form-group vl-form-col--6-12">
                     <InputAmount
-                        var="patrimony"
+                        var="FSection1"
                         label=""
-                        handleChange={handleChange}
-                        val={patrimony}
+                        handleChange={handleFundsChange}
+                        val={fundsValues.FSection1}
                         help=""
                     />
                 </div>
@@ -97,10 +59,10 @@ export default function A105Funds(props) {
             <div className="vl-grid">
                 <div className="form-group vl-form-col--6-12">
                     <InputAmount
-                        var="donations1"
+                        var="FSection2_1"
                         label={t('A105:Gifts of 125 euros or more per donor') + ":"}
-                        handleChange={handleChange}
-                        val={donations1}
+                        handleChange={handleFundsChange}
+                        val={fundsValues.FSection2_1}
                         help=""
                         min="125"
                         message="Let op! U vult giften in die €125 of hoger bedragen. Vul daarom ook het formulier voor de identificatie van de schenkers en sponsors in."
@@ -109,10 +71,10 @@ export default function A105Funds(props) {
 
                 <div className="form-group vl-form-col--6-12">
                     <InputAmount
-                        var="donations2"
+                        var="FSection2_2"
                         label={t('A105:Gifts of less than 125 euros per donor') + ":"}
-                        handleChange={handleChange}
-                        val={donations2}
+                        handleChange={handleFundsChange}
+                        val={fundsValues.FSection2_2}
                         help=""
                     />
                 </div>
@@ -135,22 +97,21 @@ export default function A105Funds(props) {
             <div className="vl-grid">
                 <div className="form-group vl-form-col--6-12">
                     <InputAmount
-                        var="sponsorship1"
-                        label={t('A105:Amounts of 125 euros or more per sponsor"') + ":"}
-                        handleChange={handleChange}
-                        val={sponsorship1}
+                        var="FSection3_1"
+                        label={t('A105:Amounts of 125 euros or more per sponsor') + ":"}
+                        handleChange={handleFundsChange}
+                        val={fundsValues.FSection3_1}
                         help=""
                         min="125"
-                        message="Let op! U vult sponsoring in die €125 of hoger bedraagt. Vul daarom ook het formulier voor de identificatie van de schenkers en sponsors in."
                     />
                 </div>
 
                 <div className="form-group vl-form-col--6-12">
                     <InputAmount
-                        var="sponsorship2"
+                        var="FSection3_2"
                         label={t('A105:Amounts of less than 125 euros per sponsor') + ":"}
-                        handleChange={handleChange}
-                        val={sponsorship2}
+                        handleChange={handleFundsChange}
+                        val={fundsValues.FSection3_2}
                         help=""
                     />
                 </div>
@@ -162,10 +123,10 @@ export default function A105Funds(props) {
             <div className="vl-grid">
                 <div className="form-group vl-form-col--6-12">
                     <InputAmount
-                        var="politicalParty"
+                        var="FSection4"
                         label=""
-                        handleChange={handleChange}
-                        val={politicalParty}
+                        handleChange={handleFundsChange}
+                        val={fundsValues.FSection4}
                         help=""
                     />
                 </div>
@@ -177,17 +138,17 @@ export default function A105Funds(props) {
             <div className="vl-grid">
                 <div className="form-group vl-form-col--6-12">
                     <InputAmount
-                        var="otherSource"
+                        var="FSection5"
                         label=""
-                        handleChange={handleChange}
-                        val={otherSource}
+                        handleChange={handleFundsChange}
+                        val={fundsValues.FSection5}
                         help=""
                     />
                 </div>
             </div>
 
             <p className="total-text">
-                {t('A105:Total amount') + ": " +  totalAmount}€
+                {t('A105:Total amount') + ": " +  total}€
             </p>
         </div>
     );

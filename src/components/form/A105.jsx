@@ -14,6 +14,7 @@ import Help from "../alert/help";
 import A105Expenses from "./A105Expenses";
 import A105Funds from "./A105Funds";
 import { useTranslation } from 'react-i18next';
+import useExpensesForm from '../../utils/useExpensesForm';
 
 class TestA105 extends React.Component {
     FILE_NAME_PROFILE = "me.ttl";
@@ -843,6 +844,7 @@ class TestA105 extends React.Component {
 export default function A105(props) {
 
     const { t } = useTranslation(["A105", "alert"]);
+    const FILE_ID = "a105";
 
     const [loaded, setLoadedState] = useState(props.loaded);
     const [completeProfile, setCompleteProfile] = useState(false);
@@ -852,6 +854,8 @@ export default function A105(props) {
     const [listPosition, setListPosition] = useState(0);
     const [completeForm, setCompleteForm] = useState(false);
     const [maxExpensesAmount, setMaxExpensesAmount] = useState(0);
+
+    const {handleExpensesChange, expensesValues} = useExpensesForm();
 
     useEffect(() => {
         setLoadedState(props.loaded);
@@ -890,7 +894,106 @@ export default function A105(props) {
     }
 
     const handleSubmit = function(event) {
+        // event.preventDefault();
 
+        // if (props.userInfo.appContainer != undefined) {
+        //     let dataToSave = [];
+        //     //Create a new document
+        //     let doc = createAppDocument(props.userInfo.appContainer, this.FILE_NAME);
+        // }
+
+        // let error = false;
+        // //Check if there is any error
+        // for (const [key, value] of Object.entries(this.state.expenses)) {
+        //     if (error) {
+        //         alert("Geen gedeclareerde uitgaven");
+        //         return false;
+        //     }
+        //     error = isEmpty(value.amount);
+        // }
+
+        // console.log("Handling submit!");
+        // console.log(error);
+
+        //         let buyActionData;
+        //         let amountChecked;
+        //         //Loop for each expenses data and create a new subject
+        //         for (const [key, value] of Object.entries(this.state.expenses)) {
+        //             //We make that because setState is asynchronous
+        //             if (this.state.GElectionExpense === 'no') { //Because user can say "yes", complete form and finally say "no" and data will be save through, so we force to be 0 without formatting
+        //                 amountChecked = 0;
+        //             } else {
+        //                 amountChecked = value.amount;
+        //             }
+
+        //             buyActionData = {
+        //                 identifier: value.key,
+        //                 description: value.description,
+        //                 price: parseFloat(amountChecked),
+        //                 priceCurrency: 'EUR'
+        //             }
+
+        //             //We add this new subject (new expense) to the list who will be save, 1 subject = 1 expense
+        //             dataToSave.push(createExpense(doc, this.props.userInfo.profile, buyActionData));
+        //         }
+
+        //         //Same as expences but for funds
+        //         for (const [key, value] of Object.entries(this.state.funds)) {
+        //             if (error) {
+        //                 alert("De fondsen zijn niet correct ingevuld");
+        //                 this.setState({"formSending": false});
+        //                 return false;
+        //             }
+        //             error = isEmpty(value.amount);
+        //             if (!error) {
+        //                 let field = document.getElementById(key);
+
+        //                 error = (field.getAttribute("data-min") == "125" && value.amount != 0 && value.amount < 125) || (field.getAttribute("data-max") == "125" && value.amount > 125);
+        //             }
+        //         }
+                
+        //         let donateActionData;
+        //         for (const [key, value] of Object.entries(this.state.funds)) {
+        //             //We make that because setState is asynchronous
+        //             if (this.state.GElectionExpense === 'no') {
+        //                 amountChecked = 0;
+        //             } else {
+        //                 amountChecked = value.amount;
+        //             }
+
+        //             donateActionData = {
+        //                 identifier: value.key,
+        //                 description: value.description,
+        //                 price: parseFloat(amountChecked),
+        //                 priceCurrency: 'EUR'
+        //             }
+
+        //             dataToSave.push(createDonation(doc, this.props.userInfo.profile, donateActionData));
+        //         }
+        //     //}
+
+        //     let errorForm = document.getElementById("error-form");
+        //     if (this.getTotalExpense() != this.getTotalFunds()) {
+        //         errorForm.innerText = "Het totaalbedrag van de uitgaven is niet gelijk aan het totaalbedrag van de herkomst van de geldmiddelen";
+        //         this.setState({"formSending": false});
+        //         return false;
+        //     }
+
+        //     errorForm.innerText = "";
+
+        //     //We use thisOject because this is not in the scope of the .then function
+        //     let thisObject = this;
+        //     doc.save(dataToSave).then(function(e) {
+        //         //alert("Uw data is opgeslagen!");
+        //         //Redirect to the home page
+        //         //With setting up redirect state, the component will update and show a success message
+        //         thisObject.setState({redirect: true});
+        //     });
+        // } else {
+        //     alert("Er is geen toegang tot uw Solid pod.");
+        // }
+
+        // this.setState({"formSending": false});
     };
 
     if (! loaded) {
@@ -910,125 +1013,139 @@ export default function A105(props) {
                         {t('A105:Declaration of election expenses and of the origin of the funds by candidates')}
                     </h1>
                     <form onSubmit={handleSubmit}>
-                    <h2 
-                    className="vl-title vl-title--h2 vl-title--has-border">
-                        {t('A105:General')}
-                    </h2>
-                    <div className="vl-grid">
-                        <div className="form-group vl-form-col--8-12">
-                            <label 
-                            className="vl-form__label" 
-                            htmlFor="Gnamelist">
-                                {t('A105:List name')} :
-                            </label>
-                            <input 
-                            type="text" 
-                            id="Gnamelist" 
-                            disabled={true} 
-                            className="vl-input-field vl-input-field--block" 
-                            value= {listName}
-                            name="Gnamelist"></input>
-                            <p 
-                            className="vl-form__error" 
-                            id="input-field-Gnamelist-error"></p>
+                        <h2 
+                        className="vl-title vl-title--h2 vl-title--has-border">
+                            {t('A105:General')}
+                        </h2>
+                        <div className="vl-grid">
+                            <div className="form-group vl-form-col--8-12">
+                                <label 
+                                className="vl-form__label" 
+                                htmlFor="Gnamelist">
+                                    {t('A105:List name')} :
+                                </label>
+                                <input 
+                                type="text" 
+                                id="Gnamelist" 
+                                disabled={true} 
+                                className="vl-input-field vl-input-field--block" 
+                                value= {listName}
+                                name="Gnamelist"></input>
+                                <p 
+                                className="vl-form__error" 
+                                id="input-field-Gnamelist-error"></p>
+                            </div>
+
+                            <div className="form-group vl-form-col--4-12">
+                                <label 
+                                className="vl-form__label" 
+                                htmlFor="Gtrackingnumber">
+                                    {t('A105:List number')} :
+                                </label>
+                                <input 
+                                type="number" 
+                                min="0" 
+                                disabled={true} 
+                                id="Gtrackingnumber" 
+                                className="vl-input-field vl-input-field--block" 
+                                value={listNb} 
+                                name="Gtrackingnumber"></input>
+                                <p 
+                                className="vl-form__error" 
+                                id="input-field-Gtrackingnumber-error"></p>
+                            </div>
+
+                            <div className="form-group vl-form-col--8-12">
+                                <label 
+                                className="vl-form__label" 
+                                htmlFor="Ggemeente">
+                                    {t('A105:Municipal administration')} :
+                                </label>
+                                <input 
+                                type="text" 
+                                disabled={true} 
+                                id="Ggemeente" 
+                                className="vl-input-field vl-input-field--block" 
+                                value={municipality} 
+                                name="Ggemeente"></input>
+                                <p 
+                                className="vl-form__error" 
+                                id="input-field-Ggemeente-error"></p>
+                            </div>
+
+                            <div className="form-group vl-form-col--4-12">
+                                <label 
+                                className="vl-form__label" 
+                                htmlFor="GlistPosition">
+                                    {t('A105:Place on the list')} :
+                                </label>
+                                <input 
+                                type="number" 
+                                min="0" 
+                                disabled={true} 
+                                id="GlistPosition" 
+                                className="vl-input-field vl-input-field--block" 
+                                value={listPosition} 
+                                name="GlistPosition"></input>
+                                <p 
+                                className="vl-form__error" 
+                                id="input-field-GlistPosition-error"></p>
+                            </div>
+
+                            <p>
+                                {t('A105:As a candidate for the October 14, 2018 elections, did you make any election expenses')}?
+                            </p>
+                            <div className="form-group vl-form-col--12-12">
+                                <label className="vl-radio" htmlFor="GElectionExpenseYes">
+                                    <input 
+                                    className="vl-radio__toggle" 
+                                    type="radio" 
+                                    id="GElectionExpenseYes" 
+                                    name="GElectionExpense" 
+                                    value="yes"
+                                    onClick={anabeCompleteForm}
+                                    checked={completeForm} />
+                                    <div className="vl-radio__label">
+                                        {t('A105:Yes')}
+                                    </div>
+                                </label>
+                                <label className="vl-radio" htmlFor="GElectionExpenseNo">
+                                    <input 
+                                    className="vl-radio__toggle" 
+                                    type="radio" 
+                                    id="GElectionExpenseNo" 
+                                    name="GElectionExpense" 
+                                    value="no"
+                                    onClick={disableCompleteForm}  
+                                    checked={! completeForm} />
+                                    <div className="vl-radio__label">
+                                        {t('A105:No')}
+                                    </div>
+                                </label>
+                            </div>
+
+                            <A105Expenses 
+                                show={completeForm}
+                                maxAmount={maxExpensesAmount}
+                            />
+
+                            <A105Funds show={completeForm}/>
+
                         </div>
 
-                        <div className="form-group vl-form-col--4-12">
-                            <label 
-                            className="vl-form__label" 
-                            htmlFor="Gtrackingnumber">
-                                {t('A105:List number')} :
-                            </label>
-                            <input 
-                            type="number" 
-                            min="0" 
-                            disabled={true} 
-                            id="Gtrackingnumber" 
-                            className="vl-input-field vl-input-field--block" 
-                            value={listNb} 
-                            name="Gtrackingnumber"></input>
-                            <p 
-                            className="vl-form__error" 
-                            id="input-field-Gtrackingnumber-error"></p>
-                        </div>
-
-                        <div className="form-group vl-form-col--8-12">
-                            <label 
-                            className="vl-form__label" 
-                            htmlFor="Ggemeente">
-                                {t('A105:Municipal administration')} :
-                            </label>
-                            <input 
-                            type="text" 
-                            disabled={true} 
-                            id="Ggemeente" 
-                            className="vl-input-field vl-input-field--block" 
-                            value={municipality} 
-                            name="Ggemeente"></input>
-                            <p 
-                            className="vl-form__error" 
-                            id="input-field-Ggemeente-error"></p>
-                        </div>
-
-                        <div className="form-group vl-form-col--4-12">
-                            <label 
-                            className="vl-form__label" 
-                            htmlFor="GlistPosition">
-                                {t('A105:Place on the list')} :
-                            </label>
-                            <input 
-                            type="number" 
-                            min="0" 
-                            disabled={true} 
-                            id="GlistPosition" 
-                            className="vl-input-field vl-input-field--block" 
-                            value={listPosition} 
-                            name="GlistPosition"></input>
-                            <p 
-                            className="vl-form__error" 
-                            id="input-field-GlistPosition-error"></p>
-                        </div>
-
-                        <p>
-                            {t('A105:As a candidate for the October 14, 2018 elections, did you make any election expenses')}?
+                        <p id="error-form" className="vl-form__error"></p>
+                        <p className="text-bold">
+                            Verzend dit formulier ten laatste op {deadlines.forms[FILE_ID].deadline}.
                         </p>
-                        <div className="form-group vl-form-col--12-12">
-                            <label className="vl-radio" htmlFor="GElectionExpenseYes">
-                                <input 
-                                className="vl-radio__toggle" 
-                                type="radio" 
-                                id="GElectionExpenseYes" 
-                                name="GElectionExpense" 
-                                value="yes"
-                                onClick={anabeCompleteForm}
-                                checked={completeForm} />
-                                <div className="vl-radio__label">
-                                    {t('A105:Yes')}
-                                </div>
-                            </label>
-                            <label className="vl-radio" htmlFor="GElectionExpenseNo">
-                                <input 
-                                className="vl-radio__toggle" 
-                                type="radio" 
-                                id="GElectionExpenseNo" 
-                                name="GElectionExpense" 
-                                value="no"
-                                onClick={disableCompleteForm}  
-                                checked={! completeForm} />
-                                <div className="vl-radio__label">
-                                    {t('A105:No')}
-                                </div>
-                            </label>
-                        </div>
+                        <button 
+                            id="sendButton" 
+                            className="vl-button mt-5" 
+                            disabled={false}>
+                                <span className="vl-button__label">
+                                    Onderteken en verstuur
+                                </span>
+                        </button>
 
-                        <A105Expenses 
-                            show={completeForm}
-                            maxAmount={maxExpensesAmount}
-                        />
-
-                        <A105Funds show={completeForm}/>
-
-                    </div>
                     </form>
                     <ReactTooltip />
                 </div>
