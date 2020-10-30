@@ -9,7 +9,9 @@ export default function A105Funds(props) {
 
     const { t } = useTranslation(["A105", "alert"]);
 
-    const {handleFundsChange, fundsValues, total} = useFundsForm();
+    const handleFundsChange = props.handleFundsChange;
+    const fundsValues = props.fundsValues;
+    const total = props.fundsTotal;
 
     return (
         <div 

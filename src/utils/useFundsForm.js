@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import {isEmpty, isNumber, isOnlyText} from './DataValidator';
+import {isEmpty, isOnlyText} from './DataValidator';
 import { useTranslation } from 'react-i18next';
+import { createDonation } from "./SolidWrapper";
 
 const useFundsForm =  () => {
 
@@ -16,20 +17,49 @@ const useFundsForm =  () => {
         FSection5: 0
     })
 
-    const [total, setTotal] = useState(0);
+    const [fundsTotal, setTotal] = useState(0);
 
     useEffect(() => {
         if (fundsValues.FSection2_1 >= 125 ||
             fundsValues.FSection3_1 >= 125) {
-                console.log("Enabling!");
                 document.getElementById("tab-g104").classList.remove("disabled");
                 document.getElementById("tab-g104").parentElement.classList.remove("disabled");
             } else {
-                console.log("Disabling!");
                 document.getElementById("tab-g104").classList.add("disabled");
                 document.getElementById("tab-g104").parentElement.classList.add("disabled");
             }
     }, [fundsValues.FSection2_1, fundsValues.FSection3_1])
+
+    const fundsInfo = {
+        FSection1: { 
+            key: '1.1', 
+            description: 'Funds deriving from the list\'s own patrimony'
+        },
+        FSection2_1: { 
+            key: '2.1.1', 
+            description: 'Donations of EUR 125 or more per donor'
+        },
+        FSection2_2: { 
+            key: '2.1.2', 
+            description: 'Donations of less than €125 per donor' 
+        },
+        FSection3_1: { 
+            key: '3.1.1', 
+            description: 'Sponsorship of EUR 125 or more per sponsor'
+        },
+        FSection3_2: { 
+            key: '3.1.2', 
+            description: 'Sponsorship of less than EUR 125 per sponsor'
+        },
+        FSection4: { 
+            key: '4.1', 
+            description: 'Financing by (a component of) the political party' 
+        },
+        FSection5: { 
+            key: '5.1', 
+            description: 'Other source'
+        }
+    }
 
     const handleFundsChange = (event) => {
         const {id, value} = event.target;
@@ -39,8 +69,6 @@ const useFundsForm =  () => {
         
         const oldValue = fundsValues[id];
         const parsedValue = parseFloat(value);
-
-        console.log(parsedValue);
 
         setFundsValues({
             ...fundsValues,
@@ -99,11 +127,38 @@ const useFundsForm =  () => {
         if (isNaN(newValue)) {
             newValue = 0;
         }
-        setTotal(total - oldValue + newValue);
+        setTotal(fundsTotal - oldValue + newValue);
+    }
+
+    const handleFundsSubmit = (doc, userProfile, dataToSave) => {
+        let error = false;
+        for (const [key, value] of Object.entries(fundsValues)) {
+            if (error) {
+                alert('Geen gedeclareerde uitgaven!');
+                return false;
+            }
+            error = isEmpty(value);
+        }
+
+        let buyActionData;
+
+        for (const [id, value] of Object.entries(fundsValues)) {
+
+            buyActionData = {
+                identifier: fundsInfo[id].key,
+                description: fundsInfo[id].description,
+                price: value,
+                priceCurrency: 'EUR'
+            }
+            
+            dataToSave.push(createDonation(doc, userProfile, buyActionData));
+        }
+
+        return true;
     }
 
     return ({
-        handleFundsChange, fundsValues, total
+        handleFundsChange, handleFundsSubmit, fundsValues, fundsTotal
     });
 }
 

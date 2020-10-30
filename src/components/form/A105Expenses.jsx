@@ -8,7 +8,9 @@ export default function A105Expenses(props) {
 
     const { t } = useTranslation(["A105", "alert"]);
 
-    const {handleExpensesChange, expensesValues, total} = useExpensesForm();
+    const handleExpensesChange = props.handleExpensesChange;
+    const expensesValues = props.expensesValues;
+    const total = props.expensesTotal;
 
     return (
         <div 
