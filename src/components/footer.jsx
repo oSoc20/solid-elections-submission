@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
 
-    const { t } = useTranslation(["footer"]);
+    const { t, i18n } = useTranslation(["footer"]);
+
+    const [language, setLanguage] = useState('nl')
+
+    const changeLanguage = (language) => {
+        setLanguage(language);
+        i18n.changeLanguage(language);
+    }
+
+    const getButtonClass = (buttonLanguage) => {
+        if (buttonLanguage == language) {
+            return "language-button-selected"
+        } else {
+            return "language-button"
+        }
+    }
 
     return (
     <footer className="au-c-main-footer">
@@ -41,6 +56,40 @@ export default function Footer() {
                         </li>
                     </ul>
                 </div>
+            </div>
+            <div className="language-selection">
+                <button 
+                    className={getButtonClass('nl')}
+                    onClick={() => changeLanguage('nl')}
+                >
+                    <span>
+                        NL
+                    </span>
+                </button>
+                <button 
+                    className={getButtonClass('en')}
+                    onClick={() => changeLanguage('en')}
+                >
+                    <span>
+                        EN
+                    </span>
+                </button>
+                <button 
+                    className={getButtonClass('fr')}
+                    onClick={() => changeLanguage("fr")}
+                >
+                    <span>
+                        FR
+                    </span>
+                </button>
+                <button 
+                    className={getButtonClass('de')}
+                    onClick={() => changeLanguage('de')}
+                >
+                    <span>
+                        DE
+                    </span>
+                </button>
             </div>
         </footer>
     );
