@@ -21,6 +21,7 @@ import './i18n';
 const store = configureStore();
 
 const Index = () => {
+
     const webId = useWebId();
     const [appContainer, setAppContainer] = useState();
     const [userData, setUserData] = useState(); 
