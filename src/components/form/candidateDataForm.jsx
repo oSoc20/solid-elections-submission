@@ -8,8 +8,6 @@ import {fetchGetDb, fetchPostDb} from '../../utils/RequestDatabase';
 import ReactTooltip from "react-tooltip";
 import { FaInfoCircle } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
-import { updateStatement } from "typescript";
-import { valid } from "rdf-namespaces/dist/dct";
 
 class TestDataForm extends React.Component {
     FILE_NAME = "me.ttl";
@@ -279,8 +277,6 @@ export default function CandidateDataForm(props) {
     const [lblodIdExists, setLblodIdExistence] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [streetName, setStreetName] = useState('');
-    const [houseNb, setHouseNb] = useState(0);
     const [municipality, setMunicipality] = useState('');
     const [postalCode, setPostalCode] = useState(2330);
 
@@ -291,17 +287,12 @@ export default function CandidateDataForm(props) {
     useEffect(() => {
         let info = props.userInfo
         if (info != null) {
-            let streetSplit = info.address.street.split(', ');
-            if (streetSplit.length === 2) {
-                setLblodId(info.personUri);
-                setLblodIdExistence(true);
-                setFirstName(info.name);
-                setLastName(info.familyName);
-                setStreetName(streetSplit[0]);
-                setHouseNb(streetSplit[1]);
-                setMunicipality(info.address.municipality);
-                setPostalCode(info.address.postalCode);
-            } 
+            setLblodId(info.personUri);
+            setLblodIdExistence(true);
+            setFirstName(info.name);
+            setLastName(info.familyName);
+            setMunicipality(info.address.municipality);
+            setPostalCode(info.address.postalCode);
         } 
     }, [loaded]);
 
@@ -354,14 +345,6 @@ export default function CandidateDataForm(props) {
             setLblodId(value);
         }
 
-        if (id == 'streetName') {
-            setStreetName(value);
-        }
-
-        if (id == 'houseNb') {
-            setHouseNb(value);
-        }
-
         if (id == 'municipality') {
             setMunicipality(value);
         }
@@ -374,15 +357,13 @@ export default function CandidateDataForm(props) {
     const handleFormSubmit = async function(event) {
         event.preventDefault();
 
-        let errorData = !isNumber(houseNb) || !isNumber(postalCode);
+        let errorData = !isNumber(postalCode);
         let errorMessage = "Er mist data!";
 
         if (!lblodIdExists) {
             errorData = errorData || validateChange('lblodId', lblodId);
         }
         errorData = errorData
-                    || validateChange('streetName', streetName)
-                    || validateChange('houseNb', houseNb)
                     || validateChange('municipality', municipality)
                     || validateChange('postalCode', postalCode);
 
@@ -438,22 +419,35 @@ export default function CandidateDataForm(props) {
             return false;
         }
 
+        console.log("SUCCES STORE");
+
         //response.result.updated = true: Added to the database, false: nothing change
+
+        console.log("CREATING DOC!");
 
         //We create a new document (if exist, will be override)
         let doc = createAppDocument(props.appContainer, FILE_NAME);
         //We add a subject
         const formData = doc.addSubject({"identifier": "me"});
         //We add value
-        formData.addString(schema.streetAddress, streetName + ", " + houseNb);
         formData.addInteger(schema.postalCode, parseInt(postalCode));
         formData.addString(schema.addressLocality, municipality);
         formData.addString(schema.sameAs, lblodId);
+
+        console.log("DOC CREATED!");
         
         //We add all subject to the document, save it and show a confirmation message
-        await doc.save([formData]).then(function(e) {
+        try {
+            let savedDocument = await doc.save([formData]);
             alert(t('alert:Your data has been saved') + "!");
-        });
+        } catch (e) {
+            console.log(e);
+        }
+        // await doc.save([formData]).then(function(e) {
+        //     alert(t('alert:Your data has been saved') + "!");
+        // });
+
+        console.log("SUBMITTING DONE!");
 
         props.refresh();
     };
@@ -515,35 +509,6 @@ export default function CandidateDataForm(props) {
                             name="lastname" 
                             value={lastName}></input>
                             <p className="vl-form__error" id="input-field-lastname-error"></p>
-                        </div>
-
-                        <div className="form-group vl-col--12-12--m vl-col--10-12">
-                            <label className="vl-form__label" htmlFor="street">
-                                {t('Street name')}:
-                            </label>
-                            <input
-                            type="text" 
-                            id="streetName" 
-                            className="vl-input-field vl-input-field--block" 
-                            name="streetName" 
-                            value={streetName} 
-                            onChange={handleFormChange}></input>
-                            <p className="vl-form__error" id="input-field-streetName-error"></p>
-                        </div>
-
-                        <div className="form-group vl-col--12-12--m vl-col--2-12">
-                            <label className="vl-form__label" htmlFor="streetNumber">
-                                {t('House number')}:
-                            </label>
-                            <input 
-                            type="number" 
-                            min="1" 
-                            id="houseNb" 
-                            className="vl-input-field vl-input-field--block" 
-                            name="houseNb" 
-                            value={houseNb} 
-                            onChange={handleFormChange}></input>
-                            <p className="vl-form__error" id="input-field-houseNb-error"></p>
                         </div>
 
                         <div className="form-group vl-col--12-12--m vl-col--10-12">
