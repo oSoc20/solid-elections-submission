@@ -129,3 +129,48 @@ We have some remarks below
 1. We use schema.org but it could be nice to use your own vocabulary
 1. Change component inputAmount.jsx "€" to webcomponent icon
 1. Create others forms
+
+## Website Text Adjustment
+This section discusses the different steps that have to be followed in order to change the text of the website. The different steps explain how to use git and github to make these changes.
+
+### Create github account and install Github Desktop
+This step discusses how to set up a github account and download github desktop.
+
+1. Create an account on [github](https://github.com/).
+1. Download [Github Desktop](https://desktop.github.com/).
+1. Sign in with your github account on Github Desktop.
+
+[![GithubDesktop](https://cdn.loom.com/sessions/thumbnails/42ea585dddea4469bff5a650dc8eabb2-1605271898440-with-play.gif)](https://www.loom.com/share/42ea585dddea4469bff5a650dc8eabb2)
+
+### Clone the Repository
+This step discusses how to clone a remote repository onto your local machine. In this step you will copy the code of the remote repository and download it on your local machine.
+
+[![CloneRepository](https://cdn.loom.com/sessions/thumbnails/6a2e84b8f0cd4b2e905d792b45c9790e-with-play.gif)](https://www.loom.com/share/6a2e84b8f0cd4b2e905d792b45c9790e)
+
+### Create a Separate Branch
+This step discusses how to create a separate branch to do your work on. Creating a branch will ensure that the work you do does not intervene with the work of other people.
+
+Please create your own branch from the current branch ```multilingual-implementation```.
+
+[![CreateSeparateBranch](https://cdn.loom.com/sessions/thumbnails/4e15cfac48a649f9bb2f5331486086b8-with-play.gif)](https://www.loom.com/share/4e15cfac48a649f9bb2f5331486086b8)
+
+### Make Changes to the Website
+This step will go over how to make changes related to the text on the website. The files can be edited with any text editer on your local machine. As explained in the video, please keep the following rules in mind:
+
+1. Start a translation with a capital letter only if and only if the capital letter is also present in the english text.
+1. At the end of sentences, do not add punctuation marks.
+
+[![MakeChanges](https://cdn.loom.com/sessions/thumbnails/c9d68a90d7154dbbb900bd3af6490319-with-play.gif)](https://www.loom.com/share/c9d68a90d7154dbbb900bd3af6490319)
+
+### Commit Changes and Push Changes to the Remote Repository
+This step will help you to commit your local changes on your local machine and afterwards push those changes to the remote repository on github. Committing changes means that you are sure that those changes are good and you want to persist them. Pushing changes means that you notify the remote repository on github of the changes that you made on your local machine.
+
+1. Commit changes
+1. Push changes
+
+[![CommitPushChanges](https://cdn.loom.com/sessions/thumbnails/45dd8c6396244f7c84fd2f955433dbd5-with-play.gif)](https://www.loom.com/share/45dd8c6396244f7c84fd2f955433dbd5)
+
+### Create a Pull Request
+The last step consist of creating a pull request. This pull request will notify the creators of this repository of the changes that you made on your branch. They will check the changes and if they are correct, your branch will be merged with the original branch.
+
+[![CreatePullRequest](https://cdn.loom.com/sessions/thumbnails/7bfccf0d6cfe4b10b681e0942d2fdd59-with-play.gif)](https://www.loom.com/share/7bfccf0d6cfe4b10b681e0942d2fdd59)
