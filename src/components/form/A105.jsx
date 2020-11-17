@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {fetchDocument} from 'tripledoc';
-import {schema} from 'rdf-namespaces';
-import {createAppDocument, listDocuments, createExpense, createDonation} from '../../utils/SolidWrapper';
+import {createAppDocument, createExpense, createDonation} from '../../utils/SolidWrapper';
 import {isEmpty, isNumber, isOnlyText} from '../../utils/DataValidator';
 import Loading from '../alert/loading';
 import ProfileDoesntExist from '../alert/profileDoesntExist';
 import InputAmount from './inputAmount';
 import { Redirect } from 'react-router-dom';
-import {fetchGetDb, fetchPostDb, fetchPostAbb} from '../../utils/RequestDatabase';
 import ReactTooltip from "react-tooltip";
 import deadlines from '../../data/deadline.json';
 import Help from "../alert/help";
@@ -1084,14 +1081,14 @@ export default function A105(props) {
 
                             <p id="error-form" className="vl-form__error"></p>
                             <p className="text-bold">
-                                Verzend dit formulier ten laatste op {deadlines.forms[FILE_ID].deadline}.
+                                {t('A105:Submit this form at the latest on ')} {deadlines.forms[FILE_ID].deadline}.
                             </p>
                             <button 
                                 id="sendButton" 
                                 className="vl-button mt-5" 
                                 disabled={false}>
                                     <span className="vl-button__label">
-                                        Onderteken en verstuur
+                                        {t('A105:Sign and send')}
                                     </span>
                             </button>
 

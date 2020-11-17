@@ -17,7 +17,7 @@ export default function A105Expenses(props) {
         id="sectionElectionExpenditure" 
         className={props.show ? "" : "vl-u-hidden"}>
             <h2 className="vl-title vl-title--h2 vl-title--has-border">
-                Aangifte van de verkiezingsuitgaven
+                {t('A105:Declaration of election expenses ')}
                 <Help message={[
                     <p>
                         {t('alert:State here all expenses and financial commitments for verbal, written, auditory and visual messages that were made during the closed period and that aimed to favorably affect the election result of the list')}.
@@ -51,7 +51,7 @@ export default function A105Expenses(props) {
             </p>
 
             <h3 className="vl-title vl-title--h3 vl-title--has-border">
-                {t('Auditory and verbal messages')}
+                {t('Auditory and verbal messages ')}
                 <Help message={
                     t('A105:For example') + ": " + 
                     t('A105:non-commercial telephone campaings or an indelible political message on an information carrier')
@@ -76,10 +76,10 @@ export default function A105Expenses(props) {
                 <div className="form-group vl-form-col--6-12">
                     <InputAmount
                         var="EWrittenMessage1_1"
-                        label= {t('A105:Design and production costs of advertisement in the press') + ":"}
+                        label= {t('A105:Design and production costs of advertisement in the press') + ": "}
                         handleChange={handleExpensesChange}
                         val={expensesValues.EWrittenMessage1_1}
-                        help={"Written messages - Design and production costs in the press"}
+                        help=""
                     />
                 </div>
                 <div className="form-group vl-form-col--6-12">
