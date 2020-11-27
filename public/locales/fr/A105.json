@@ -76,27 +76,15 @@
     "Declaration of the origin of the funds": 
         "RÉPARTITION DES DÉPENSES ÉLECTORALES EN FONCTION DE L’ORIGINE DES FONDS SERVANT À FINANCER LA CAMPAGNE",
     "Funds that come from the candidate's own assests":
-<<<<<<< HEAD
-        "Geldmiddelen die afkomstig zijn van het eigen patrimonium van de kandidaat",
-    "Gifts ":
-        "Giften ",
-=======
         "Fonds en provenance du patrimoine propre du candidat",
-    "Gifts":
+    "Gifts ":
         "Dons",
->>>>>>> 0073ecfc71d8e49125e7fb560a73809f7990aa46
     "Gifts of 125 euros or more per donor":
         "Dons à enregistrer d’un montant de 125 euros ou plus par donateur",
     "Gifts of less than 125 euros per donor":
-<<<<<<< HEAD
-        "Giften van minder dan 125 euro per schenker",
-    "Sponsorship ":
-        "Sponsoring ",
-=======
         "Dons à ne pas enregistrer d’un montant de moins de 125 euros par donateur",
-    "Sponsorship":
+    "Sponsorship ":
         "Sponsoring",
->>>>>>> 0073ecfc71d8e49125e7fb560a73809f7990aa46
     "Amounts of 125 euros or more per sponsor":
         "Sponsorings à enregistrer d’un montant de 125 euros ou plus par sponsor",
     "Amounts of less than 125 euros per sponsor":
