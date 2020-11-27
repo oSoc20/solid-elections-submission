@@ -1,13 +1,13 @@
 {
     "Declaration of election expenses and of the origin of the funds by candidates": 
-        "Aangifte van de verkiezingsuitgaven en van de herkomst van de geldmiddelen door kandidaten",
-    "General": "Algemeen",
-    "List name": "Lijstnaam",
-    "List number": "Lijstnummer",
-    "Municipal administration": "Gemeentebestuur",
-    "Place on the list": "Plaats op de lijst",
+        "Déclaration des dépenses électorales et de l'origin des fonds des candidats individuels",
+    "General": "En général",
+    "List name": "Liste",
+    "List number": "N° de liste",
+    "Municipal administration": "Commune",
+    "Place on the list": "Place sur la liste",
     "As a candidate for the October 14, 2018 elections, did you make any election expenses":
-        "Heeft u als kandidaat voor de verkiezingen van 14 oktober 2018 verkiezingsuitgaven gedaan",
+        "Avez-vous effectué des dépenses électorales",
     "Yes": "Oui",
     "No": "Non",
     "Submit this form at the latest on ":
@@ -17,80 +17,92 @@
     "Declaration of election expenses ":
         "Aangifte van de verkiezingsuitgaven ",
     "The maximum amount that you can spend as a candidate, is": 
-        "Het maximumbedrag dat u als kandidaat mag uitgeven, bedraagt",
+        "Le montant maximum qui vous est applicable, monte à",
     "Auditory and verbal messages ": 
-        "Auditieve en mondelinge boodschappen ",
-    "For example": "Bijvoorbeeld",
+        "Messages sonores et verbaux",
+    "For example": "Par example",
     "non-commercial telephone campaings or an indelible political message on an information carrier": 
-        "niet-commerciële telefooncampagnes of een onuitwisbare politieke boodschap op een informatiedrager",
-    "Written messages": "Geschreven boodschappen",
+        "Les campagnes téléphoniques non commerciales ou un support informatique contenant un message politique indélébile",
+    "Written messages": "Messages écrits",
     "Design and production costs of advertisement in the press": 
-        "Ontwerp- en productiekosten van advertenties in de pers",
+        "Frais de projet et de production des publicités dans la presse",
     "Price for advertising space in the press":
-        "Prijs voor advertentieruimte in de pers",
+        "Prix de l'espace publicitaire dans la presse",
     "Design and production costs of election flyers":
-        "Ontwerp- en productiekosten van verkiezingsfolders",
+        "Frais de projet et de confection de dépliants électoraux",
     "Cost of letters and envelopes":
-        "Kostprijs van brieven en enveloppen",
+        "Coût de lettres et d’enveloppes",
     "Cost of other printed matter":
-        "Kostprijs van ander drukwerk",
+        "Coût d’autres imprimés",
     "Charges for emails and non-commercial SMS campaigns":
-        "Kosten voor e-mails en niet-commerciële sms-campages",
+        "Dépenses de courriels non commerciaux et de campagnes sms",
     "Shipping and distribution costs for election propaganda":
-        "Verzendings- en distributiekosten voor verkiezingspropaganda",
+        "Frais d’envoi et de distribution de propagande électorale",
     "Addressed shipments":
-        "Geadresseerde zendingen",
+        "Envois addressés",
     "Non-addressed shipments":
-        "Niet-geadresseerde zendingen",
+        "Envois non addressés",
     "Postal charges for other shipments":
-        "Postkosten voor andere zendingen",
+        "Frais de port d’autres envois",
     "Other distribution costs":
-        "Andere distributie kosten",
+        "Autres frais de distribution",
     "Visual messages":
-        "Visuele boodschappen",
+        "Messages visuels",
     "Production and rental costs for non-commercial boards of 4m² or less":
-        "Productie- en huurkosten voor niet-commerciële borden van 4 m² of minder",
+        "Frais de confection et de location de panneaux non commerciaux de 4 m² ou moins",
     "The cost of the boards created or purchased can be written off over three elections in which the political party participates, with a minimum of one third of the cost per election":
-        "De kostprijs van de borden die zelf zijn aangemaakt of aangekocht, kan worden afgeschreven over drie verkiezingen waaraan de politieke partij deelneemt, met een minimum van een derde van de kostprijs per verkiezing",
+        "Lorsque vous confectionnez ou achetez des panneaux à titre personnel, vous pouvez en amortir les coûts sur trois élections auxquelles vous participez, quelles qu’elles soient, avec un minimum d’un tiers de la dépense par élection",
     "If those signs have been rented, the rental price must be stated in its entirety":
-        "Als die borden zijn gehuurd, moet de huurprijs in zijn geheel aangegeven worden",
+        "Si vous louez ces panneaux, vous êtes tenu d’en déclarer le loyer dans sa totalité",
     "The rental prices must be commercially justified (one third of the actual cost price for example)":
-        "De huurprijs moet commercieel verantwoord zijn (bijvoorbeeld een derde van de kostprijs)",
+        "Cette location doit être commercialement justifiée (par ex. un tiers du prix de revient)",
     "The use of fully written off signs does not need to be indicated":
-        "Het gebruik van volledig afgeschreven borden hoeft niet te worden aangegeven",
+        "L’utilisation de panneaux totalement amortis ne doit pas être imputée",
     "Printing and production costs for posters of 4m² or less":
-        "Druk- en productiekosten voor affiches van 4 m² of minder",
+        "Frais d’impression et de confection d’affiches de 4 m² ou moins",
     "Commercials on the Internet of Internet campaigns":
-        "Reclamespots op het internet of internetcampagnes",
+        "Réseaux sociaux ou autre support informatique ou d’affichage électronique/digital",
     "Other costs for visual messages":
-        "Andere kosten voor visuele boodschappen",
+        "Autres",
     "Other expenses":
-        "Overige uitgaven",
+        "Autres dépenses",
     "Election events":
-        "Verkiezingsmanifestaties",
+        "Manifestations électorales",
     "Production costs for website or web page, designed for election purposes":
-        "Productiekosten voor website of webpagina, ontworpen met verkiezingsdoeleinden",
-    "Other": "Varia",
+        "Frais de production de site ou de page web confectionné(e) à des fins électorales",
+    "Other": "Divers",
     "Total amount":
-        "Totaal bedrag",
+        "Montant total",
     "Declaration of the origin of the funds": 
-        "Aangifte van de herkomst van de geldmiddelen",
+        "RÉPARTITION DES DÉPENSES ÉLECTORALES EN FONCTION DE L’ORIGINE DES FONDS SERVANT À FINANCER LA CAMPAGNE",
     "Funds that come from the candidate's own assests":
+<<<<<<< HEAD
         "Geldmiddelen die afkomstig zijn van het eigen patrimonium van de kandidaat",
     "Gifts ":
         "Giften ",
+=======
+        "Fonds en provenance du patrimoine propre du candidat",
+    "Gifts":
+        "Dons",
+>>>>>>> 0073ecfc71d8e49125e7fb560a73809f7990aa46
     "Gifts of 125 euros or more per donor":
-        "Giften van 125 euro of meer per schenker",
+        "Dons à enregistrer d’un montant de 125 euros ou plus par donateur",
     "Gifts of less than 125 euros per donor":
+<<<<<<< HEAD
         "Giften van minder dan 125 euro per schenker",
     "Sponsorship ":
         "Sponsoring ",
+=======
+        "Dons à ne pas enregistrer d’un montant de moins de 125 euros par donateur",
+    "Sponsorship":
+        "Sponsoring",
+>>>>>>> 0073ecfc71d8e49125e7fb560a73809f7990aa46
     "Amounts of 125 euros or more per sponsor":
-        "Bedragen van 125 euro of meer per sponsor",
+        "Sponsorings à enregistrer d’un montant de 125 euros ou plus par sponsor",
     "Amounts of less than 125 euros per sponsor":
-        "Bedragen van minder dan 125 euro per sponsor",
+        "Sponsorings à ne pas enregistrer d’un montant de moins de 125 euros par sponsor",
     "Financing by (a component of) the political party":
-        "Financiering door (een component van) de politieke partij",
+        "Intervention financière du parti politique",
     "Different origin":
-        "Andere herkomst"
+        "Divers"
 }
