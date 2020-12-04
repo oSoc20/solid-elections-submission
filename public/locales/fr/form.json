@@ -1,20 +1,20 @@
 {
-    "Your information": "Uw informatie",
-    "Save": "Opslaan",
-    "First name": "Voornaam",
-    "Last name": "Achternaam",
-    "Street name": "Straatnaam",
-    "House number": "Huisnummer",
-    "Municipality": "Gemeente",
-    "Postal code": "Postcode",
+    "Your information": "Votre info",
+    "Save": "Enregistrer",
+    "First name": "Prénom",
+    "Last name": "Nom",
+    "Street name": "Rue",
+    "House number": "Numéro",
+    "Municipality": "Commune",
+    "Postal code": "Code postal",
     "This field can only contain numbers":
-        "Dit veld mag alleen nummers bevatten",
+        "Uniquement des numéro dans ce champ",
     "This field should be filled in":
-        "Dit veld moet gevult worden",
+        "Ce champ doit être rempli",
     "This field can only contain text":
-        "Dit veld mag alleen tekst bevatten",
+        "Uniquement dus texte dans ce champ",
     "This field will be auto-completed when entering a valid LBLOD ID":
-        "Dit veld wordt automatisch aangevuld na het invoeren van een correct LBLOD ID",
+        "Ce champ sera complété automatiquement quand vous rentrez votre LBLOD ID valable",
     "Expenditure candidate":
         "Uitgaven kandidaat",
     "Expenditure list":

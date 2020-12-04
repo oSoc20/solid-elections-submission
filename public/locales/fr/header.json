@@ -1,11 +1,11 @@
 {
     "home": "home",
-    "profile": "profiel",
-    "declare": "declareer",
-    "Log in": "Inloggen",
-    "Log out": "Uitloggen",
-    "Welcome": "Welkom",
-    "Back to the main item": "Naar de hoofdinhoud",
-    "New page loaded": "Nieuwe pagina geladen",
-    "You can now continue to navigate": "Je kan nu verder navigeren"
+    "profile": "profil",
+    "declare": "déclarer",
+    "Log in": "Se registrer",
+    "Log out": "Déconnecter",
+    "Welcome": "Bienvenue",
+    "Back to the main item": "Home",
+    "New page loaded": "Charger one nouvelle page",
+    "You can now continue to navigate": "Vous pouvez continuer votre navigation"
 }
