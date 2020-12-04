@@ -14,5 +14,15 @@
     "This field can only contain text":
         "Uniquement dus texte dans ce champ",
     "This field will be auto-completed when entering a valid LBLOD ID":
-        "Ce champ sera complété automatiquement quand vous rentrez votre LBLOD ID valable"
+        "Ce champ sera complété automatiquement quand vous rentrez votre LBLOD ID valable",
+    "Expenditure candidate":
+        "Uitgaven kandidaat",
+    "Expenditure list":
+        "Uitgaven lijst",
+    "Donors/sponsors candidate":
+        "Schenkers/sponsors kandidaat",
+    "Donors/sponsors list":
+        "Schenkers/sponsors lijst",
+    "Expenditure political party":
+        "Uitgaven politieke partij"
 }

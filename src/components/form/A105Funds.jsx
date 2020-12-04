@@ -18,7 +18,7 @@ export default function A105Funds(props) {
             id="sectionOriginOfFund" 
             className={props.show ? "" : "vl-u-hidden"}>
             <h2 className="vl-title vl-title--h2 vl-title--has-border">
-                {t('A105:Declaration of the origin of the funds')}: 
+                {t('A105:Declaration of the origin of the funds') + ": "}
                 <Help message={[
                     <p>
                         {t('alert:In this section, you make a breakdown of the election expenditures that your list has incurred according to the origin of the funds used to finance those expenditures') + ". "} 
@@ -44,7 +44,7 @@ export default function A105Funds(props) {
             </div>
 
             <h3 className="vl-title vl-title--h3 vl-title--has-border">
-                {t('A105:Gifts')} 
+                {t('A105:Gifts ')} 
                 <Help message={[
                     <p>
                         {t('alert:Gifts in cash as well as gifts in kind are considered gifts') + ". "} 
@@ -83,7 +83,7 @@ export default function A105Funds(props) {
             </div>
 
             <h3 className="vl-title vl-title--h3 vl-title--has-border">
-                {t('A105:Sponsorship')} 
+                {t('A105:Sponsorship ')} 
                 <Help message={[
                     <p>
                         {t('alert:Sponsorship is understood to mean making money or products available in accordance with current market prices in exchange for publicity') + ". "}
