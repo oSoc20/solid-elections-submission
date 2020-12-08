@@ -13,7 +13,7 @@ export default function NotConnected(props) {
         {t('You are not connected')}! 
         <LoginButton popup="https://osoc20.github.io/solid-elections-submission/popup.html">
           {t('Log in here')}!
-        </LoginButton>!
+        </LoginButton>
       </>
     </ShowAlert>
   );

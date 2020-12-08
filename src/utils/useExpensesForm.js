@@ -1,8 +1,11 @@
 import { useState } from "react";
 import {isEmpty, isOnlyText} from './DataValidator';
+import { useTranslation } from 'react-i18next';
 import { createExpense } from "./SolidWrapper";
 
 const useExpensesForm =  () => {
+
+    const { t } = useTranslation(["form"]);
 
     const [expensesValues, setExpensesValues] = useState({
         EAuditoryAndOral: 0,
@@ -125,16 +128,16 @@ const useExpensesForm =  () => {
                 input.classList.add("vl-input-field--error");
 
                 if (input.type === 'number') {
-                    errorField.innerHTML = "Dit veld moet met een nummer gevult worden!";
+                    errorField.innerHTML = t('form:This field can only contain numbers') + "!";
                 } else {
-                    errorField.innerHTML = "Dit veld moet gevult worden!";
+                    errorField.innerHTML = t('from:This field should be filled in') + "!";
                 }
 
                 return true;
             } else {
                 if (input.type !== 'number') {
                     if (!isOnlyText(value)) {
-                        errorField.innerHTML = "This field must be text!";
+                        errorField.innerHTML = t('form:This field can only contain text') + "!";
                         input.classList.add("vl-input-field--error");
 
                         return true;
