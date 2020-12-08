@@ -1,36 +1,30 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-//Default component to show alert, we send type and message to know which color, icon and message to show to the user
-export class ShowAlert extends React.Component {
-    constructor(props) {
-        super(props);
+export default function ShowAlert(props) {
+
+    const { t } = useTranslation(["alert"]);
+
+    let title = "!";
+    if (props.type == "error") {
+        title = t('Error') + title;
+    } else if (props.type == "success") {
+        title = t('Success') + title;
     }
 
-    getTitle() {
-        if (this.props.type == "error") return "Error!";
-        if (this.props.type == "success") return "Succes!";
-        else return "Hum...";
-    }
-
-    getIcon() {
-        return "vl-icon vl-vi vl-vi-alert-triangle-filled";
-    }
-
-    render() {
-        return (
-            <div className={"vl-alert vl-alert--" + this.props.type} role="alert">
-                <div className="vl-alert__icon">
-                    <i className={this.getIcon()} aria-hidden="true"></i>
-                </div>
-                <div className="vl-alert__content">
-                    <p className="vl-alert__title">{this.getTitle()}</p>
-                    <div className="vl-alert__message">
-                        <p>{this.props.message}</p>
-                    </div>
+    return (
+        <div className={"vl-alert vl-alert--" + props.type} role="alert">
+            <div className="vl-alert__icon">
+                <i className="vl-icon vl-vi vl-vi-alert-triangle-filled" aria-hidden="true"></i>
+            </div>
+            <div className="vl-alert__content">
+                <p className="vl-alert__title">
+                    {title}
+                </p>
+                <div className="vl-alert__message">
+                    <p>{props.children}</p>
                 </div>
             </div>
-        );
-    }
-}
-
-export default ShowAlert;
+        </div>
+    );
+};

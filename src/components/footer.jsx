@@ -1,8 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
-  return (
-  <footer className="au-c-main-footer">
+
+    const { t, i18n } = useTranslation(["footer"]);
+
+    const [language, setLanguage] = useState('nl')
+
+    const changeLanguage = (language) => {
+        setLanguage(language);
+        i18n.changeLanguage(language);
+    }
+
+    const getButtonClass = (buttonLanguage) => {
+        if (buttonLanguage == language) {
+            return "language-button-selected"
+        } else {
+            return "language-button"
+        }
+    }
+
+    return (
+    <footer className="au-c-main-footer space-between">
         <div className="au-c-main-footer__brand">
             <div className="au-c-brand au-c-brand--tagline">
                 <div className="au-c-brand__logo">
@@ -19,25 +38,61 @@ export default function Footer() {
         </div>
         <div className="au-c-main-footer__content">
             <h3 className="au-c-heading au-c-heading--4">
-                Gelinkt-notuleren.lblod.info is een officiële website van de Vlaamse overheid
+                Gelinkt-notuleren.lblod.info {t('<Site> is an official website of the Flemish Authorities').replace("<Site> ", "")}
             </h3>
 
             <div className="au-c-content au-c-content--small">
-                <p>Uitgegeven door <a className="au-c-link" href="https://www.vlaanderen.be/organisaties/administratieve-diensten-van-de-vlaamse-overheid/beleidsdomein-kanselarij-en-bestuur/agentschap-binnenlands-bestuur">Agentschap Binnenlands Bestuur</a></p>
+                <p> {t('published by')} <a className="au-c-link" href="https://www.vlaanderen.be/organisaties/administratieve-diensten-van-de-vlaamse-overheid/beleidsdomein-kanselarij-en-bestuur/agentschap-binnenlands-bestuur">Agentschap Binnenlands Bestuur</a></p>
                 <ul className="au-c-list-horizontal">
                     <li className="au-c-list-horizontal__item">
                         <a href="/ember-appuniversum/" id="ember443" className="ember-view au-c-link au-c-link--secondary ">
-                            Disclaimer
+                            {t('disclamer')}
                         </a>
                     </li>
                     <li className="au-c-list-horizontal__item">
                         <a href="/ember-appuniversum/" id="ember444" className="ember-view au-c-link au-c-link--secondary ">
-                            Cookieverklaring
+                            {t('cookie statement')}
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
-    </footer>
-  );
+        <div className="language-selection">
+            <div className="languages">
+                <button 
+                    className={getButtonClass('nl')}
+                    onClick={() => changeLanguage('nl')}
+                >
+                    <span>
+                        NL
+                    </span>
+                </button>
+                <button 
+                    className={getButtonClass('en')}
+                    onClick={() => changeLanguage('en')}
+                >
+                    <span>
+                        EN
+                    </span>
+                </button>
+                <button 
+                    className={getButtonClass('fr')}
+                    onClick={() => changeLanguage("fr")}
+                >
+                    <span>
+                        FR
+                    </span>
+                </button>
+                <button 
+                    className={getButtonClass('de')}
+                    onClick={() => changeLanguage('de')}
+                >
+                    <span>
+                        DE
+                    </span>
+                </button>
+            </div>
+        </div>
+        </footer>
+    );
 }
