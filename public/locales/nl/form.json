@@ -1,0 +1,28 @@
+{
+    "Your information": "Uw informatie",
+    "Save": "Opslaan",
+    "First name": "Voornaam",
+    "Last name": "Achternaam",
+    "Street name": "Straatnaam",
+    "House number": "Huisnummer",
+    "Municipality": "Gemeente",
+    "Postal code": "Postcode",
+    "This field can only contain numbers":
+        "Dit veld mag alleen nummers bevatten",
+    "This field should be filled in":
+        "Dit veld moet gevult worden",
+    "This field can only contain text":
+        "Dit veld mag alleen tekst bevatten",
+    "This field will be auto-completed when entering a valid LBLOD ID":
+        "Dit veld wordt automatisch aangevuld na het invoeren van een correct LBLOD ID",
+    "Expenditure candidate":
+        "Uitgaven kandidaat",
+    "Expenditure list":
+        "Uitgaven lijst",
+    "Donors/sponsors candidate":
+        "Schenkers/sponsors kandidaat",
+    "Donors/sponsors list":
+        "Schenkers/sponsors lijst",
+    "Expenditure political party":
+        "Uitgaven politieke partij"
+}
