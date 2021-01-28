@@ -10,23 +10,19 @@ import { useTranslation } from 'react-i18next';
 
 export default function CandidateDataForm(props) {
 
+    const {loaded, refresh, userInfo} = props;
+
     const { t } = useTranslation(["form", "alert"]);
     const FILE_NAME = "me.ttl";
-
-    const [loaded, setLoadedState] = useState(props.loaded);
     const [lblodId, setLblodId] = useState('');
     const [lblodIdExists, setLblodIdExistence] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [municipality, setMunicipality] = useState('');
-    const [postalCode, setPostalCode] = useState(2330);
+    const [postalCode, setPostalCode] = useState(1000);
 
     useEffect(() => {
-        setLoadedState(props.loaded);
-    })
-
-    useEffect(() => {
-        let info = props.userInfo
+        let info = userInfo;
         if (info != null) {
             setLblodId(info.personUri);
             setLblodIdExistence(true);
@@ -146,7 +142,7 @@ export default function CandidateDataForm(props) {
         //If any error like : logged in as ... but don't have permission that's because this website is not allowed on the solid pod,
         //for that we have to use the popup.html ON THE SAME server as this app
         response = await fetchPostDb("store", JSON.stringify({
-            "uri": props.webId,
+            "uri": userInfo.webId,
             "lblod_id": lblodId
         }));
 
@@ -163,7 +159,7 @@ export default function CandidateDataForm(props) {
         //response.result.updated = true: Added to the database, false: nothing change
 
         //We create a new document (if exist, will be override)
-        let doc = createAppDocument(props.appContainer, FILE_NAME);
+        let doc = createAppDocument(userInfo.appContainer, FILE_NAME);
         //We add a subject
         const formData = doc.addSubject({"identifier": "me"});
         //We add value
@@ -182,7 +178,7 @@ export default function CandidateDataForm(props) {
         //     alert(t('alert:Your data has been saved') + "!");
         // });
 
-        props.refresh();
+        refresh();
     };
 
 

@@ -19,24 +19,24 @@ export default function A105Expenses(props) {
             <h2 className="vl-title vl-title--h2 vl-title--has-border">
                 {t('A105:Declaration of election expenses ')}
                 <Help message={[
-                    <p>
+                    <p key={'alert1'}>
                         {t('alert:State here all expenses and financial commitments for verbal, written, auditory and visual messages that were made during the closed period and that aimed to favorably affect the election result of the list')}.
-                        </p>,
-                    <p>
+                    </p>,
+                    <p key={'alert2'}>
                         {t('alert:Also state here the expenses incurred by third parties for the list')}.{" "} 
                         {t("alert:You do not need to declare those expenses if, immediately after becoming aware of the campain they were conducting, the list sent a letter of formal notice to third parties to stop the compaign and has provided a copy that certified letter to the president of the election headquarters, whether or not accompanied by the third party's agreement to suspension")}.{" "} 
                         {t('alert:Enclose that copy with this declaration')}. 
                         
                     </p>,
-                    <p>
+                    <p key={'alert3'}>
                         {t('alert:Expenditures and financial commitments for goods, supplies and services must be settled at prevailing marked prices')}.
                     </p>,
-                    <p>
+                    <p key={'alert4'}>
                         {t('alert:Attention')}!{" "} 
                         {t('alert:When completing the declaration, keep in mind that the use of certain campaign resources is prohibited dring the closed period')}.{" "} 
                         {t('alert:Lists, as well as third parties who want to make propaganda for them, are not allowed during the closed period')}:
                     </p>,
-                    <ul>
+                    <ul key={'alert5'}>
                         <li>- {t('alert:to sell or distribute gifts or gadgets')}</li>
                         <li>- {t('alert:to conduct commercial telephone campaigns')}</li>
                         <li>- {t('alert:to use commercial billboards or posters')}</li>
@@ -58,7 +58,7 @@ export default function A105Expenses(props) {
                 } />
             </h3>
             <div className="vl-grid">
-                <div className="form-group">
+                <div className="form-group vl-form-col--6-12">
                     <InputAmount
                         var="EAuditoryAndOral"
                         label=""

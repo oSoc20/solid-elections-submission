@@ -123,115 +123,123 @@ export default function A105(props) {
                             {t('A105:Declaration of election expenses and of the origin of the funds by candidates')}
                         </h1>
                         <form onSubmit={handleSubmit}>
-                            <h2 
-                            className="vl-title vl-title--h2 vl-title--has-border">
-                                {t('A105:General')}
-                            </h2>
-                            <div className="vl-grid">
-                                <div className="form-group vl-form-col--8-12">
-                                    <label 
-                                    className="vl-form__label" 
-                                    htmlFor="Gnamelist">
-                                        {t('A105:List name')} :
-                                    </label>
-                                    <input 
-                                    type="text" 
-                                    id="Gnamelist" 
-                                    disabled={true} 
-                                    className="vl-input-field vl-input-field--block" 
-                                    value= {listName}
-                                    name="Gnamelist"></input>
-                                    <p 
-                                    className="vl-form__error" 
-                                    id="input-field-Gnamelist-error"></p>
-                                </div>
-
-                                <div className="form-group vl-form-col--4-12">
-                                    <label 
-                                    className="vl-form__label" 
-                                    htmlFor="Gtrackingnumber">
-                                        {t('A105:List number')} :
-                                    </label>
-                                    <input 
-                                    type="number" 
-                                    min="0" 
-                                    disabled={true} 
-                                    id="Gtrackingnumber" 
-                                    className="vl-input-field vl-input-field--block" 
-                                    value={listNb} 
-                                    name="Gtrackingnumber"></input>
-                                    <p 
-                                    className="vl-form__error" 
-                                    id="input-field-Gtrackingnumber-error"></p>
-                                </div>
-
-                                <div className="form-group vl-form-col--8-12">
-                                    <label 
-                                    className="vl-form__label" 
-                                    htmlFor="Ggemeente">
-                                        {t('A105:Municipal administration')} :
-                                    </label>
-                                    <input 
-                                    type="text" 
-                                    disabled={true} 
-                                    id="Ggemeente" 
-                                    className="vl-input-field vl-input-field--block" 
-                                    value={municipality} 
-                                    name="Ggemeente"></input>
-                                    <p 
-                                    className="vl-form__error" 
-                                    id="input-field-Ggemeente-error"></p>
-                                </div>
-
-                                <div className="form-group vl-form-col--4-12">
-                                    <label 
-                                    className="vl-form__label" 
-                                    htmlFor="GlistPosition">
-                                        {t('A105:Place on the list')} :
-                                    </label>
-                                    <input 
-                                    type="number" 
-                                    min="0" 
-                                    disabled={true} 
-                                    id="GlistPosition" 
-                                    className="vl-input-field vl-input-field--block" 
-                                    value={listPosition} 
-                                    name="GlistPosition"></input>
-                                    <p 
-                                    className="vl-form__error" 
-                                    id="input-field-GlistPosition-error"></p>
-                                </div>
-
-                                <p>
-                                    {t('A105:As a candidate for the October 14, 2018 elections, did you make any election expenses')}?
-                                </p>
-                                <div className="form-group vl-form-col--12-12">
-                                    <label className="vl-radio" htmlFor="GElectionExpenseYes">
-                                        <input 
-                                        className="vl-radio__toggle" 
-                                        type="radio" 
-                                        id="GElectionExpenseYes" 
-                                        name="GElectionExpense" 
-                                        value="yes"
-                                        onClick={anabeCompleteForm}
-                                        checked={completeForm} />
-                                        <div className="vl-radio__label">
-                                            {t('A105:Yes')}
+                            <div>
+                                <div>
+                                    <h2 
+                                    className="vl-title vl-title--h2 vl-title--has-border">
+                                        {t('A105:General')}
+                                    </h2>
+                                    <div className="vl-grid">
+                                        <div className="form-group vl-form-col--8-12">
+                                            <label 
+                                            className="vl-form__label" 
+                                            htmlFor="Gnamelist">
+                                                {t('A105:List name')} :
+                                            </label>
+                                            <input 
+                                            type="text" 
+                                            id="Gnamelist" 
+                                            disabled={true} 
+                                            className="vl-input-field vl-input-field--block" 
+                                            value= {listName}
+                                            name="Gnamelist"></input>
+                                            <p 
+                                            className="vl-form__error" 
+                                            id="input-field-Gnamelist-error"></p>
                                         </div>
-                                    </label>
-                                    <label className="vl-radio" htmlFor="GElectionExpenseNo">
-                                        <input 
-                                        className="vl-radio__toggle" 
-                                        type="radio" 
-                                        id="GElectionExpenseNo" 
-                                        name="GElectionExpense" 
-                                        value="no"
-                                        onClick={disableCompleteForm}  
-                                        checked={! completeForm} />
-                                        <div className="vl-radio__label">
-                                            {t('A105:No')}
+
+                                        <div className="form-group vl-form-col--4-12">
+                                            <label 
+                                            className="vl-form__label" 
+                                            htmlFor="Gtrackingnumber">
+                                                {t('A105:List number')} :
+                                            </label>
+                                            <input 
+                                            type="number" 
+                                            min="0" 
+                                            disabled={true} 
+                                            id="Gtrackingnumber" 
+                                            className="vl-input-field vl-input-field--block" 
+                                            value={listNb} 
+                                            name="Gtrackingnumber"></input>
+                                            <p 
+                                            className="vl-form__error" 
+                                            id="input-field-Gtrackingnumber-error"></p>
                                         </div>
-                                    </label>
+
+                                        <div className="form-group vl-form-col--8-12">
+                                            <label 
+                                            className="vl-form__label" 
+                                            htmlFor="Ggemeente">
+                                                {t('A105:Municipal administration')} :
+                                            </label>
+                                            <input 
+                                            type="text" 
+                                            disabled={true} 
+                                            id="Ggemeente" 
+                                            className="vl-input-field vl-input-field--block" 
+                                            value={municipality} 
+                                            name="Ggemeente"></input>
+                                            <p 
+                                            className="vl-form__error" 
+                                            id="input-field-Ggemeente-error"></p>
+                                        </div>
+
+                                        <div className="form-group vl-form-col--4-12">
+                                            <label 
+                                            className="vl-form__label" 
+                                            htmlFor="GlistPosition">
+                                                {t('A105:Place on the list')} :
+                                            </label>
+                                            <input 
+                                            type="number" 
+                                            min="0" 
+                                            disabled={true} 
+                                            id="GlistPosition" 
+                                            className="vl-input-field vl-input-field--block" 
+                                            value={listPosition} 
+                                            name="GlistPosition"></input>
+                                            <p 
+                                            className="vl-form__error" 
+                                            id="input-field-GlistPosition-error"></p>
+                                        </div>
+
+                                        <p>
+                                            {t('A105:As a candidate for the October 14, 2018 elections, did you make any election expenses')}?
+                                        </p>
+                                        <div className="form-group vl-form-col--12-12">
+                                            <label className="vl-radio" htmlFor="GElectionExpenseYes">
+                                                <input 
+                                                className="vl-radio__toggle" 
+                                                type="radio" 
+                                                id="GElectionExpenseYes" 
+                                                name="GElectionExpense" 
+                                                value="yes"
+                                                onClick={anabeCompleteForm}
+                                                checked={completeForm}
+                                                onChange={anabeCompleteForm}
+                                                />
+                                                <div className="vl-radio__label">
+                                                    {t('A105:Yes')}
+                                                </div>
+                                            </label>
+                                            <label className="vl-radio" htmlFor="GElectionExpenseNo">
+                                                <input 
+                                                className="vl-radio__toggle" 
+                                                type="radio" 
+                                                id="GElectionExpenseNo" 
+                                                name="GElectionExpense" 
+                                                value="no"
+                                                onClick={disableCompleteForm}  
+                                                checked={! completeForm} 
+                                                onChange={disableCompleteForm}
+                                                />
+                                                <div className="vl-radio__label">
+                                                    {t('A105:No')}
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <A105Expenses 
