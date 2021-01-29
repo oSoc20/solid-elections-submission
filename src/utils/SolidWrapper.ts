@@ -228,3 +228,27 @@ export async function fetchUserData(appContainer: TripleDocument) {
 
     return [false, null]
 }
+
+interface User {
+    lblodId: string;
+    municipality: string;
+    postalCode: number;
+}
+
+export async function saveUserData(appContainer: TripleDocument, fileName: string, userData: User) {
+    const doc = createAppDocument(appContainer, fileName);
+
+    const formData = doc.addSubject({"identifier": "me"});
+
+    formData.addString(schema.sameAs, userData.lblodId);
+    formData.addString(schema.addressLocality, userData.municipality);
+    formData.addInteger(schema.postalCode, userData.postalCode);
+
+    try {
+        await doc.save([formData]);
+        return true;
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+}

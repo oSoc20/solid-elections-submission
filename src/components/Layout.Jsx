@@ -14,11 +14,11 @@ const Layout = ({children}) => {
     return (
         <div>
             <Header/>
-            <section className='vl-region'>
-                <div className='vl-layout'>
-                    {children}
-                </div>
-            </section>
+                <section className='vl-region'>
+                    <div className='vl-layout'>
+                        {children}
+                    </div>
+                </section>
             <Footer/>
         </div>
     )

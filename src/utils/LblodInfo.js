@@ -1,4 +1,4 @@
-import {fetchPostAbb} from './RequestDatabase';
+import {fetchPostAbb, fetchGetDb, fetchPostDb} from './RequestDatabase';
 
 const fetchUserInfo = async (personURI) => {
     const uriUSerInfo = new URLSearchParams({
@@ -104,6 +104,10 @@ const fetchLBLODInfo = async (personURI) => {
             }
         });
 
+        console.log(dataUser);
+        console.log(dataAmount);
+        console.log(dataExtra);
+
         var listAmount = null;
         var userAmount = null;
 
@@ -129,6 +133,46 @@ const fetchLBLODInfo = async (personURI) => {
     return [false, null];
 }
 
+const validateLblodID = async (lblodID) => {
+    const uri = new URLSearchParams({
+        personURI: lblodID
+    });
+
+    const response = await fetchGetDb("person", uri);
+
+    if (response.success && response.result.success) {
+
+        const result = response.result.result[0];
+        return [true, {
+            firstName: result.name.value,
+            lastName: result.familyName.value
+        }];
+    } else {
+        return [false, null]
+    }
+}
+
+const registerCandidate = async (webID, lblodID) => {
+
+    console.log(webID);
+    console.log(lblodID);
+
+    const response = await fetchPostDb("store", JSON.stringify({
+        "uri": webID,
+        "lblod_id": lblodID
+    }));
+
+    console.log(response);
+
+    if (response.success && response.result.success) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 export {
-    fetchLBLODInfo
+    fetchLBLODInfo,
+    validateLblodID,
+    registerCandidate
 }
