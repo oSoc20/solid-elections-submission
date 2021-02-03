@@ -203,7 +203,7 @@ export default function A105(props) {
                                 </div>
 
                                 <p>
-                                    {t('A105:As a candidate for the October 14, 2018 elections, did you make any election expenses')}?
+                                    {t('A105:As a candidate for the elections, did you make any election expenses')}?
                                 </p>
                                 <div className="form-group vl-form-col--12-12">
                                     <label className="vl-radio" htmlFor="GElectionExpenseYes">
