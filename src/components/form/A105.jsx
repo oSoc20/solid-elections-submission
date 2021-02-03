@@ -233,23 +233,22 @@ export default function A105(props) {
                                         </div>
                                     </label>
                                 </div>
-
-                                <A105Expenses 
-                                    show={completeForm}
-                                    maxAmount={maxExpensesAmount}
-                                    handleExpensesChange={handleExpensesChange}
-                                    expensesValues={expensesValues}
-                                    expensesTotal={expensesTotal}
-                                />
-
-                                <A105Funds 
-                                    show={completeForm}
-                                    handleFundsChange={handleFundsChange}
-                                    fundsValues={fundsValues}
-                                    fundsTotal={fundsTotal}
-                                />
-
                             </div>
+
+                            <A105Expenses 
+                                show={completeForm}
+                                maxAmount={maxExpensesAmount}
+                                handleExpensesChange={handleExpensesChange}
+                                expensesValues={expensesValues}
+                                expensesTotal={expensesTotal}
+                            />
+
+                            <A105Funds 
+                                show={completeForm}
+                                handleFundsChange={handleFundsChange}
+                                fundsValues={fundsValues}
+                                fundsTotal={fundsTotal}
+                            />
 
                             <p id="error-form" className="vl-form__error"></p>
                             <p className="text-bold">
