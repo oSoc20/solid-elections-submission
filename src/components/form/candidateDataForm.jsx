@@ -2,34 +2,58 @@ import React, {useState, useEffect} from "react";
 import Loading from '../alert/loading';
 import ReactTooltip from "react-tooltip";
 import { FaInfoCircle } from 'react-icons/fa';
-import { useTranslation } from 'react-i18next';
+import { getI18n, useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
+import {useSelector} from 'react-redux';
+import { useWebId } from '@solid/react';
 
 import {validateLblodID, registerCandidate} from '../../utils/LblodInfo';
-import {saveUserData} from '../../utils/SolidWrapper'
+import {saveUserInfo, getUserInfo} from '../../utils/userInfo';
 
 export default function CandidateDataForm(props) {
 
-    const FILE_NAME = "me.ttl";
-
-    const {loaded, refresh, userInfo} = props;
+    const {refresh, userInfo} = props;
 
     const { t } = useTranslation(["form", "alert"]);
     const {register, handleSubmit, setValue, errors} = useForm();
+    const webID = useWebId();
 
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [name, setName] = useState();
+    const [info, setInfo] = useState();
 
     useEffect(() => {
-        if (userInfo) {
-            setValue("lblodId", userInfo.personUri);
-            setValue("municipality", userInfo.address.municipality);
-            setValue('postalCode', userInfo.address.postalCode);
-
-            setFirstName(userInfo.name);
-            setLastName(userInfo.familyName);
+        console.log("webID");
+        if (webID) {
+            console.log('loading');
+            setLoading(true);
+            loadData(webID).then(
+                () => setLoading(false)
+            );
         }
-    }, [loaded]);
+    }, [webID]);
+
+    useEffect(() => {
+        console.log(info);
+        if (info) {
+            setValue("lblodId", info.lblodId);
+            setValue("municipality", info.municipality);
+            setValue('postalCode', info.postalCode);
+        }
+    }, [loading]);
+
+    const loadData = async (webID) =>{
+        const info = await getUserInfo(webID);
+
+        if (info) {
+            const [success, data] = await validateLblodID(info.lblodId);
+
+            if (success) {
+                setName(data);
+            }
+            setInfo(info);
+        }
+    }
 
     const lblodIdPresent = () => {
         if (userInfo && userInfo.personUri) {
@@ -46,22 +70,20 @@ export default function CandidateDataForm(props) {
         const [validLblodID, nameData] = await validateLblodID(data.lblodId);
 
         if (validLblodID) {
-            setFirstName(nameData.firstName);
-            setLastName(nameData.lastName);
 
             const registerSuccess = await registerCandidate(
                 userInfo.webId, data.lblodId
             )
 
             if (registerSuccess) {
-                const saveSuccess = await saveUserData(
-                    userInfo.appContainer,
-                    FILE_NAME,
+
+                const saveSuccess = await saveUserInfo(
                     {
                         lblodId: data.lblodId,
                         municipality: data.municipality,
-                        postalCode: data.postalCode
-                    }
+                        postalCode: data.postalCode 
+                    },
+                    userInfo.webId   
                 )
 
                 if (saveSuccess) {
@@ -78,7 +100,7 @@ export default function CandidateDataForm(props) {
         return false;
     };
 
-    if (loaded) {
+    if (! loading) {
         return (
             <div id="userForm">
                 <h1 className="vl-title vl-title--h1 vl-title--has-border">
@@ -121,7 +143,7 @@ export default function CandidateDataForm(props) {
                             className="vl-input-field vl-input-field--block" 
                             data-type="auto" 
                             name="firstname"
-                            value={firstName}>
+                            value={name ? name.firstName : ''}>
                             </input>
                             <p className="vl-form__error" id="input-field-firstname-error"></p>
                         </div>
@@ -139,7 +161,7 @@ export default function CandidateDataForm(props) {
                             className="vl-input-field vl-input-field--block" 
                             data-type="auto" 
                             name="lastname" 
-                            value={lastName}/>
+                            value={name ? name.lastName : ''}/>
                             <p className="vl-form__error" id="input-field-lastname-error"></p>
                         </div>
 

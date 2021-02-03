@@ -55,8 +55,10 @@ const App = () => {
                         })
                     }
                 }
+
+                setLoaded(true);
             } else {
-                throw "Container could not be initialized!"
+                throw "Container could not be initialized!";
             }
         }
     }

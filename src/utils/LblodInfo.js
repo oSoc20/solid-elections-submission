@@ -104,10 +104,6 @@ const fetchLBLODInfo = async (personURI) => {
             }
         });
 
-        console.log(dataUser);
-        console.log(dataAmount);
-        console.log(dataExtra);
-
         var listAmount = null;
         var userAmount = null;
 
@@ -141,6 +137,9 @@ const validateLblodID = async (lblodID) => {
     const response = await fetchGetDb("person", uri);
 
     if (response.success && response.result.success) {
+
+
+        console.log(response);
 
         const result = response.result.result[0];
         return [true, {
