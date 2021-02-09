@@ -1,3 +1,4 @@
+import { response } from 'rdf-namespaces/dist/link';
 import {fetchPostAbb, fetchGetDb, fetchPostDb} from './RequestDatabase';
 
 const fetchUserInfo = async (personURI) => {
@@ -26,12 +27,20 @@ const fetchUserInfo = async (personURI) => {
         `
     });
 
-    const responseUser = await fetchPostAbb(uriUSerInfo);
+    const response = await fetchPostAbb(uriUSerInfo);
 
-    if (responseUser) {
-        const dataUser = responseUser.result.results.bindings;
+    if (response && response.success) {
+        const dataUser = response.result.results.bindings;
+        const lists = dataUser.map(list => {
+            return {
+                "URI": list.list.value,
+                "name": list.listName.value,
+                "number": list.listNumber.value,
+                "position": list.positionInResult.value
+            }
+        });
 
-        return [true, dataUser];
+        return [true, lists];
     } else {
         return [false, null];
     }
@@ -58,11 +67,21 @@ const fetchUserAmount = async (personURI) => {
         `
     });
 
-    const responseAmount = await fetchPostAbb(uriAmount);
+    const response = await fetchPostAbb(uriAmount);
 
-    if (responseAmount) {
-        const dataAmount = responseAmount.result.results.bindings;
-        return [true, dataAmount]
+    if (response && response.success) {
+        const dataAmount = response.result.results.bindings;
+        var listAmount = null;
+        var userAmount = null;
+        
+        dataAmount.forEach(binding => {
+            if (binding.spentList != null) {
+                listAmount = binding.spentList.value;
+                userAmount = binding.spentCandidate2.value;
+            }
+        });
+
+        return [true, {listAmount, userAmount}]
     } else {
         return [false, null]
     }
@@ -78,49 +97,31 @@ const fetchExtraAmount = async (personURI) => {
         `
     });
 
-    const responseExtra = await fetchPostAbb(uriExtra);
+    const response = await fetchPostAbb(uriExtra);
+    console.log(response);
 
-    if (responseExtra) {
-        const dataExtra = responseExtra.result.results.bindings;
+    if (response && response.success) {
+        const dataExtra = response.result.results.bindings;
+        const result = dataExtra.length > 0 ? dataExtra[0].mandated.value : null 
 
-        return [true, dataExtra];
+        return [true, result];
     } else {
         return [false, null];
     }
 }
 
 const fetchLBLODInfo = async (personURI) => {
-    const [userSuccess, dataUser] = await fetchUserInfo(personURI);
+    const [userSuccess, lists] = await fetchUserInfo(personURI);
     const [amountSuccess, dataAmount] = await fetchUserAmount(personURI);
-    const [extraSuccess, dataExtra] = await fetchExtraAmount(personURI);
+    const [extraSuccess, mandated] = await fetchExtraAmount(personURI);
 
     if (userSuccess && amountSuccess && extraSuccess) {
-        const lists = dataUser.map(list => {
-            return {
-                "URI": list.list.value,
-                "name": list.listName.value,
-                "number": list.listNumber.value,
-                "position": list.positionInResult.value
-            }
-        });
-
-        var listAmount = null;
-        var userAmount = null;
-
-        dataAmount.forEach(binding => {
-            if (binding.spentList != null) {
-                listAmount = binding.spentList.value;
-                userAmount = binding.spentCandidate2.value;
-            }
-        });
 
         const info = {
-            name: dataUser[0].firstName.value,
-            familyName: dataUser[0].familyName.value,
             lists: lists,
-            userAmount: userAmount,
-            listAmount: listAmount,
-            mandated: (dataExtra.length > 0 ? dataExtra[0].mandated.value : null)
+            userAmount: dataAmount.userAmount,
+            listAmount: dataAmount.listAmount,
+            mandated: mandated
         }
 
         return [true, info];
@@ -137,11 +138,8 @@ const validateLblodID = async (lblodID) => {
     const response = await fetchGetDb("person", uri);
 
     if (response.success && response.result.success) {
-
-
-        console.log(response);
-
         const result = response.result.result[0];
+
         return [true, {
             firstName: result.name.value,
             lastName: result.familyName.value

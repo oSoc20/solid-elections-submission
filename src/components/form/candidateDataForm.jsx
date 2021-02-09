@@ -1,106 +1,45 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect} from "react";
 import Loading from '../alert/loading';
 import ReactTooltip from "react-tooltip";
 import { FaInfoCircle } from 'react-icons/fa';
-import { getI18n, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-import {useSelector} from 'react-redux';
-import { useWebId } from '@solid/react';
 
-import {validateLblodID, registerCandidate} from '../../utils/LblodInfo';
-import {saveUserInfo, getUserInfo} from '../../utils/userInfo';
+import useUserInfo from '../../utils/useUserInfo';
 
 export default function CandidateDataForm(props) {
 
-    const {refresh, userInfo} = props;
+    const {refresh} = props;
 
     const { t } = useTranslation(["form", "alert"]);
     const {register, handleSubmit, setValue, errors} = useForm();
-    const webID = useWebId();
-
-    const [loading, setLoading] = useState(false);
-    const [name, setName] = useState();
-    const [info, setInfo] = useState();
+    const {loaded, userInfo, saveData} = useUserInfo();
 
     useEffect(() => {
-        console.log("webID");
-        if (webID) {
-            console.log('loading');
-            setLoading(true);
-            loadData(webID).then(
-                () => setLoading(false)
-            );
+        if (loaded && userInfo) {
+            console.log(userInfo);
+            setValue("lblodId", userInfo.lblodId);
+            setValue("municipality", userInfo.municipality);
+            setValue("postalCode", userInfo.postalCode);
         }
-    }, [webID]);
-
-    useEffect(() => {
-        console.log(info);
-        if (info) {
-            setValue("lblodId", info.lblodId);
-            setValue("municipality", info.municipality);
-            setValue('postalCode', info.postalCode);
-        }
-    }, [loading]);
-
-    const loadData = async (webID) =>{
-        const info = await getUserInfo(webID);
-
-        if (info) {
-            const [success, data] = await validateLblodID(info.lblodId);
-
-            if (success) {
-                setName(data);
-            }
-            setInfo(info);
-        }
-    }
+    }, [loaded]);
 
     const lblodIdPresent = () => {
-        if (userInfo && userInfo.personUri) {
-            return true
-        }
-
-        return false;
+        return (userInfo && userInfo.lblodId);
     }
 
     const handleFormSubmit = async function(data) {
+        const success = await saveData(data);
 
-        console.log(data);
-
-        const [validLblodID, nameData] = await validateLblodID(data.lblodId);
-
-        if (validLblodID) {
-
-            const registerSuccess = await registerCandidate(
-                userInfo.webId, data.lblodId
-            )
-
-            if (registerSuccess) {
-
-                const saveSuccess = await saveUserInfo(
-                    {
-                        lblodId: data.lblodId,
-                        municipality: data.municipality,
-                        postalCode: data.postalCode 
-                    },
-                    userInfo.webId   
-                )
-
-                if (saveSuccess) {
-                    alert(t('alert:Your data has been saved') + "!");
-                    refresh();
-
-                    return true;
-                }
-            }
+        if (success) {
+            alert(t('alert:Your data has been saved') + "!");
+            refresh();
+        } else {
             alert(('Fatal error: something went wrong, please try again!'));
-            return false;
         }
-        alert("Fatal error: This LBLOD ID doesn't exist!");
-        return false;
     };
 
-    if (! loading) {
+    if (loaded) {
         return (
             <div id="userForm">
                 <h1 className="vl-title vl-title--h1 vl-title--has-border">
@@ -143,7 +82,7 @@ export default function CandidateDataForm(props) {
                             className="vl-input-field vl-input-field--block" 
                             data-type="auto" 
                             name="firstname"
-                            value={name ? name.firstName : ''}>
+                            value={userInfo ? userInfo.firstName : ''}>
                             </input>
                             <p className="vl-form__error" id="input-field-firstname-error"></p>
                         </div>
@@ -161,7 +100,7 @@ export default function CandidateDataForm(props) {
                             className="vl-input-field vl-input-field--block" 
                             data-type="auto" 
                             name="lastname" 
-                            value={name ? name.lastName : ''}/>
+                            value={userInfo ? userInfo.lastName : ''}/>
                             <p className="vl-form__error" id="input-field-lastname-error"></p>
                         </div>
 
@@ -211,8 +150,6 @@ export default function CandidateDataForm(props) {
         );
     } else {
         return (
-            //Show when appContainer is still null or undefined (use in init() from componentDidMount() and componentDidUpdate())
-            //We need the appContainer to fetch data from the solid pod or API
             <Loading />
         );
     }  

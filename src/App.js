@@ -1,9 +1,12 @@
 import React, {Suspense, useEffect, useState} from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { LoggedIn, LoggedOut, useWebId } from '@solid/react';
+import { useDispatch } from 'react-redux';
 
 import {fetchUserData, initAppStorage} from './utils/SolidWrapper';
 import {fetchLBLODInfo} from './utils/LblodInfo';
+import {setWebID} from './actions/webID';
+import {requestLoad} from './actions/userInfo';
 import './App.sass';
 
 import Layout from './components/Layout';
@@ -15,6 +18,7 @@ import FormSent from './components/alert/formSent';
 const App = () => {
 
     const APP_NAME = "solidelections";
+    const dispatch = useDispatch();
 
     const webID = useWebId();
     const [loaded, setLoaded] = useState(false);
@@ -23,6 +27,11 @@ const App = () => {
     //Load user info when webID changes.
     useEffect(() => {
         loadUserInfo();
+        console.log(webID);
+        if (webID) {
+            dispatch(setWebID(webID));
+            dispatch(requestLoad());
+        }
     }, [webID]);
 
     //Switch loaded when userInfo changes.
@@ -33,6 +42,10 @@ const App = () => {
             setLoaded(false);
         }
     }, [userInfo]);
+
+    const refresh = () => {
+        dispatch(requestLoad());
+    }
 
     async function loadUserInfo() {
         setUserInfo(null);
@@ -71,9 +84,7 @@ const App = () => {
                         <Switch>
                             <Route path="/profile">
                                 <CandidateDataForm
-                                    loaded={loaded}
-                                    userInfo={userInfo}
-                                    refresh={loadUserInfo}
+                                    refresh={refresh}
                                 />
                             </Route>
                             <Route path="/new-declaration">

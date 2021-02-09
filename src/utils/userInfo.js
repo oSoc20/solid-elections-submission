@@ -79,7 +79,7 @@ export const getUserInfo = async (webID) => {
                             municipality: subject.getString(schema.addressLocality),
                             postalCode: subject.getInteger(schema.postalCode)
                         },
-                        // In future address will be removed!
+                        // In futuref address will be removed!
                         municipality: subject.getString(schema.municipality),
                         postalCode: subject.getInteger(schema.postalCode)
                     }
