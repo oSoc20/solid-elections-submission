@@ -3,11 +3,20 @@ import {schema, rdf} from 'rdf-namespaces'
 
 import { getAppFolderURI, getFolderFiles } from "./Solid"
 
+const actionToJSON = (action) => {
+    return {
+        identifier: action.getString(schema.identifier),
+        price: action.getDecimal(schema.price),
+        priceCurrency: action.getString(schema.priceCurrency),
+        description: action.getString(schema.description)
+    }
+}
+
 const buyActionsToJSON = (buyActions) => {
     return buyActions.map(action => {
         return {
-            type: action.getString(schema.identifier),
-            amount: action.getDecimal(schema.price)
+            ...actionToJSON(action),
+            isExpense: true
         }
     })
 }
@@ -15,8 +24,8 @@ const buyActionsToJSON = (buyActions) => {
 const donateActionsToJSON = (donateActions) => {
     return donateActions.map(action => {
         return {
-            identifier: action.getString(schema.identifier),
-            price: action.getDecimal(schema.price)
+            ...actionToJSON(action),
+            isExpense: false
         }
     })
 }
@@ -45,10 +54,7 @@ export const getExpensesInfo = async (webID) => {
         expensesInfoDoc.getAllSubjectsOfType(schema.DonateAction)
     )
 
-    return {
-        expenses,
-        donations
-    };
+    return expenses.concat(donations)
 }
 
 const addAction = (doc, agentURI, data) => {
