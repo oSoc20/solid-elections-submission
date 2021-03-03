@@ -62,5 +62,20 @@
     "Therefore, also complete the form for identification of donors and sponsors":
         "Remplissez également le formulaire qui permet d’identifier les donateurs et les sponsors",
     "The amount you entered is less than 125 euros, please enter it in the inputfield on the right":
-        "Le montant que vous déclarez est inférieur à 125 euros. Prière de le remplir dans la case à droite "
+        "Le montant que vous déclarez est inférieur à 125 euros. Prière de le remplir dans la case à droite ",
+    "The filled in amount should be greater than zero":
+        "The filled in amount should be greater than zero",
+    "For example": "Par example",
+    "non-commercial telephone campaings or an indelible political message on an information carrier": 
+        "Les campagnes téléphoniques non commerciales ou un support informatique contenant un message politique indélébile",
+    "Production and rental costs for non-commercial boards of 4m² or less":
+        "Frais de confection et de location de panneaux non commerciaux de 4 m² ou moins",
+    "The cost of the boards created or purchased can be written off over three elections in which the political party participates, with a minimum of one third of the cost per election":
+        "Lorsque vous confectionnez ou achetez des panneaux à titre personnel, vous pouvez en amortir les coûts sur trois élections auxquelles vous participez, quelles qu’elles soient, avec un minimum d’un tiers de la dépense par élection",
+    "If those signs have been rented, the rental price must be stated in its entirety":
+        "Si vous louez ces panneaux, vous êtes tenu d’en déclarer le loyer dans sa totalité",
+    "The rental prices must be commercially justified (one third of the actual cost price for example)":
+        "Cette location doit être commercialement justifiée (par ex. un tiers du prix de revient)",
+    "The use of fully written off signs does not need to be indicated":
+        "L’utilisation de panneaux totalement amortis ne doit pas être imputée"
 }

@@ -1,8 +1,6 @@
 import { createStore } from 'redux';
-import dummyReducer from './reducers/dummyReducer';
+import combinedReducer from './reducers';
 
-export default function configureStore() {
-    const store = createStore(dummyReducer);
+const store = createStore(combinedReducer);
 
-    return store;
-}
+export default store;

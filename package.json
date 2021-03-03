@@ -31,6 +31,7 @@
     "rdf-namespaces": "^1.8.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^6.14.2",
     "react-i18next": "^11.7.3",
     "react-icons": "^3.10.0",
     "react-redux": "^7.2.1",
@@ -41,6 +42,7 @@
     "redux": "^4.0.5",
     "sass": "^1.26.10",
     "solid-auth-client": "^2.4.1",
+    "solid-file-client": "^1.2.2",
     "tripledoc": "^4.3.4",
     "typescript": "^3.9.6"
   },
