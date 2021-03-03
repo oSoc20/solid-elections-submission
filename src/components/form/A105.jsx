@@ -1,26 +1,51 @@
-import React,  {useState} from 'react'
+import React,  {useState, useEffect} from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux';
 
 import formInfo from '../../data/a105.json'
-import A105Head from './A105Head'
 import deadlines from '../../data/deadline.json'
+
 import {formToHTML, getKey} from '../../utils/createA105Form'
+import { requestExpensesLoad } from '../../actions/expensesInfo'
 import useUserInfo from '../../utils/useUserInfo'
 import useExpensesInfo from "../../utils/useExpensesInfo"
-import Loading from '../alert/loading'
+
+import A105Head from './A105Head'
 import ProfileDoesntExist from '../alert/profileDoesntExist'
+import Loading from '../alert/loading'
 
 export default function A105({enableG104}) {
 
-    const {loaded, userInfo} = useUserInfo();
     const {register, handleSubmit, 
-            errors, watch} = useForm();
-    const values = watch();
+            errors, watch, setValue} = useForm();
     const [completeForm, setCompleteForm] = useState(false);
     const { t } = useTranslation(["A105", "alert"]);
+    const dispatch = useDispatch();
 
-    const {saveData} = useExpensesInfo();
+    const {loaded, userInfo} = useUserInfo();
+    const {saveData, expensesLoaded, expensesInfo} = useExpensesInfo();
+
+    const values = watch();
+
+    useEffect(() => {
+        if (expensesLoaded && expensesInfo) {
+            console.log("LOADED!");
+            console.log(expensesInfo);
+            expensesInfo.map(
+                info => {
+                    console.log(info.isExpense);
+                    console.log(info.identifier);
+                    console.log(getKey(info.identifier, info.isExpense));
+                    console.log(info.price)
+                    setValue(
+                        getKey(info.identifier, info.isExpense), 
+                        info.price
+                    )
+                }
+            )
+        }
+    }, [expensesLoaded, loaded])
 
     const getTotals = () => {
         var expensesTotal = 0;
@@ -79,6 +104,7 @@ export default function A105({enableG104}) {
             console.log(success);
             if (success) {
                 alert(t('alert:Your data has been saved') + "!");
+                dispatch(requestExpensesLoad());
             } else {
                 alert(('Error: something went wrong, please try again!'));
             }
@@ -104,7 +130,7 @@ export default function A105({enableG104}) {
         translate: t
     })
 
-    if (! loaded) {
+    if (! loaded || ! expensesLoaded) {
         return (
             <Loading />
         )

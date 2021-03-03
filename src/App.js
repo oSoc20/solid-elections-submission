@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 
 import {setWebID} from './actions/webID';
 import {requestUserLoad} from './actions/userInfo';
+import { requestExpensesLoad } from './actions/expensesInfo';
 import './App.sass';
 
 import Layout from './components/Layout';
@@ -23,6 +24,7 @@ const App = () => {
         if (webID) {
             dispatch(setWebID(webID));
             dispatch(requestUserLoad());
+            dispatch(requestExpensesLoad())
         }
     }, [webID]);
 

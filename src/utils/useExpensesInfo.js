@@ -19,10 +19,8 @@ const useExpensesInfo = () => {
     }, [loaded]);
 
     const loadData = async (webID) => {
-        console.log('loading data');
         const data = await getExpensesInfo(webID);
-        console.log(data);
-
+        
         if (! data) {
             // TODO: handle load fail
             return 
