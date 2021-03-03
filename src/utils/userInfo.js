@@ -12,14 +12,17 @@ export const validateUserInfo = (userInfo) => {
 }
 
 const validateLblodID = (lblodID) => {
+    //TODO: implement
     return true;
 }
 
 const validateMunicipality = (municipality) => {
+    //TODO: implement
     return true;
 }
 
 const validatePostalCode = (postalCode) => {
+    //TODO: implement
     return true;
 }
 
@@ -74,12 +77,8 @@ export const getUserInfo = async (webID) => {
 
                 if (subject) {
                     return {
+                        subject: subject.asRef(),
                         lblodId: subject.getRef(schema.sameAs),
-                        address: {
-                            municipality: subject.getString(schema.addressLocality),
-                            postalCode: subject.getInteger(schema.postalCode)
-                        },
-                        // In futuref address will be removed!
                         municipality: subject.getString(schema.municipality),
                         postalCode: subject.getInteger(schema.postalCode)
                     }

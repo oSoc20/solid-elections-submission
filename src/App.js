@@ -1,12 +1,10 @@
-import React, {Suspense, useEffect, useState} from 'react';
+import React, {Suspense, useEffect} from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { LoggedIn, LoggedOut, useWebId } from '@solid/react';
 import { useDispatch } from 'react-redux';
 
-import {fetchUserData, initAppStorage} from './utils/SolidWrapper';
-import {fetchLBLODInfo} from './utils/LblodInfo';
 import {setWebID} from './actions/webID';
-import {requestLoad} from './actions/userInfo';
+import {requestUserLoad} from './actions/userInfo';
 import './App.sass';
 
 import Layout from './components/Layout';
@@ -17,63 +15,19 @@ import FormSent from './components/alert/formSent';
 
 const App = () => {
 
-    const APP_NAME = "solidelections";
     const dispatch = useDispatch();
-
     const webID = useWebId();
-    const [loaded, setLoaded] = useState(false);
-    const [userInfo, setUserInfo] = useState(null);
 
     //Load user info when webID changes.
     useEffect(() => {
-        loadUserInfo();
-        console.log(webID);
         if (webID) {
             dispatch(setWebID(webID));
-            dispatch(requestLoad());
+            dispatch(requestUserLoad());
         }
     }, [webID]);
 
-    //Switch loaded when userInfo changes.
-    useEffect(() => {
-        if (userInfo) {
-            setLoaded(true);
-        } else {
-            setLoaded(false);
-        }
-    }, [userInfo]);
-
     const refresh = () => {
-        dispatch(requestLoad());
-    }
-
-    async function loadUserInfo() {
-        setUserInfo(null);
-
-        if (webID) {
-            const container = await initAppStorage(webID, APP_NAME);
-
-            if (container) {
-                const [solidSuccess, solidData] = await fetchUserData(container);
-
-                if (solidSuccess) {
-                    const [lblodSuccess, lblodInfo] = await fetchLBLODInfo(solidData.personUri);
-
-                    if (lblodSuccess) {
-                        setUserInfo({
-                            webId: webID,
-                            appContainer: container,
-                            ...lblodInfo,
-                            ...solidData
-                        })
-                    }
-                }
-
-                setLoaded(true);
-            } else {
-                throw "Container could not be initialized!";
-            }
-        }
+        dispatch(requestUserLoad());
     }
 
     return (
@@ -88,10 +42,7 @@ const App = () => {
                                 />
                             </Route>
                             <Route path="/new-declaration">
-                                <FormLayout
-                                    loaded={loaded}
-                                    userInfo={userInfo}
-                                />
+                                <FormLayout />
                             </Route>
                             <Route path="/formSent">
                                 <FormSent />

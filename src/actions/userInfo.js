@@ -1,12 +1,14 @@
 export const setUserInfo = (info) => {
     return {
         type: 'SET_INFO',
+        key: 'user',
         payload: info
     }
 }
 
-export const requestLoad = () => {
+export const requestUserLoad = () => {
     return {
-        type: 'CHANGE_LOADED'
+        type: 'CHANGE_LOADED',
+        key: 'user'
     }
 }

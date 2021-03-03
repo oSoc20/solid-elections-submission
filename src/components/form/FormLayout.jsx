@@ -1,13 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import { useTranslation } from 'react-i18next';
+import useUserInfo from "../../utils/useUserInfo";
 
 import A105 from "./A105";
 
 export default function FormLayout(props) {
-    const { t } = useTranslation(["form"]);
 
-    const userInfo = props.userInfo;
-    const loaded = props.loaded;
+    const { t } = useTranslation(["form"]);
+    const {loaded, userInfo} = useUserInfo();
+    const [g104, enableG104] = useState(false);
 
     return (
         <div>
@@ -39,7 +40,7 @@ export default function FormLayout(props) {
                 <li className="nav-item disabled">
                     <a 
                     id="tab-g104" 
-                    className="nav-link disabled" 
+                    className={"nav-link" + (g104 ? "" : " disabled")}
                     data-toggle="tab" 
                     href="#g104-form" 
                     role="tab" 
@@ -76,7 +77,7 @@ export default function FormLayout(props) {
 
             <div className="tab-content" id="tabContent">
                 <div className="tab-pane fade show active" id="a105-form" role="tabpanel" aria-labelledby="a105-form">
-                    <A105 userInfo={userInfo} loaded={loaded} />
+                    <A105 enableG104={enableG104}/>
                 </div>
                 <div className="tab-pane fade" id="g103-form" role="tabpanel" aria-labelledby="g103-form">
                     <h1>U ziet dit formulier omdat u lijsttrekker bent.</h1>

@@ -1,4 +1,3 @@
-import { response } from 'rdf-namespaces/dist/link';
 import {fetchPostAbb, fetchGetDb, fetchPostDb} from './RequestDatabase';
 
 const fetchUserInfo = async (personURI) => {
@@ -98,8 +97,6 @@ const fetchExtraAmount = async (personURI) => {
     });
 
     const response = await fetchPostAbb(uriExtra);
-    console.log(response);
-
     if (response && response.success) {
         const dataExtra = response.result.results.bindings;
         const result = dataExtra.length > 0 ? dataExtra[0].mandated.value : null 
@@ -150,16 +147,10 @@ const validateLblodID = async (lblodID) => {
 }
 
 const registerCandidate = async (webID, lblodID) => {
-
-    console.log(webID);
-    console.log(lblodID);
-
     const response = await fetchPostDb("store", JSON.stringify({
         "uri": webID,
         "lblod_id": lblodID
     }));
-
-    console.log(response);
 
     if (response.success && response.result.success) {
         return true;

@@ -1,22 +1,22 @@
-const defaultState = {
+const defaultState = ({
     loaded: true,
     info: null
-}
+})
 
-const userInfoReducer = (state = defaultState, action) => {
+const expensesInfoReducer = (state = defaultState, action) => {
     switch(action.type) {
         case 'SET_INFO':
-            if (action.key == "user") {
+            if (action.key == "expenses") {
                 return {
                     loaded: true,
                     info: action.payload
-                };
+                }
             } else return state;
         case 'CHANGE_LOADED':
-            if (action.key == "user") {
+            if (action.key == "expenses") {
                 return {
-                    info: null,
-                    loaded: false
+                    loaded: false,
+                    info: null
                 }
             } else return state;
         default:
@@ -24,4 +24,4 @@ const userInfoReducer = (state = defaultState, action) => {
     }
 }
 
-export default userInfoReducer;
+export default expensesInfoReducer;

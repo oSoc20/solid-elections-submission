@@ -1,11 +1,13 @@
 import {combineReducers} from 'redux';
 
-import userInfoReducer from './userInfo';
 import webIDReducer from './webID';
+import userInfoReducer from './userInfo';
+import expensesInfoReducer from './expensesInfo';
 
 const combinedReducer = combineReducers({
+    webID: webIDReducer,
     userInfo: userInfoReducer,
-    webID: webIDReducer
+    expensesInfo: expensesInfoReducer
 });
 
 export default combinedReducer;

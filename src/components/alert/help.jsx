@@ -1,5 +1,4 @@
 import React from 'react';
-import ShowAlert from './showAlert';
 import Popup from "reactjs-popup";
 import { FaInfoCircle } from 'react-icons/fa';
 
@@ -24,7 +23,7 @@ export class Help extends React.Component {
 
     render() {
         return (
-            <span className="clickable">
+            <span className="clickable" style={{"font-weight": "normal"}}>
                 <Popup
                     trigger={<FaInfoCircle data-tip={this.getShorterMessage()} />}
                     modal
