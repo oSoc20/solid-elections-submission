@@ -190,3 +190,41 @@ export function createDonation(doc: TripleDocument, person: string, donateAction
     donateAction.addString(schema.priceCurrency, donateActionData.priceCurrency);
     return donateAction; 
 }
+
+export async function fetchUserData(appContainer: TripleDocument) {
+    if (appContainer) {
+        const documents = listDocuments(appContainer);
+        const userDataLink = documents.find(link => {
+            const indexFile = link.lastIndexOf('/');
+            const file = link.substr(indexFile + 1);
+
+            return file == "me.ttl";
+        });
+
+        if (userDataLink) {
+
+            const userDataDoc = await fetchDocument(userDataLink);
+
+            if (userDataDoc) {
+                const userData = userDataDoc.getSubject("#me");
+
+                if (userData) {
+                    const personURI = userData.getRef(schema.sameAs);
+
+                    if (personURI) {
+                        return [true, {
+                            profile: userDataLink,
+                            personUri: personURI,
+                            address: {
+                                municipality: userData.getString(schema.addressLocality),
+                                postalCode: userData.getInteger(schema.postalCode)
+                            }
+                        }]
+                    }
+                }
+            }
+        }
+    }
+
+    return [false, null]
+}

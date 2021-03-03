@@ -1,13 +1,60 @@
-import React from 'react';
-import Header from "./components/header";
-import './App.sass';
-import { useTranslation } from 'react-i18next';
+import React, {Suspense, useEffect} from 'react';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { LoggedIn, LoggedOut, useWebId } from '@solid/react';
+import { useDispatch } from 'react-redux';
 
-function App() {
-    const { t } = useTranslation(["A105", "alert", "footer", "form", "header", "translation"]);
+import {setWebID} from './actions/webID';
+import {requestUserLoad} from './actions/userInfo';
+import './App.sass';
+
+import Layout from './components/Layout';
+import NotConnected from './components/alert/notConnected'
+import CandidateDataForm from './components/form/candidateDataForm';
+import FormLayout from './components/form/FormLayout';
+import FormSent from './components/alert/formSent';
+
+const App = () => {
+
+    const dispatch = useDispatch();
+    const webID = useWebId();
+
+    //Load user info when webID changes.
+    useEffect(() => {
+        if (webID) {
+            dispatch(setWebID(webID));
+            dispatch(requestUserLoad());
+        }
+    }, [webID]);
+
+    const refresh = () => {
+        dispatch(requestUserLoad());
+    }
 
     return (
-        <Header />
+        <Suspense fallback='loading'>
+            <Router>
+                <Layout>
+                    <LoggedIn>
+                        <Switch>
+                            <Route path="/profile">
+                                <CandidateDataForm
+                                    refresh={refresh}
+                                />
+                            </Route>
+                            <Route path="/new-declaration">
+                                <FormLayout />
+                            </Route>
+                            <Route path="/formSent">
+                                <FormSent />
+                            </Route>
+                        </Switch>
+                    </LoggedIn>
+                    <LoggedOut>
+                        <NotConnected/>
+                    </LoggedOut>
+                </Layout>
+            </Router>
+        </Suspense>
     );
 }
 

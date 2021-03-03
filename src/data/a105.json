@@ -1,0 +1,349 @@
+{
+    "expenses": {
+        "title": "Declaration of election expenses ",
+        "sections": [
+            {
+                "title": "Auditory and verbal messages ",
+                "key": "1.1",
+                "help": {
+                    "paragraphs": [
+                        {
+                            "sentences": [
+                                {
+                                    "sentence": "For example",
+                                    "connector": ":"
+                                },
+                                {
+                                    "sentence": "non-commercial telephone campaings or an indelible political message on an information carrier",
+                                    "connector": "."
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Written messages",
+                "subsections": [
+                    {
+                        "title": "Design and production costs of advertisement in the press",
+                        "key": "2.1.1"
+                    },
+                    {
+                        "title": "Price for advertising space in the press",
+                        "key": "2.1.2"
+                    },
+                    {
+                        "title": "Design and production costs of election flyers",
+                        "key": "2.2"
+                    },
+                    {
+                        "title": "Cost of letters and envelopes",
+                        "key": "2.3"
+                    },
+                    {
+                        "title": "Cost of other printed matter",
+                        "key": "2.4"
+                    },
+                    {
+                        "title": "Charges for emails and non-commercial SMS campaigns",
+                        "key": "2.5"
+                    }
+                ]
+            },
+            {
+                "title": "Shipping and distribution costs for election propaganda",
+                "subsections": [
+                    {
+                        "title": "Addressed shipments",
+                        "key": "3.1.1"
+                    },
+                    {
+                        "title": "Non-addressed shipments",
+                        "key": "3.1.2"
+                    },
+                    {
+                        "title": "Postal charges for other shipments",
+                        "key": "3.2"
+                    },
+                    {
+                        "title": "Other distribution costs",
+                        "key": "3.3"
+                    }
+                ]
+            },
+            {
+                "title": "Visual messages",
+                "subsections": [
+                    {
+                        "title": "Production and rental costs for non-commercial boards of 4m² or less",
+                        "key": "4.1",
+                        "help": {
+                            "paragraphs": [
+                                {
+                                    "sentences": [
+                                        {
+                                            "sentence": "Production and rental costs for non-commercial boards of 4m² or less",
+                                            "connector": "."
+                                        },
+                                        {
+                                            "sentence": "The cost of the boards created or purchased can be written off over three elections in which the political party participates, with a minimum of one third of the cost per election",
+                                            "connector": "."
+                                        },
+                                        {
+                                            "sentence": "If those signs have been rented, the rental price must be stated in its entirety",
+                                            "connector": "."
+                                        },
+                                        {
+                                            "sentence": "The rental prices must be commercially justified (one third of the actual cost price for example)",
+                                            "connector": "."
+                                        },
+                                        {
+                                            "sentence": "The use of fully written off signs does not need to be indicated",
+                                            "connector": "."
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "title": "Printing and production costs for posters of 4m² or less",
+                        "key": "4.2"
+                    },
+                    {
+                        "title": "Commercials on the Internet of Internet campaigns",
+                        "key": "4.3"
+                    },
+                    {
+                        "title": "Other costs for visual messages",
+                        "key": "4.4"
+                    }
+                ]
+            },
+            {
+                "title": "Other expenses",
+                "subsections": [
+                    {
+                        "title": "Election events",
+                        "key": "5.1"
+                    },
+                    {
+                        "title": "Production costs for website or web page, designed for election purposes",
+                        "key": "5.2"
+                    },
+                    {
+                        "title": "Other",
+                        "key": "5.3"
+                    }
+                ]
+            }
+        ],
+        "help": {
+            "paragraphs": [
+                {
+                    "sentences": [
+                        {
+                            "sentence": "State here all expenses and financial commitments for verbal, written, auditory and visual messages that were made during the closed period and that aimed to favorably affect the election result of the list",
+                            "connector": "."
+                        }
+                    ]
+                },
+                {
+                    "sentences": [
+                        {
+                            "sentence": "Also state here the expenses incurred by third parties for the list",
+                            "connector": "."
+                        },
+                        {
+                            "sentence": "You do not need to declare those expenses if, immediately after becoming aware of the campain they were conducting, the list sent a letter of formal notice to third parties to stop the compaign and has provided a copy that certified letter to the president of the election headquarters, whether or not accompanied by the third party's agreement to suspension",
+                            "connector": "."
+                        },
+                        {
+                            "sentence": "Enclose that copy with this declaration",
+                            "connector": "."
+                        }
+                    ]
+                },
+                {
+                    "sentences": [
+                        {
+                            "sentence": "Expenditures and financial commitments for goods, supplies and services must be settled at prevailing marked prices",
+                            "connector": "."
+                        }
+                    ]
+                },
+                {
+                    "sentences": [
+                        {
+                            "sentence": "Attention",
+                            "connector": "!"
+                        },
+                        {
+                            "sentence": "When completing the declaration, keep in mind that the use of certain campaign resources is prohibited dring the closed period",
+                            "connector": "."
+                        },
+                        {
+                            "sentence": "Lists, as well as third parties who want to make propaganda for them, are not allowed during the closed period",
+                            "connector": ":"
+                        }
+                    ]
+                },
+                {
+                    "listElements": [
+                        {
+                            "content": "to sell or distribute gifts or gadgets"
+                        },
+                        {
+                            "content": "to conduct commercial telephone campaigns"
+                        },
+                        {
+                            "content": "to use commercial billboards or posters"
+                        },
+                        {
+                            "content": "to use non-commercial billboards or posters that are larger than 4 m²"
+                        },
+                        {
+                            "content": "to use commercial radio, television or cinema advertisements"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "funds": {
+        "title": "Declaration of the origin of the funds",
+        "sections": [
+            {
+                "title": "Funds that come from the candidate's own assests",
+                "key": "1.1"
+            },
+            {
+                "title": "Gifts ",
+                "subsections": [
+                    {
+                        "title": "Gifts of 125 euros or more per donor",
+                        "key": "2.1.1"
+                    },
+                    {
+                        "title": "Gifts of less than 125 euros per donor",
+                        "key": "2.1.2"
+                    }
+                ],
+                "help": {
+                    "paragraphs": [
+                        {
+                            "sentences": [
+                                {
+                                    "sentence": "Gifts in cash as well as gifts in kind are considered gifts",
+                                    "connector": "."
+                                },
+                                {
+                                    "sentence": "The services provided free of charge or below real cost, the credit lines made available that do not have to be repaid and the services that are apparently charged by a political party, a list or a candidate above the market prices, are also considered as gifts",
+                                    "connector": "."
+                                },
+                                {
+                                    "sentence": "Only natural persons are allowed to make donations",
+                                    "connector": "."
+                                },
+                                {
+                                    "sentence": "Gifts from legal persons or de facto associations, as well as gifts from natural persons who actually act as intermediaries of legal persons or de facto associations, are prohibited",
+                                    "connector": "."
+                                }
+                            ]
+                        },
+                        {
+                            "sentences": [
+                                {
+                                    "sentence": "Attention",
+                                    "connector": "!"
+                                },
+                                {
+                                    "sentence": "The lists may finance their election propaganda with donations of a maximum of 500 euros per donor or its equivalent",
+                                    "connector": "."
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Sponsorship ",
+                "subsections": [
+                    {
+                        "title": "Amounts of 125 euros or more per sponsor",
+                        "key": "3.1.1"
+                    },
+                    {
+                        "title": "Amounts of less than 125 euros per sponsor",
+                        "key": "3.1.2"
+                    }
+                ],
+                "help": {
+                    "paragraphs": [
+                        {
+                            "sentences": [
+                                {
+                                    "sentence": "Sponsorship is understood to mean making money or products available in accordance with current market prices in exchange for publicity",
+                                    "connector": "."
+                                },
+                                {
+                                    "sentence": "Companies, de facto associations and legal persons are allowed to sponsor",
+                                    "connector": "."
+                                },
+                                {
+                                    "sentence": "A company is any natural or legal person who pursues an economic objective in a sustainable manner, as well as its associations",
+                                    "connector": "."
+                                }
+                            ]
+                        },
+                        {
+                            "sentences": [
+                                {
+                                    "sentence": "Attention",
+                                    "connector": "!"
+                                },
+                                {
+                                    "sentence": "The lists may receive a maximum of 500 euros or its equivalent per sponsor",
+                                    "connector": "."
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Financing by (a component of) the political party",
+                "key": "4.1"
+            },
+            {
+                "title": "Different origin",
+                "key": "5.1"
+            }
+        ],
+        "help": {
+            "paragraphs": [
+                {
+                    "sentences": [
+                        {
+                            "sentence": "In this section, you make a breakdown of the election expenditures that your list has incurred according to the origin of the funds used to finance those expenditures",
+                            "connector": "."
+                        },
+                        {
+                            "sentence": "The total amount of expenses included above must be equal to the total amount of the source of funds indicated below",
+                            "connector": "."
+                        }
+                    ]
+                },
+                {
+                    "sentences": [
+                        {
+                            "sentence": "Gifts and sponsor amounts of 125 euros and more are transferred electronically by bank transfer, a permanent payment order, or a bank or credit card",
+                            "connector": "."
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
